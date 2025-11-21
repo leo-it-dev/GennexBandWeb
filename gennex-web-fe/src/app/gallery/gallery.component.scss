@@ -1,0 +1,30 @@
+:host {
+    width: 80%;
+    margin: 0 auto;
+}
+
+img {
+    width: 33.333%;
+    aspect-ratio: 1;
+    margin: 0 auto;
+    object-fit: cover;
+    object-position: center;
+    padding: 5px;
+    box-sizing: border-box;
+    border: 2px dashed white;
+    transform: scale(1.0);
+    transition: transform .3s ease-out;
+}
+
+img:hover {
+    transform: scale(1.05);
+    transform-origin: center;
+    border: 2px solid white;
+    z-index: 1000;
+}
+
+@media screen and (max-width: 700px) {
+    img {
+        width: 50%;
+    }
+}

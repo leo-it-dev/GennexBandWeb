@@ -1,0 +1,1 @@
+npx tsc ./src/**.ts --outDir dist --watch

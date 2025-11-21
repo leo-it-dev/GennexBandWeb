@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  https:
+    build: .
+    ports:
+    - "89.58.20.94:80:80"
+    - "89.58.20.94:443:443"
+    volumes:
+      - ./tls:/usr/app/tls
+      - ./frontend/dist/app/:usr/app/frontend

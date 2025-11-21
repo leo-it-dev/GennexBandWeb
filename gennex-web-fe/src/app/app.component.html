@@ -1,0 +1,438 @@
+<script src="/scripts/scrollAnim.js"></script>
+<div id="scratchBack"></div>
+<div id="page1">
+	<div id="bannerImage">
+		<div class="vignette">
+			<img src="/images/bandpic/20250802_221918.jpg" />
+		</div>
+		<div class="overlayGradient"></div>
+	</div>
+	<div id="bannerText">
+		<!--<img src="/images/logo0014.png" />!-->
+		<h1 id="bandname">GENNEX</h1>
+		<nav id="bannerNav">
+			<ul>
+				<li>About us</li>
+				<li>Samples</li>
+				<li>Gallery</li>
+				<li>Events</li>
+				<li>Contact</li>
+			</ul>
+		</nav>
+	</div>
+	<div class="spacer"></div>
+	<div id="about-us" class="fade-scroll-items-container" #fadeScrollItemContainer>
+		<div id="about-us-content">
+			<img id="about-us-logo" src="/images/logo0014.png" />
+			<div id="about-us-text">
+				<p class="fade-scroll-item"> </p>
+				<p class="fade-scroll-item-spacer"></p>
+				<p class="fade-scroll-item">
+					Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. 
+				</p>
+				<p class="fade-scroll-item-spacer"></p>
+				<p class="fade-scroll-item">
+					At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+				</p>
+				<p class="fade-scroll-item-spacer"></p>
+				<p class="fade-scroll-item">
+					Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.
+				</p>
+				<p class="fade-scroll-item-spacer"></p>
+				<p class="fade-scroll-item">
+					Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+				</p>
+				<p class="fade-scroll-item-spacer"></p>
+				<p class="fade-scroll-item"> </p>
+			</div>
+		</div>
+	</div>
+	<div class="spacer"></div>
+
+	<div id="samples-slot">
+		<app-parallax-scroller-slot title="Samples" imgUrl="/images/Jonny_Guitar.png"></app-parallax-scroller-slot>
+	</div>
+	<div class="spacer"></div>
+	<app-gallery></app-gallery>
+<!-- 
+	<div id="logoAnim">
+		<div class="overlayGradient"></div>
+		<div id="back">
+			<div id="backAnim"></div>
+			<div #absLogoContainer id="absLogoContainer">
+				<div id="logoContainer">
+					<canvas #canv></canvas>
+					<div id="logo">
+						<img src="images/logo0014.png"/>
+					</div>
+					<div class="overlayGradient"></div>
+				</div>
+			</div>
+			<div id="absContactContainer">
+				<h1>
+					Interesse? Unsere nächsten Events:
+					<ul id="listNextEvents">
+						<li>Work</li>
+						<li>in</li>
+						<li>Progress</li>
+					</ul>
+				</h1>
+			</div>
+		</div>
+
+		<div class="spacer"></div>
+
+	</div>!-->
+	
+	<div class="spacer"></div>
+
+
+	<app-parallax-scroller-slot title="Kontakt" imgUrl="/images/retro_microphone0001.png"></app-parallax-scroller-slot>
+
+</div>
+
+
+<style>
+	@font-face {
+		font-family: 'agencyfb-bold';
+		src: url(/fonts/AGENCYB.TTF);
+	}
+	@font-face {
+		font-family: 'agencyfb-reg';
+		src: url(/fonts/AGENCYB.TTF);
+	}
+
+	:host {
+		height: 100%;
+		position: relative;
+		font-family: comfortaa;
+	
+		--bandname-letter-space: 30px;
+	}
+
+	#bandname {
+		letter-spacing: var(--bandname-letter-space);
+		font-size: 100pt;
+		font-family: agencyfb-bold;
+		filter: drop-shadow(10px 10px 5px #000);
+		margin: 20px 0px;
+		/* margin-right: calc(0px - var(--bandname-letter-space)); */
+		left: 100px;
+		position: relative;
+		width: min-content;
+	}
+
+	#bannerImage {
+		position: sticky;
+		top: 0;
+	}
+
+	#bannerText {
+		position: absolute;
+		transform: translate(0%, -50%);
+		font-family: agencyfb-reg;
+		color: #eed;
+		top: 50vh;
+		width: 100%;
+	}
+
+	#bannerNav {
+		position: relative;
+	}
+
+	#bannerNav:after {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100vw;
+		height: 100%;
+		border-top: 2px solid #eed;
+		border-bottom: 2px solid #eed;
+	}
+
+	#bannerNav > ul {
+		list-style: none;
+		display: flex;
+		flex-direction: row;
+		margin: 0;
+		padding: 0;
+		width: min-content;
+		left: 100px;
+		position: relative;
+		flex-wrap: wrap;
+	}
+	
+	#bannerNav > ul > li {
+		margin: 0px 10px;
+		font-size: 20pt;
+		filter: drop-shadow(4px 4px 1px #000);
+		cursor: pointer;
+		z-index: 100;
+		white-space: nowrap;
+	}
+
+	#scratchBack {
+		/* background-image: url(/images/scratch.png); */
+		/* background-repeat: repeat; */
+		/* background-size: 1000px 1000px; */
+		/* background-position: center; */
+		/* filter: contrast(.5) brightness(1.6); */
+		background: radial-gradient(#700 00%, black 70%);
+		position: fixed;
+		z-index: -1;
+		width: 100vw;
+		height: 100vh;
+	}
+
+	.spacer {
+		width: 100%;
+		height: 50vh;
+		min-height: 50vh;
+	}
+
+	#page1 {
+		height: 1100vh;
+		display: flex;
+		flex-direction: column;
+		position: relative;
+	}
+
+	.vignette > img {
+		max-height: 100vh;
+		object-fit: cover;
+		object-position: center;
+	}
+
+	.vignette {
+		position: relative;
+		max-width: 100%;
+		width: 100%;
+		height: 100vh;
+	}
+
+	.vignette:after {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 1) 95%, rgba(0, 0, 0, 1) 100%);
+	}
+
+	img {
+		width: 100%;
+		height: 100%;
+	}
+
+	.overlayGradient {
+		background: linear-gradient(to bottom, transparent, black, transparent);
+		transform: translateY(-50%);
+		width: 100%;
+		height: 400px;
+		position: absolute;
+		z-index: 10;
+	}
+
+	#samples-slot {
+		height: 300vh;
+		min-height: 300vh;
+	}
+
+	app-parallax-scroller-slot {
+		height: 70vh;
+		position: sticky;
+		top: 15vh;
+	}
+
+	app-gallery {
+		z-index: 100;
+	}
+
+	#room {
+		position: relative;
+	}
+
+	/*#imgRoom {
+		height: auto;
+		width: 100%;
+	}
+
+	#imgLogo {
+		height: auto;
+		width: 40%;
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+	}*/
+
+	/* -------------------------------------- */
+	#logoAnim {
+		height: 600vh;
+	}
+
+	#back {
+		z-index: 0;
+		position: sticky;
+		top: 0;
+		left: 0;
+		right: 0;
+		height: 400vh;
+	}
+
+	#backAnim {
+		position: sticky;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100vh;
+		background-color: var(--background);
+		background-image: url(/images/logo_room0014.png);
+		background-position: center;
+		background-size: cover;
+		background-repeat: no-repeat;
+		filter: brightness(0.4);
+	}
+
+	video {
+		width: 100%;
+		height: 100%;
+		max-width: 100%;
+		max-height: 100%;
+		object-fit: cover;
+		position: relative;
+	}
+
+	#logo {
+		position: absolute;
+		width: 40%;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+	}
+
+	#logoContainer {
+		height: 100vh;
+		position: sticky;
+		top: 0;
+	}
+
+	#absLogoContainer {
+		position: absolute;
+		top: 0;
+		width: 100%;
+		height: 400vh;
+	}
+	#absContactContainer {
+		position: absolute;
+		top: 400vh;
+		width: 100%;
+		height: 100vh;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		color: white;
+	}
+
+	/* -------------------------------------- */
+
+	#listNextEvents {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+
+	canvas {
+		width: 100%;
+		height: 100%;
+	}
+
+	app-contact-form {
+		width: 80%;
+		margin: 50px;
+	}
+
+	#about-us-content {
+		position: relative;
+	}
+
+	#about-us {
+		z-index: 100;	
+	}
+
+	#about-us-logo {
+		padding: 3%;
+		min-width: 35%;
+		max-width: 35%;
+		box-sizing: border-box;
+		height: auto;
+		position: sticky;
+		top: 50%;
+		margin-left: 5%;
+		transform: translateY(-50%);
+		float: left;
+	}
+
+	#about-us-text {
+		min-width: 40%;
+		max-width: 40%;
+		padding-top: 20px;
+		font-size: min(18pt, 3vw);
+		padding-left: 50px;
+		padding-right: 50px;
+		border-left: 1px solid transparent;
+		border-image: linear-gradient(to bottom, transparent 0%, white 20%, white 97%, transparent 100%) 1;
+		background: linear-gradient(to bottom, transparent 0%, #0008 20%, #0008 97%, transparent 100%);
+		border-image-slice: 1;
+		color: white;
+		font-weight: bold;
+		margin-left: auto;
+		margin-right: 10%;
+		box-sizing: border-box;
+	}
+
+	.fade-scroll-item {
+		top: 0px;
+		position: sticky;
+		padding-bottom: 20px;
+		margin: 0;
+	}
+	.fade-scroll-item-spacer {
+		height: 800px;
+		margin: 0;
+	}
+
+	@media screen and (max-width: 700px) {
+		#bandname {
+			font-size: 10vw;
+			text-align: center;
+		}
+		
+		#bannerNav > ul {
+			left: 50vw;
+			transform: translateX(-50%);
+		}
+
+		#about-us-text {
+			min-width: 100%;
+			max-width: 100%;
+			border: none;
+
+		}
+
+		#about-us-logo {
+			position: fixed;
+			top: 0;
+			left: 50%;
+			margin: 0;
+			padding: 3%;
+			transform: translateX(-50%);
+			float: none;
+		}
+	}
+</style>
+
+<router-outlet />
