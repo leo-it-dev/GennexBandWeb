@@ -11,21 +11,21 @@ jobs:
       artifact-name: ${{ steps.upload.outputs.artifact-name }}
     container: node:24
     steps:
-      - run: mkdir -p frontend/gennex
+      - run: mkdir -p frontend
       - run: apt-get update && apt-get install -y git-lfs
       - uses: actions/checkout@v4
       - run: node --version
       - run: npm --version
       - run: npm install
-        working-directory: frontend/gennex
+        working-directory: frontend
       - run: npm run build-prod
-        working-directory: frontend/gennex
+        working-directory: frontend
       - name: Upload Frontend Artifact
         id: upload
         uses: actions/upload-artifact@v4
         with:
           name: frontend-dist
-          path: frontend/gennex/dist
+          path: frontend/dist
       # - name: Cleanup
         # if: always()
         # run: |
@@ -48,13 +48,13 @@ jobs:
       - run: npm run build
         working-directory: backend
       - name: Copy static assets into build directory
-        run: mkdir js/backend/config && cp config/default.json js/backend/config
+        run: mkdir js/config && cp config/default.json js/config
         working-directory: backend
       - name: Reinstall node_modules as production run
         run: rm -r node_modules && npm install --production
         working-directory: backend
       - name: Copy node_modules into build directory
-        run: cp -r node_modules js/backend
+        run: cp -r node_modules js
         working-directory: backend
       - name: Upload Backend Artifact
         id: upload
