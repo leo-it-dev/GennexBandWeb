@@ -26,11 +26,11 @@ jobs:
         with:
           name: frontend-dist
           path: frontend/dist
-      # - name: Cleanup
-        # if: always()
-        # run: |
-          # echo "Cleaning up..."
-          # rm -rf "$GITHUB_WORKSPACE"/*
+      - name: Cleanup
+        if: always()
+        run: |
+          echo "Cleaning up..."
+          rm -rf "$GITHUB_WORKSPACE"/*
 
   build-backend:
     runs-on: build
