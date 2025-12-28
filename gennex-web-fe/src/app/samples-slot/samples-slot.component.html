@@ -1,0 +1,11 @@
+<app-slot title="Samples" imgUrl="/images/Jonny_Guitar.png" [scrollCommunication]="this.scrollCommunication">
+    <li *ngFor="let el of this.samplesList()">
+        <span>{{el}}</span><span>Künstler</span>
+    </li>
+    <li class="noback">
+        <iframe width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/soundcloud%253Atracks%253A2090995080&amp;color=%23ff5500&amp;auto_play=false&amp;hide_related=false&amp;show_comments=true&amp;show_user=true&amp;show_reposts=false&amp;show_teaser=true"></iframe>
+    </li>
+    <li class="noback">
+        <iframe data-testid="embed-iframe" style="border-radius:12px" src="https://open.spotify.com/embed/track/5UCmM6n4zerRlNQ5C3fJxz?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+    </li>
+</app-slot>

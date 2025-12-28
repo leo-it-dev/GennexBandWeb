@@ -1,0 +1,70 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "typescript",
+			"tsconfig": "backend/tsconfig.json",
+			"option": "watch",
+			"problemMatcher": [
+				"$tsc-watch"
+			],
+			"group": {
+				"kind": "build",
+			},
+			"label": "tsc: watch - backend",
+			"options": {
+				"cwd": "/home/dev/GennexBandWeb/backend"
+			}
+		},
+		{
+			"label": "angular: watch - frontend (debug)",
+			"type": "npm",
+			"script": "watch-debug",
+			"group": "build",
+			"problemMatcher": {
+				"owner": "typescript",
+				"source": "ts",
+				"applyTo": "closedDocuments",
+				"pattern": {
+					"regexp": "^ERROR in ([^\\s].*)[\\(:](\\d+)[,:](\\d+)(?:\\):\\s+|\\s+-\\s+)(error|warning|info)\\s+(TS\\d+)\\s*:\\s*(.*)$",
+					"file": 1,
+					"line": 2,
+					"column": 3,
+					"severity": 4,
+					"code": 5,
+					"message": 6
+				},
+				"fileLocation": "relative"
+			},
+			"options": {
+				"cwd": "/home/dev/GennexBandWeb/gennex-web-fe"
+			},
+			"path": "gennex-web-fe/",
+		},
+		{
+			"label": "angular: watch - frontend (prod)",
+			"type": "npm",
+			"script": "watch-prod",
+			"group": "build",
+			"problemMatcher": {
+				"owner": "typescript",
+				"source": "ts",
+				"applyTo": "closedDocuments",
+				"pattern": {
+					"regexp": "^ERROR in ([^\\s].*)[\\(:](\\d+)[,:](\\d+)(?:\\):\\s+|\\s+-\\s+)(error|warning|info)\\s+(TS\\d+)\\s*:\\s*(.*)$",
+					"file": 1,
+					"line": 2,
+					"column": 3,
+					"severity": 4,
+					"code": 5,
+					"message": 6
+				},
+				"fileLocation": "relative"
+			},
+			"options": {
+				"cwd": "/home/dev/GennexBandWeb/gennex-web-fe"
+			},
+			"path": "gennex-web-fe/",
+		}
+	]
+}

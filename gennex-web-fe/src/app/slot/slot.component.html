@@ -1,0 +1,15 @@
+<div id="scrollerBlock" [style.--stickyHeight]="this.scrollCommunication.stickyHeight()" #scrollContainer>
+    <div id="stickyBlock" #stickyBlock>
+        <app-section-header [title]="this.title"></app-section-header>
+        <div id="content" #contentBlock>
+            <div id="imgContainer">
+                <img src={{imgUrl}} />
+            </div>
+            <div id="itemContainerClip">
+                <ul id="itemContainer" #itemContainer>
+                    <ng-content #content></ng-content>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

@@ -12,11 +12,11 @@
 		<h1 id="bandname">GENNEX</h1>
 		<nav id="bannerNav">
 			<ul>
-				<li>About us</li>
-				<li>Samples</li>
-				<li>Gallery</li>
-				<li>Events</li>
-				<li>Contact</li>
+				<a href="#about-us"><li>About us</li></a>
+				<a href="#samples"><li>Samples</li></a>
+				<a href="#gallery"><li>Gallery</li></a>
+				<a href="#newsletter"><li>Events</li></a>
+				<a href="#contact"><li>Contact</li></a>
 			</ul>
 		</nav>
 	</div>
@@ -25,6 +25,8 @@
 		<div id="about-us-content">
 			<img id="about-us-logo" src="/images/logo0014.png" />
 			<div id="about-us-text">
+				<app-section-header class="fade-scroll-item" title="Über uns"></app-section-header>
+
 				<p class="fade-scroll-item"> </p>
 				<p class="fade-scroll-item-spacer"></p>
 				<p class="fade-scroll-item">
@@ -49,12 +51,13 @@
 	</div>
 	<div class="spacer"></div>
 
-	<div id="samples-slot">
-		<app-parallax-scroller-slot title="Samples" imgUrl="/images/Jonny_Guitar.png"></app-parallax-scroller-slot>
-	</div>
+	<app-samples-slot id="samples"></app-samples-slot>
 	<div class="spacer"></div>
-	<app-gallery></app-gallery>
-<!-- 
+	<app-gallery id="gallery">
+		<div class="overlayGradient"></div>
+	</app-gallery>
+
+	<!-- 
 	<div id="logoAnim">
 		<div class="overlayGradient"></div>
 		<div id="back">
@@ -86,8 +89,10 @@
 	
 	<div class="spacer"></div>
 
-
-	<app-parallax-scroller-slot title="Kontakt" imgUrl="/images/retro_microphone0001.png"></app-parallax-scroller-slot>
+	<app-newsletter id="newsletter"></app-newsletter>
+	<div class="spacer"></div>
+	<app-contact id="contact"></app-contact>
+	<div class="spacer"></div>
 
 </div>
 
@@ -102,16 +107,22 @@
 		src: url(/fonts/AGENCYB.TTF);
 	}
 
+	* {
+		--primary1: #4538FF77;
+		--primary2: #FF383877;
+		font-family: agencyfb-reg;
+	}
+
 	:host {
 		height: 100%;
 		position: relative;
-		font-family: comfortaa;
 	
 		--bandname-letter-space: 30px;
 	}
 
 	#bandname {
 		letter-spacing: var(--bandname-letter-space);
+		text-indent: var(--bandname-letter-space);
 		font-size: 100pt;
 		font-family: agencyfb-bold;
 		filter: drop-shadow(10px 10px 5px #000);
@@ -132,7 +143,7 @@
 		transform: translate(0%, -50%);
 		font-family: agencyfb-reg;
 		color: #eed;
-		top: 50vh;
+		top: 50dvh;
 		width: 100%;
 	}
 
@@ -163,7 +174,9 @@
 		flex-wrap: wrap;
 	}
 	
-	#bannerNav > ul > li {
+	#bannerNav > ul > a {
+		color: inherit;
+		text-decoration: none;
 		margin: 0px 10px;
 		font-size: 20pt;
 		filter: drop-shadow(4px 4px 1px #000);
@@ -182,24 +195,23 @@
 		position: fixed;
 		z-index: -1;
 		width: 100vw;
-		height: 100vh;
+		height: 100dvh;
 	}
 
 	.spacer {
 		width: 100%;
-		height: 50vh;
-		min-height: 50vh;
+		height: 50dvh;
+		min-height: 50dvh;
 	}
 
 	#page1 {
-		height: 1100vh;
 		display: flex;
 		flex-direction: column;
 		position: relative;
 	}
 
 	.vignette > img {
-		max-height: 100vh;
+		max-height: 100dvh;
 		object-fit: cover;
 		object-position: center;
 	}
@@ -208,7 +220,7 @@
 		position: relative;
 		max-width: 100%;
 		width: 100%;
-		height: 100vh;
+		height: 100dvh;
 	}
 
 	.vignette:after {
@@ -235,17 +247,6 @@
 		z-index: 10;
 	}
 
-	#samples-slot {
-		height: 300vh;
-		min-height: 300vh;
-	}
-
-	app-parallax-scroller-slot {
-		height: 70vh;
-		position: sticky;
-		top: 15vh;
-	}
-
 	app-gallery {
 		z-index: 100;
 	}
@@ -270,7 +271,7 @@
 
 	/* -------------------------------------- */
 	#logoAnim {
-		height: 600vh;
+		height: 600dvh;
 	}
 
 	#back {
@@ -279,7 +280,7 @@
 		top: 0;
 		left: 0;
 		right: 0;
-		height: 400vh;
+		height: 400dvh;
 	}
 
 	#backAnim {
@@ -287,7 +288,7 @@
 		top: 0;
 		left: 0;
 		width: 100%;
-		height: 100vh;
+		height: 100dvh;
 		background-color: var(--background);
 		background-image: url(/images/logo_room0014.png);
 		background-position: center;
@@ -314,7 +315,7 @@
 	}
 
 	#logoContainer {
-		height: 100vh;
+		height: 100dvh;
 		position: sticky;
 		top: 0;
 	}
@@ -323,13 +324,13 @@
 		position: absolute;
 		top: 0;
 		width: 100%;
-		height: 400vh;
+		height: 400dvh;
 	}
 	#absContactContainer {
 		position: absolute;
-		top: 400vh;
+		top: 400dvh;
 		width: 100%;
-		height: 100vh;
+		height: 100dvh;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
@@ -380,20 +381,22 @@
 		min-width: 40%;
 		max-width: 40%;
 		padding-top: 20px;
-		font-size: min(18pt, 3vw);
+		font-size: min(18pt, 5vw);
 		padding-left: 50px;
 		padding-right: 50px;
 		border-left: 1px solid transparent;
 		border-image: linear-gradient(to bottom, transparent 0%, white 20%, white 97%, transparent 100%) 1;
 		background: linear-gradient(to bottom, transparent 0%, #0008 20%, #0008 97%, transparent 100%);
 		border-image-slice: 1;
-		color: white;
 		font-weight: bold;
 		margin-left: auto;
 		margin-right: 10%;
 		box-sizing: border-box;
 	}
 
+	p.fade-scroll-item {
+		color: white;
+	}
 	.fade-scroll-item {
 		top: 0px;
 		position: sticky;
@@ -409,11 +412,19 @@
 		#bandname {
 			font-size: 10vw;
 			text-align: center;
+			left: 50%;
+			transform: translateX(-50%);
 		}
 		
 		#bannerNav > ul {
-			left: 50vw;
-			transform: translateX(-50%);
+			left: 0;
+			width: 100%;
+		}
+
+		#bannerNav > ul > li {
+			width: 100%;
+			margin: 10px;
+			text-align: center;
 		}
 
 		#about-us-text {
@@ -427,12 +438,18 @@
 			position: fixed;
 			top: 0;
 			left: 50%;
-			margin: 0;
-			padding: 3%;
+			margin: 0 !important;
+			padding: 10px !important;
+			height: 100px !important;
+			width: auto !important;
+			max-width: unset !important;
+			min-width: unset !important;
 			transform: translateX(-50%);
 			float: none;
 		}
 	}
+
+
 </style>
 
 <router-outlet />

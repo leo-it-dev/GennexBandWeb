@@ -1,12 +1,15 @@
-import { AfterViewInit, Component, ElementRef, HostListener, OnInit, Renderer2, ViewChild, ViewChildren } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, OnInit, Renderer2, signal, ViewChild, ViewChildren, WritableSignal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { ParallaxScrollerSlotComponent } from './parallax-scroller-slot/parallax-scroller-slot.component';
 import { GalleryComponent } from './gallery/gallery.component';
 import { MP4FrameExtractionService } from './services/mp4frame/mp4-frame-extraction.service';
+import { ContactComponent } from './contact/contact.component';
+import { NewsletterComponent } from './newsletter/newsletter.component';
+import { SamplesSlotComponent } from './samples-slot/samples-slot.component';
+import { SectionHeaderComponent } from './section-header/section-header.component';
 
 @Component({
 	selector: 'app-root',
-	imports: [RouterOutlet, ParallaxScrollerSlotComponent, GalleryComponent],
+	imports: [RouterOutlet, GalleryComponent, ContactComponent, NewsletterComponent, SamplesSlotComponent, SectionHeaderComponent],
 	templateUrl: './app.component.html',
 	styleUrl: './app.component.scss'
 })
@@ -23,6 +26,18 @@ export class AppComponent implements OnInit, AfterViewInit {
 	@ViewChild('absLogoContainer')
 	private scrollTrigger: ElementRef | undefined = undefined;
 
+	contactInfo = [
+		"El1",
+		"El2",
+		"El3",
+		"El4",
+		"El5",
+		"El6",
+		"El7",
+		"El8",
+		"El9",
+		"El10",
+	];
 
 	frames: VideoFrame[] = [];
 
@@ -74,59 +89,56 @@ export class AppComponent implements OnInit, AfterViewInit {
 		});
 
 
+		// this.mp4Extract.extractFramesFromMp4Video("images/particles_hres.mp4").then(async (frames) => {
+		// 	let canvas = (this.canvas?.nativeElement as HTMLCanvasElement);
+		// 	canvas.width = frames[0].codedWidth;
+		// 	canvas.height = frames[0].codedHeight;
+
+		// 	this.frames = frames;
+
+		// 	console.log("Successfully extracted " + this.frames.length + " frames from video!");
+		// }).catch(error => {
+		// 	console.log(error);
+		// });
 
 
-		this.mp4Extract.extractFramesFromMp4Video("images/particles_hres.mp4").then(async (frames) => {
-			let canvas = (this.canvas?.nativeElement as HTMLCanvasElement);
-			canvas.width = frames[0].codedWidth;
-			canvas.height = frames[0].codedHeight;
-
-			this.frames = frames;
-
-			console.log("Successfully extracted " + this.frames.length + " frames from video!");
-		}).catch(error => {
-			console.log(error);
-		});
-
-
-		if (this.canvas) {
-			let canvas = (this.canvas.nativeElement as HTMLCanvasElement);
-			let videoContext = canvas.getContext('2d');
+		// if (this.canvas) {
+		// 	let canvas = (this.canvas.nativeElement as HTMLCanvasElement);
+		// 	let videoContext = canvas.getContext('2d');
 			
-			if (videoContext) {
-				videoContext.imageSmoothingEnabled = false;
-
-				let framePending = false;
-				document.addEventListener("scroll", e => {
-					e.preventDefault();
-					if (this.scrollTrigger !== undefined) {
-						let height = parseFloat(getComputedStyle(this.scrollTrigger.nativeElement).height);
-						let lastScrollPercent = (height - (parseFloat(this.scrollTrigger.nativeElement.getBoundingClientRect().y)) - height/2) / (height*1.5);
+		// 	if (videoContext) {
+		// 		videoContext.imageSmoothingEnabled = false;
+		// 		let framePending = false;
+		// 		document.addEventListener("scroll", e => {
+		// 			e.preventDefault();
+		// 			if (this.scrollTrigger !== undefined) {
+		// 				let height = parseFloat(getComputedStyle(this.scrollTrigger.nativeElement).height);
+		// 				let lastScrollPercent = (height - (parseFloat(this.scrollTrigger.nativeElement.getBoundingClientRect().y)) - height/2) / (height*1.5);
 						
-						if (!framePending) {
-							//framePending = true;
-							requestAnimationFrame(() => {
-								if (this.frames.length > 0) {
-									let frameIdx = Math.max(0, Math.min(this.frames.length - 1, Math.floor(this.frames.length * lastScrollPercent)));
-									let prevFrameIdx = frameIdx > 0 ? frameIdx - 1 : 0;
-									let percentPerFrame = 1.0 / this.frames.length;
-									let interp = (lastScrollPercent - (percentPerFrame * frameIdx)) / percentPerFrame;
+		// 				if (!framePending) {
+		// 					//framePending = true;
+		// 					requestAnimationFrame(() => {
+		// 						if (this.frames.length > 0) {
+		// 							let frameIdx = Math.max(0, Math.min(this.frames.length - 1, Math.floor(this.frames.length * lastScrollPercent)));
+		// 							let prevFrameIdx = frameIdx > 0 ? frameIdx - 1 : 0;
+		// 							let percentPerFrame = 1.0 / this.frames.length;
+		// 							let interp = (lastScrollPercent - (percentPerFrame * frameIdx)) / percentPerFrame;
 									
-									videoContext.globalAlpha = 1.0;
-									videoContext.drawImage(this.frames[prevFrameIdx], 0, 0, canvas.width, canvas.height);
-									videoContext.globalAlpha = interp;
-									videoContext.drawImage(this.frames[frameIdx], 0, 0, canvas.width, canvas.height);
-								}
-								//framePending = false;
-							});
-						}
-					};
-				});
-			} else {
-				throw Error("Error receiving 2d drawing context from canvas!");
-			}
-		} else {
-			console.log("can't find canvas!");
-		}
+		// 							videoContext.globalAlpha = 1.0;
+		// 							videoContext.drawImage(this.frames[prevFrameIdx], 0, 0, canvas.width, canvas.height);
+		// 							videoContext.globalAlpha = interp;
+		// 							videoContext.drawImage(this.frames[frameIdx], 0, 0, canvas.width, canvas.height);
+		// 						}
+		// 						//framePending = false;
+		// 					});
+		// 				}
+		// 			};
+		// 		});
+		// 	} else {
+		// 		throw Error("Error receiving 2d drawing context from canvas!");
+		// 	}
+		// } else {
+		// 	console.log("can't find canvas!");
+		// }
 	}
 }

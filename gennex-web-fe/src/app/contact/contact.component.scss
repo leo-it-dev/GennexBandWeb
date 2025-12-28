@@ -1,0 +1,46 @@
+#slot {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    width: 100%;
+}
+
+#name {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+}
+
+#name input {
+    width: 50% !important;
+}
+#name input:nth-child(1) {
+    margin-right: 4px !important;
+}
+#name input:nth-child(2) {
+    margin-left: 4px !important;
+}
+
+input[type=text],
+textarea,
+button {
+    padding: 15px;
+    background-color: white;
+    box-shadow: 0px 0px black;
+    font-size: 15pt;
+    border: none;
+    flex: 1;
+    border-radius: 4px;
+    color: black;
+    margin: 4px 20px;
+}
+
+textarea {
+    resize: vertical;
+}
+
+input[type=text]:focus,
+textarea:focus,
+button:focus {
+    outline: none !important;
+}

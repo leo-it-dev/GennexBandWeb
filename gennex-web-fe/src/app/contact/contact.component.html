@@ -1,0 +1,23 @@
+<app-slot [oneLineText]="this.oneLineText" imgUrl="/images/retro_microphone0001.png" title="Kontakt">
+    <form #slot id="slot" method="POST" target="/test">
+        <div id="name">
+            <input type="text" placeholder="Vorname" />
+            <input type="text" placeholder="Nachname" />
+        </div>
+
+        <input type="text" placeholder="E-Mail" />
+        <textarea placeholder="Deine Nachricht..." rows="6"></textarea>
+
+        <div class="h-captcha" data-sitekey="951c3b36-6e44-4c64-abce-866c48a27300"></div>
+        <!--
+        token = request.POST["h-captcha-response"]
+        params = {
+        "secret": "your_secret_key stored in bitwarden hCaptchaSecret",
+        "response": token
+        }
+        json = http.POST("https://hcaptcha.com/siteverify", params)
+        -->
+
+        <button type="submit">Nachricht abschicken</button>
+    </form>
+</app-slot>

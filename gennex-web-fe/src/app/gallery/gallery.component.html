@@ -1,1 +1,12 @@
-<img *ngFor="let i of this.images" [src]="i" />
+<app-section-header title="Galerie"></app-section-header>
+
+<div #wrapper id="wrapper" (window:resize)="onResize($event)">
+    <div #diamondImage class="diamondWrapper" *ngFor="let i of this.images">
+        <div class="diamond" (click)="openBigImage($event)"><img [src]="i"></div>
+    </div>
+</div>
+
+<div id="galleryBigImage" #bigImage>
+    <img #bigImageViewer src="" id="galleryBigImageViewer" (click)="closeBigImage($event)">
+    <h1 id="galeryBigImageClose" (click)="closeBigImage($event)">✕</h1>
+</div>

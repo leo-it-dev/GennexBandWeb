@@ -1,0 +1,7 @@
+{
+    "generic": {
+        "SERVE_DOMAIN": "subdomain.your-site.de",
+        "HTTP_PORT": 80,
+        "HTTPS_PORT": 443
+    }
+}

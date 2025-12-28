@@ -1,0 +1,3 @@
+src/config/development.json
+tls/**
+*.log

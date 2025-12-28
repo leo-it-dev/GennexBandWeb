@@ -1,0 +1,18 @@
+input[type=text],
+button {
+    padding: 15px;
+    background-color: white;
+    box-shadow: 0px 0px black;
+    font-size: 15pt;
+    margin: 2px 0px;
+    border: none;
+    flex: 1;
+    border-radius: 4px;
+    color: black;
+    margin: 4px 20px;
+}
+
+input[type=text]:focus,
+button:focus {
+    outline: none !important;
+}
