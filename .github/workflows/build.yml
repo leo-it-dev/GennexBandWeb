@@ -163,4 +163,4 @@ jobs:
       - name: Delete old container (if not already gone)
         run: docker rm gennex_web || true
       - name: Run image
-        run: script -q -c "docker run -d -it --name gennex_web --restart always -p 80:80 -p 443:443 -v ~/dynamic/ssl/:/app/package/backend/ssl/certs -v ~/dynamic/config:/app/package/backend/config ${{ secrets.DOCKER_REGISTRY_URL }}/gennex_web:${{ env.RELEASE_VERSION }}"
+        run: script -q -c "docker run -d -it --name gennex_web --restart always -p 80:80 -p 443:443 -v ~/dynamic/ssl/:/app/package/backend/ssl -v ~/dynamic/config:/app/package/backend/config ${{ secrets.DOCKER_REGISTRY_URL }}/gennex_web:${{ env.RELEASE_VERSION }}"
