@@ -2,10 +2,15 @@ const express = require('express')
 const fs = require('fs');
 const https = require('https')
 const path = require('path');
-const app = express()
+const compression = require('compression');
+const app = express();
+
 import { Request, Response } from 'express';
 import { getLogger } from './logger';
 import * as config from 'config';
+import { DeploymentType } from './deployment';
+import { exit } from 'process';
+
 
 let mainLogger = getLogger("index");
 var privateKey = fs.readFileSync('ssl/privkey.pem');
@@ -20,14 +25,47 @@ const projectRoot = path.resolve('./');
 process.chdir(projectRoot);
 __dirname = projectRoot;
 
+
+// The file structure slightly differs between deployment and development run.
+// We can use this information to determine whether or not we are run in development or deploy environment.
+const filePathFrontendDev = '../frontend/dist/gennex-web-fe/browser';
+const filePathFrontendDepl = '../frontend/gennex-web-fe/browser';
+let deploymentType: DeploymentType = DeploymentType.DEVELOPMENT;
+
+if (fs.existsSync(filePathFrontendDev)) {
+    deploymentType = DeploymentType.DEVELOPMENT;
+    mainLogger.info("File structure indicates deployment mode", {mode: "DEVELOPMENT"});
+    // initializeDevelopmentBuildEnvironment(projectRoot);
+} else if (fs.existsSync(filePathFrontendDepl)) {
+    deploymentType = DeploymentType.PRODUCTION;
+    mainLogger.info("File structure indicates deployment mode", {mode: "PRODUCTION"});
+} else {
+    mainLogger.error("File structure seems odd. Can't find frontend, won't start!");
+    exit(1);
+}
+const filePathFrontend = deploymentType == DeploymentType.PRODUCTION ? filePathFrontendDepl : filePathFrontendDev;
+
+// add compression middleware to speed up loading times.
+app.use(compression({ filter: shouldCompress }));
+
 // serve static files in frontend dist folder.
-app.use(express.static(path.join(__dirname, '../frontend/gennex-web-fe/browser')));
+app.use(express.static(path.join(__dirname, filePathFrontend)));
 
 // /{*splat}
 // for default requests (to /) serve index.html
 app.get("/", (req: Request, res: Response) => {
-	res.sendFile(path.join(__dirname, '../frontend/gennex-web-fe/browser/index.html'));
+    res.sendFile(path.join(__dirname, path.join(filePathFrontend, 'index.html')));
 });
+
+function shouldCompress(req, res) {
+    if (req.headers['x-no-compression']) {
+        // don't compress responses with this request header
+        return false
+    }
+
+    // fallback to standard filter function
+    return compression.filter(req, res);
+}
 
 // run server on port 80 for redirections.
 async function runSecureRedirectServer() {
@@ -46,8 +84,8 @@ async function runSecureRedirectServer() {
 
 // Startup secure SSL port 443 Server
 let serv = https.createServer({
-	key: privateKey,
-	cert: certificate
+    key: privateKey,
+    cert: certificate
 }, app);
 
 runSecureRedirectServer()
