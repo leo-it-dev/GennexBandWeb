@@ -37,9 +37,9 @@
 				"fileLocation": "relative"
 			},
 			"options": {
-				"cwd": "/home/dev/GennexBandWeb/gennex-web-fe"
+				"cwd": "/home/dev/GennexBandWeb/frontend"
 			},
-			"path": "gennex-web-fe/",
+			"path": "frontend/",
 		},
 		{
 			"label": "angular: watch - frontend (prod)",
@@ -62,9 +62,9 @@
 				"fileLocation": "relative"
 			},
 			"options": {
-				"cwd": "/home/dev/GennexBandWeb/gennex-web-fe"
+				"cwd": "/home/dev/GennexBandWeb/frontend"
 			},
-			"path": "gennex-web-fe/",
+			"path": "frontend/",
 		}
 	]
 }
