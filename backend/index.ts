@@ -21,12 +21,12 @@ process.chdir(projectRoot);
 __dirname = projectRoot;
 
 // serve static files in frontend dist folder.
-app.use(express.static(path.join(__dirname, '../gennex-web-fe/dist/gennex-web-fe/browser')));
+app.use(express.static(path.join(__dirname, '../frontend/gennex-web-fe/browser')));
 
 // /{*splat}
 // for default requests (to /) serve index.html
 app.get("/", (req: Request, res: Response) => {
-	res.sendFile(path.join(__dirname, '../gennex-web-fe/dist/gennex-web-fe/browser/index.html'));
+	res.sendFile(path.join(__dirname, '../frontend/gennex-web-fe/browser/index.html'));
 });
 
 // run server on port 80 for redirections.
