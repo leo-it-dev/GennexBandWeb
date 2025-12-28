@@ -1,24 +1,23 @@
-FROM johnpapa/angular-cli as client-app
-LABEL authors="John Papa"
-WORKDIR /usr/src/app
-COPY ["package.json", "npm-shrinkwrap.json*", "./"]
-RUN npm install --silent
-COPY . .
-RUN ng build --prod
+FROM debian:latest
+WORKDIR /app
+VOLUME /app/package/backend/ssl
+VOLUME /app/package/backend/config
 
-# Node server
-FROM node:12-alpine as node-server
-WORKDIR /usr/src/app
-COPY ["package.json", "npm-shrinkwrap.json*", "./"]
-RUN npm install --production --silent && mv node_modules ../
-COPY server.js .
-COPY /server /usr/src/app/server
+COPY . /app/package
 
-# Final image
-FROM node:12-alpine
-WORKDIR /usr/src/app
-COPY --from=node-server /usr/src /usr/src
-COPY --from=client-app /usr/src/app/dist ./
-EXPOSE 3000
-# CMD ["node", "server.js"]
-CMD ["npm", "start"]
+RUN apt-get update && apt-get install -y unzip nodejs
+
+# Fix timezone
+RUN rm /etc/localtime && ln -s /usr/share/zoneinfo/Europe/Berlin /etc/localtime
+
+RUN echo "export NODE_ENV=deployment" >> ~/.bashrc # Set node configuration to use
+RUN echo "export NODE_CONFIG_DIR=/app/package/backend/config" >> ~/.bashrc # Set node configuration to use
+ENV NODE_ENV=deployment
+ENV NODE_CONFIG_DIR=/app/package/backend/config
+
+# Sleep is neccessary in order to have the VOLUME's bound correctly before starting our script.
+CMD ["sh", "-c", "cd /app/package/backend && sleep 1 && node index.js"]
+
+#-------run:
+#cwd: home/runner/runner/_work/praxis_internal/praxis_internal/package:
+#docker run --rm -it --volume .:/app -w /app/backend -e "NODE_ENV=deployment" node index.js

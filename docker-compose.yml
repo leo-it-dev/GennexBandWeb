@@ -7,5 +7,5 @@ services:
     - "89.58.20.94:80:80"
     - "89.58.20.94:443:443"
     volumes:
-      - ./tls:/usr/app/tls
+      - ./ssl:/usr/app/ssl
       - ./frontend/dist/app/:usr/app/frontend

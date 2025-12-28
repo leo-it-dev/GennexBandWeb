@@ -8,8 +8,8 @@ import { getLogger } from './logger';
 import * as config from 'config';
 
 let mainLogger = getLogger("index");
-var privateKey = fs.readFileSync('tls/privkey.pem');
-var certificate = fs.readFileSync('tls/gennex_band_bundle.crt');
+var privateKey = fs.readFileSync('ssl/privkey.pem');
+var certificate = fs.readFileSync('ssl/gennex_band_bundle.crt');
 
 const httpPort = config.get('generic.HTTP_PORT');
 const httpsPort = config.get('generic.HTTPS_PORT');
