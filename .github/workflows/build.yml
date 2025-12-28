@@ -147,7 +147,7 @@ jobs:
           tags: ${{ secrets.DOCKER_REGISTRY_URL }}/gennex_web:${{ env.RELEASE_VERSION }}
 
   deploy:
-    runs-on: deploy
+    runs-on: prod
     needs: [build-docker]
     steps:
       - name: Set env
