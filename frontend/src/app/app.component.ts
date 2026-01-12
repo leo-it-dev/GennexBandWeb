@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, HostListener, OnInit, Renderer2, signal, ViewChild, ViewChildren, WritableSignal } from '@angular/core';
+import { AfterViewInit, Component, computed, ElementRef, HostListener, OnInit, QueryList, Renderer2, Signal, signal, ViewChild, ViewChildren, WritableSignal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { GalleryComponent } from './gallery/gallery.component';
 import { MP4FrameExtractionService } from './services/mp4frame/mp4-frame-extraction.service';
@@ -6,14 +6,15 @@ import { ContactComponent } from './contact/contact.component';
 import { NewsletterComponent } from './newsletter/newsletter.component';
 import { SamplesSlotComponent } from './samples-slot/samples-slot.component';
 import { SectionHeaderComponent } from './section-header/section-header.component';
+import { DynamicBackgroundImageComponent } from './dynamic-background-image/dynamic-background-image.component';
 
 @Component({
 	selector: 'app-root',
-	imports: [RouterOutlet, GalleryComponent, ContactComponent, NewsletterComponent, SamplesSlotComponent, SectionHeaderComponent],
+	imports: [RouterOutlet, GalleryComponent, ContactComponent, NewsletterComponent, SamplesSlotComponent, SectionHeaderComponent, DynamicBackgroundImageComponent],
 	templateUrl: './app.component.html',
 	styleUrl: './app.component.scss'
 })
-export class AppComponent implements OnInit, AfterViewInit {
+export class AppComponent implements AfterViewInit {
 	title = 'gennex-web-fe';
 
 	constructor(private renderer: Renderer2,
@@ -44,8 +45,9 @@ export class AppComponent implements OnInit, AfterViewInit {
 	@ViewChildren('fadeScrollItemContainer')
 	private fadeScrollItemContainers: ElementRef[] | undefined = undefined;
 
-	ngOnInit(): void {
-	}
+	@ViewChildren('backgroundTrigger')
+	private backgroundTriggerList!: QueryList<ElementRef>;
+	public backgroundTriggers: WritableSignal<ElementRef<HTMLElement>[]> = signal([]);
 
 	@HostListener('window:resize')
 	onResize() {
@@ -70,8 +72,12 @@ export class AppComponent implements OnInit, AfterViewInit {
 	}
 
 	ngAfterViewInit(): void {
-
 		this.onResize();
+
+		this.backgroundTriggers.set(this.backgroundTriggerList.toArray());
+		this.backgroundTriggerList.changes.subscribe(list => {
+			this.backgroundTriggers.set(list.toArray());
+		})
 
 		document.addEventListener("scroll", e => {
 			e.preventDefault();

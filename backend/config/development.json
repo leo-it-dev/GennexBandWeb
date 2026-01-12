@@ -2,6 +2,7 @@
     "generic": {
         "SERVE_DOMAIN": "gennex.band",
         "HTTP_PORT": 8080,
-        "HTTPS_PORT": 4430
+        "HTTPS_PORT": 4430,
+        "HCAPTCHA_SITEKEY": "951c3b36-6e44-4c64-abce-866c48a27300"
     }
 }

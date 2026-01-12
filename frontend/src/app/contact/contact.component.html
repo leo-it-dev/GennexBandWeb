@@ -1,14 +1,15 @@
 <app-slot [oneLineText]="this.oneLineText" imgUrl="/images/retro_microphone0001.png" title="Kontakt">
-    <form #slot id="slot" method="POST" target="/test">
+    <form #slot id="slot" method="POST" action="/contact">
         <div id="name">
-            <input type="text" placeholder="Vorname" />
-            <input type="text" placeholder="Nachname" />
+            <input name="firstname" type="text" placeholder="Vorname" />
+            <input name="surname" type="text" placeholder="Nachname" />
         </div>
 
-        <input type="text" placeholder="E-Mail" />
-        <textarea placeholder="Deine Nachricht..." rows="6"></textarea>
+        <input name="email" type="text" placeholder="E-Mail" />
+        <textarea name="message" placeholder="Deine Nachricht..." rows="6"></textarea>
 
-        <div class="h-captcha" data-sitekey="951c3b36-6e44-4c64-abce-866c48a27300"></div>
+        <!-- <div class="h-captcha" data-sitekey="951c3b36-6e44-4c64-abce-866c48a27300"></div> -->
+        <app-hcaptcha></app-hcaptcha>
         <!--
         token = request.POST["h-captcha-response"]
         params = {

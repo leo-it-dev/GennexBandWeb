@@ -57,6 +57,18 @@ app.get("/", (req: Request, res: Response) => {
     res.sendFile(path.join(__dirname, path.join(filePathFrontend, 'index.html')));
 });
 
+app.post("/contact", (req: Request, res: Response) => {
+    res.status(200);
+    res.send(req.body);
+});
+
+app.get("/config", (req: Request, res: Response) => {
+    res.status(200);
+    res.json({
+        hcaptcha_key: config.get("generic.HCAPTCHA_SITEKEY")
+    });
+});
+
 function shouldCompress(req, res) {
     if (req.headers['x-no-compression']) {
         // don't compress responses with this request header

@@ -1,9 +1,10 @@
 import { Component, computed, ElementRef, ViewChild } from '@angular/core';
 import { SlotComponent, SlotScrollCommunication } from '../slot/slot.component';
+import { HcaptchaComponent } from '../hcaptcha/hcaptcha.component';
 
 @Component({
 	selector: 'app-contact',
-	imports: [SlotComponent],
+	imports: [SlotComponent, HcaptchaComponent],
 	templateUrl: './contact.component.html',
 	styleUrl: './contact.component.scss'
 })
