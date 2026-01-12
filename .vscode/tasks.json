@@ -11,10 +11,7 @@
 			"group": {
 				"kind": "build",
 			},
-			"label": "tsc: watch - backend",
-			"options": {
-				"cwd": "/home/dev/GennexBandWeb/backend"
-			}
+			"label": "tsc: watch - backend"
 		},
 		{
 			"label": "angular: watch - frontend (debug)",
