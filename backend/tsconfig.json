@@ -5,5 +5,5 @@
         "outDir": "js",
         "rootDir": "../",
     },
-    "include": ["../api_common"]
+    "include": ["../api_common", "../backend"]
 }
