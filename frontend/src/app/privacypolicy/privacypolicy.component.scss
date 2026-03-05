@@ -1,0 +1,14 @@
+:host {
+    position: relative;
+}
+
+.section {
+    position: sticky;
+    top: 0;
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(50px);
+    padding: 10px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    text-wrap: nowrap;
+}

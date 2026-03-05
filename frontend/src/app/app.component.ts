@@ -7,10 +7,15 @@ import { NewsletterComponent } from './newsletter/newsletter.component';
 import { SamplesSlotComponent } from './samples-slot/samples-slot.component';
 import { SectionHeaderComponent } from './section-header/section-header.component';
 import { DynamicBackgroundImageComponent } from './dynamic-background-image/dynamic-background-image.component';
+import { LoadingoverlayService } from './services/loadingoverlay.service';
+import { LoadingoverlayComponent } from './loadingoverlay/loadingoverlay.component';
+import { PrivacypolicyComponent } from './privacypolicy/privacypolicy.component';
+import { SlotComponent } from './slot/slot.component';
+import { ImpressumComponent } from './impressum/impressum.component';
 
 @Component({
 	selector: 'app-root',
-	imports: [RouterOutlet, GalleryComponent, ContactComponent, NewsletterComponent, SamplesSlotComponent, SectionHeaderComponent, DynamicBackgroundImageComponent],
+	imports: [RouterOutlet, LoadingoverlayComponent, GalleryComponent, ContactComponent, SamplesSlotComponent, SectionHeaderComponent, DynamicBackgroundImageComponent, PrivacypolicyComponent, ImpressumComponent, SlotComponent],
 	templateUrl: './app.component.html',
 	styleUrl: './app.component.scss'
 })
@@ -18,7 +23,8 @@ export class AppComponent implements AfterViewInit {
 	title = 'gennex-web-fe';
 
 	constructor(private renderer: Renderer2,
-		private mp4Extract: MP4FrameExtractionService
+		private mp4Extract: MP4FrameExtractionService,
+		public loadingOverlay: LoadingoverlayService
 	) { }
 
 	@ViewChild('canv')
@@ -48,6 +54,9 @@ export class AppComponent implements AfterViewInit {
 	@ViewChildren('backgroundTrigger')
 	private backgroundTriggerList!: QueryList<ElementRef>;
 	public backgroundTriggers: WritableSignal<ElementRef<HTMLElement>[]> = signal([]);
+
+	doShowPrivacyPolicy: boolean = false;
+	doShowImpressum: boolean = false;
 
 	@HostListener('window:resize')
 	onResize() {
@@ -93,7 +102,6 @@ export class AppComponent implements AfterViewInit {
 				}
 			}
 		});
-
 
 		// this.mp4Extract.extractFramesFromMp4Video("images/particles_hres.mp4").then(async (frames) => {
 		// 	let canvas = (this.canvas?.nativeElement as HTMLCanvasElement);
@@ -146,5 +154,9 @@ export class AppComponent implements AfterViewInit {
 		// } else {
 		// 	console.log("can't find canvas!");
 		// }
+	}
+
+	showImpressum() {
+
 	}
 }

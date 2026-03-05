@@ -1,0 +1,12 @@
+<div class="overlayContainer">
+  <video #video autoplay [loop]="this.videoShouldRepeat()">
+    <source [src]="this.videoURL()" type="video/webm" />
+  </video>
+  @for (msg of this.message(); track msg) {
+    <div>{{msg}}</div>
+  }
+  @if (this.hasInputText()) {
+    <input #textIn type="text" [placeholder]="this.inputPlaceholder()" (input)="this.inputTextChanges($event)" [maxLength]="this.maxInputLength()" [class.erronousinput]="this.inputMarkedErronous()" />
+  }
+  <h1 id="close" (click)="this.close()">╳</h1>
+</div>

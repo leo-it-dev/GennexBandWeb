@@ -1,17 +1,15 @@
-import { NgFor } from '@angular/common';
-import { AfterViewInit, Component, ElementRef, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { AfterViewInit, Component, computed, ElementRef, QueryList, Signal, signal, ViewChild, ViewChildren, WritableSignal } from '@angular/core';
 import { SectionHeaderComponent } from '../section-header/section-header.component';
+import { SlotComponent } from '../slot/slot.component';
+import { DiamondImageMapComponent } from '../diamond-image-map/diamond-image-map.component';
 
 @Component({
 	selector: 'app-gallery',
-	imports: [NgFor, SectionHeaderComponent],
+	imports: [SectionHeaderComponent, SlotComponent, DiamondImageMapComponent],
 	templateUrl: './gallery.component.html',
 	styleUrl: './gallery.component.scss'
 })
 export class GalleryComponent implements AfterViewInit {
-
-	@ViewChildren('diamondImage')
-	items?: QueryList<ElementRef>;
 
 	@ViewChild('wrapper')
 	wrapper?: ElementRef;
@@ -22,25 +20,15 @@ export class GalleryComponent implements AfterViewInit {
 	@ViewChild('bigImage')
 	bigImage?: ElementRef;
 
-	public images = [
-		"/images/bandpic/20250802_202012.jpg",
-		"/images/bandpic/20250802_210514.jpg",
-		"/images/bandpic/20250802_210703.jpg",
-		"/images/bandpic/20250802_212721.jpg",
-		"/images/bandpic/20250802_213126.jpg",
-		"/images/bandpic/20250802_220226.jpg",
-		"/images/bandpic/20250802_220619.jpg",
-		"/images/bandpic/20250802_221607.jpg",
-		"/images/bandpic/20250802_221645.jpg",
-		"/images/bandpic/20250802_221646.jpg",
-		"/images/bandpic/20250802_221730.jpg",
-		"/images/bandpic/20250802_221853.jpg",
-		"/images/bandpic/20250802_221910.jpg",
-		"/images/bandpic/20250802_221918.jpg",
-		"/images/bandpic/20250802_222944.jpg",
-		"/images/bandpic/wa1.jpg",
-		"/images/bandpic/wa2.jpg",
-	];
+	public images: WritableSignal<{[key:string]: string}> = signal({});
+	public thumbnailImageURLs: Signal<string[]> = computed(() => Object.keys(this.images()).map(name => this.thumbnailURLPath + "/" + name));
+
+	public thumbnailURLPath = "";
+	public bigURLPath = "";
+	public showBigGallery = false;
+
+	constructor(public elRef: ElementRef) {
+	}
 
 	setClass(obj: HTMLElement, className: string, set: boolean) {
 		if (set && !obj.classList.contains(className)) {
@@ -51,56 +39,47 @@ export class GalleryComponent implements AfterViewInit {
 		}
 	}
 
-	updateDiamonds() {
-		let wrapper = (this.wrapper?.nativeElement as HTMLElement);
-
-		if (this.items && this.items.get(0)) {
-			let diamondSize = parseInt(window.getComputedStyle((this.wrapper?.nativeElement as HTMLElement)).getPropertyValue("--size"));
-			let diamondWidth = diamondSize * 1.414 + 1; // +1 fixes browser rounding problems
-			let containerWidth = (this.wrapper?.nativeElement as HTMLElement).getBoundingClientRect().width;
-			let rowWidth = 0;
-			let rowIdx = 0;
-			let firstOfRow = false;
-			let maxRowWidth = 0;
-			let screenTooSmallForInset = (diamondWidth * 1.5) > containerWidth;
-
-			for (let _item of this.items) {
-				let item = (_item.nativeElement as HTMLElement);
-				let isOddRow = rowIdx % 2 == 1;
-				let oddRowInset = (isOddRow && !screenTooSmallForInset) ? diamondWidth/2 : 0;
-				rowWidth += diamondWidth;
-				this.setClass(item, "noInsetScreenToSmall", screenTooSmallForInset);
-				this.setClass(item, "firstOfRow", firstOfRow && !screenTooSmallForInset);
-				this.setClass(item, "oddRow", isOddRow);
-				firstOfRow = false;
-
-				if ((rowWidth + diamondWidth + oddRowInset > containerWidth)) {
-					// new row
-					firstOfRow = true;
-					maxRowWidth = Math.max(maxRowWidth, rowWidth + oddRowInset);
-					rowWidth = 0;
-					rowIdx++;
-				}
-			}
-
-			let pad = Math.round((containerWidth - maxRowWidth)/2 * 10) / 10.0;
-			wrapper.style.paddingLeft = pad + "px"; // center our galery in the parent component
-			wrapper.style.paddingRight = pad + "px"; // center our galery in the parent component
-		}
-	}
-
 	ngAfterViewInit(): void {
-		this.updateDiamonds();
+
+		fetch(document.location.origin + "/gallery", {
+			method: "GET",
+			headers: {
+				'Accept': 'application/json'
+			}
+		}).then(async resp => resp.json()).then(galleryList => {
+			let files: string[] = galleryList["files"];
+			let thumbnails = galleryList["thumbnails"];
+			let big = galleryList["big"];
+			let thumbnailFormat = galleryList["thumbnailFormat"];
+			this.thumbnailURLPath = thumbnails;
+			this.bigURLPath = big;
+
+			let imageMap: {[key:string]:string} = {};
+
+			files.map(file => {
+				let basename = file;
+				let sepIdx = basename.lastIndexOf(".");
+				let stem = basename.substring(0, sepIdx);
+
+				let thumbnailURL = stem + "." + thumbnailFormat;
+				let bigURL = basename;
+
+				imageMap[thumbnailURL] = bigURL;
+			});
+
+			this.images.set(imageMap);
+		});
 	}
 
-	onResize(evt: Event) {
-		this.updateDiamonds();
-	}
-
-	openBigImage(evt: Event) {
-		if (this.bigImageViewer && this.bigImage && evt.target instanceof HTMLImageElement) {
-			(this.bigImageViewer.nativeElement as HTMLImageElement).src = (evt.target as HTMLImageElement).src;
-			(this.bigImage.nativeElement as HTMLElement).classList.add("showBigImage");
+	openBigImage(url: string) {
+		if (this.bigImageViewer && this.bigImage) {
+			let thumbBaseName = new URL("https://" + location.host + url).pathname.split("/").pop();
+			let bigFileName = this.images()[thumbBaseName ?? ""];
+			(this.bigImageViewer.nativeElement as HTMLImageElement).src = "";
+			setTimeout(() => {
+				(this.bigImageViewer?.nativeElement as HTMLImageElement).src = this.bigURLPath + "/" + bigFileName;
+				(this.bigImage?.nativeElement as HTMLElement).classList.add("showBigImage");
+			}, 10);
 		}
 	}
 
@@ -108,5 +87,9 @@ export class GalleryComponent implements AfterViewInit {
 		if (this.bigImage) {
 			(this.bigImage.nativeElement as HTMLElement).classList.remove("showBigImage");
 		}
+	}
+
+	openBigGallery() {
+		this.showBigGallery = true;
 	}
 }

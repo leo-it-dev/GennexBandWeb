@@ -1,10 +1,19 @@
-<app-section-header title="Galerie"></app-section-header>
-
-<div #wrapper id="wrapper" (window:resize)="onResize($event)">
-    <div #diamondImage class="diamondWrapper" *ngFor="let i of this.images">
-        <div class="diamond" (click)="openBigImage($event)"><img [src]="i"></div>
-    </div>
+<div id="mask">
+    <app-diamond-image-map [images]="this.thumbnailImageURLs" [slideshow]="true" (imageClicked)="openBigImage($event)" [parentContainer]="this.elRef" [heightCrop]="true"></app-diamond-image-map>
 </div>
+<button class="action" (click)="openBigGallery()">Zeig mir mehr →</button>
+
+<div id="background-border">
+    <app-section-header title="Galerie"></app-section-header>
+</div>
+
+@if(this.showBigGallery) {
+<div class="overlay">
+    <app-slot title="Galerie" [defaultScroll]="true" [hasCloseButton]="true" (closeEvent)="this.showBigGallery=false" [contentNoPadding]="true">
+        <app-diamond-image-map [images]="this.thumbnailImageURLs" [slideshow]="false" (imageClicked)="openBigImage($event)" [parentContainer]="this.elRef" [heightCrop]="false"></app-diamond-image-map>
+    </app-slot>
+</div>
+}
 
 <div id="galleryBigImage" #bigImage>
     <img #bigImageViewer src="" id="galleryBigImageViewer" (click)="closeBigImage($event)">

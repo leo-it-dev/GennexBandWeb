@@ -10,11 +10,21 @@
 		<h1 id="bandname">GENNEX</h1>
 		<nav id="bannerNav">
 			<ul>
-				<a href="#about-us"><li>About us</li></a>
-				<a href="#samples"><li>Samples</li></a>
-				<a href="#gallery"><li>Gallery</li></a>
-				<a href="#newsletter"><li>Events</li></a>
-				<a href="#contact"><li>Contact</li></a>
+				<a href="#about-us">
+					<li>About us</li>
+				</a>
+				<a href="#samples">
+					<li>Samples</li>
+				</a>
+				<a href="#gallery">
+					<li>Gallery</li>
+				</a>
+				<a href="#newsletter">
+					<li>Events</li>
+				</a>
+				<a href="#contact">
+					<li>Contact</li>
+				</a>
 			</ul>
 		</nav>
 	</div>
@@ -22,26 +32,31 @@
 	<div #backgroundTrigger class="background-trigger" img="/images/bandpic/20250802_221853.jpg"></div>
 	<div id="about-us" class="fade-scroll-items-container" #fadeScrollItemContainer>
 		<div id="about-us-content">
+			<app-section-header class="fade-scroll-item" title="Über uns"></app-section-header>
 			<img id="about-us-logo" src="/images/logo0014.png" />
 			<div id="about-us-text">
-				<app-section-header class="fade-scroll-item" title="Über uns"></app-section-header>
 
 				<p class="fade-scroll-item"> </p>
 				<p class="fade-scroll-item-spacer"></p>
 				<p class="fade-scroll-item">
-					Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. 
+					Wir sind GENNEX, eine junge Partyband aus der Region Mühldorf - 
+					laut gestartet als Schülerband und heute fester Bestandteil der lokalen Musikszene.
 				</p>
 				<p class="fade-scroll-item-spacer"></p>
 				<p class="fade-scroll-item">
-					At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+					Seit sechs Jahren liefern wir, was zählt: maximale Stimmung, volle Bühnenenergie und ein Programm,
+					das keine Wünsche offenlässt. Von Punkrock über aktuelle Hits bis zu Partyklassikern - wir bringen
+					den Soundtrack für unvergessliche Abende.
 				</p>
 				<p class="fade-scroll-item-spacer"></p>
 				<p class="fade-scroll-item">
-					Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.
+					Ob Geburtstag, Stadtfest oder große Bühne - wir spielen nicht einfach Songs. Wir liefern Abriss mit
+					Leidenschaft.
 				</p>
 				<p class="fade-scroll-item-spacer"></p>
 				<p class="fade-scroll-item">
-					Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+					Du willst feiern?
+					Dann hör rein, check unsere Bilder und lass uns deine Bühne zum Beben bringen.
 				</p>
 				<p class="fade-scroll-item-spacer"></p>
 				<p class="fade-scroll-item"> </p>
@@ -86,349 +101,49 @@
 		<div class="spacer"></div>
 
 	</div>!-->
-	
-	<div class="spacer"></div>
+
+	<!-- <div class="spacer"></div> -->
 
 	<div #backgroundTrigger class="background-trigger" img="/images/crowd.jpeg"></div>
 
-	<app-newsletter id="newsletter"></app-newsletter>
+	<!-- <app-newsletter id="newsletter"></app-newsletter> -->
 	<div class="spacer"></div>
 	<app-contact id="contact"></app-contact>
-	<div class="spacer"></div>
+	<div class="halfSpacer"></div>
 
 </div>
 
+@if (this.loadingOverlay.loadingOverlayVisible()) {
+<app-loadingoverlay [videoURL]="this.loadingOverlay.getVideoURL()" [message]="this.loadingOverlay.getMessage()"
+	[hasInputText]="this.loadingOverlay.hasInputText" [inputPlaceholder]="this.loadingOverlay.inputPlaceholder"
+	[maxInputLength]="this.loadingOverlay.inputMaxLength"
+	(inputTextChange)="this.loadingOverlay.inputTextChange($event)"
+	[inputMarkedErronous]="this.loadingOverlay.inputInvalid"
+	[videoShouldRepeat]="this.loadingOverlay.videoShouldRepeat"></app-loadingoverlay>
+}
 
-<style>
-	@font-face {
-		font-family: 'agencyfb-bold';
-		src: url(/fonts/AGENCYB.TTF);
-	}
-	@font-face {
-		font-family: 'agencyfb-reg';
-		src: url(/fonts/AGENCYB.TTF);
-	}
+<footer>
+	<ul>
+		<li (click)="this.doShowImpressum=true">Impressum</li>
+		<li (click)="this.doShowPrivacyPolicy=true">Datenschutzerklärung</li>
+	</ul>
+</footer>
 
-	* {
-		--primary1: #4538FF77;
-		--primary2: #FF383877;
-		font-family: agencyfb-reg;
-	}
-
-	:host {
-		height: 100%;
-		position: relative;
-	
-		--bandname-letter-space: 30px;
-	}
-
-	#bandname {
-		letter-spacing: var(--bandname-letter-space);
-		text-indent: var(--bandname-letter-space);
-		font-size: 100pt;
-		font-family: agencyfb-bold;
-		filter: drop-shadow(10px 10px 5px #000);
-		margin: 20px 0px;
-		/* margin-right: calc(0px - var(--bandname-letter-space)); */
-		left: 100px;
-		position: relative;
-		width: min-content;
-	}
-
-	#bannerImage {
-		position: sticky;
-		top: 0;
-	}
-
-	#bannerText {
-		position: absolute;
-		transform: translate(0%, -50%);
-		font-family: agencyfb-reg;
-		color: #eed;
-		top: 50dvh;
-		width: 100%;
-	}
-
-	#bannerNav {
-		position: relative;
-	}
-
-	#bannerNav:after {
-		content: '';
-		position: absolute;
-		top: 0;
-		left: 0;
-		width: 100vw;
-		height: 100%;
-		border-top: 2px solid #eed;
-		border-bottom: 2px solid #eed;
-	}
-
-	#bannerNav > ul {
-		list-style: none;
-		display: flex;
-		flex-direction: row;
-		margin: 0;
-		padding: 0;
-		width: min-content;
-		left: 100px;
-		position: relative;
-		flex-wrap: wrap;
-	}
-	
-	#bannerNav > ul > a {
-		color: inherit;
-		text-decoration: none;
-		margin: 0px 10px;
-		font-size: 20pt;
-		filter: drop-shadow(4px 4px 1px #000);
-		cursor: pointer;
-		z-index: 100;
-		white-space: nowrap;
-	}
-
-	#scratchBack {
-		/* background-image: url(/images/scratch.png); */
-		/* background-repeat: repeat; */
-		/* background-size: 1000px 1000px; */
-		/* background-position: center; */
-		/* filter: contrast(.5) brightness(1.6); */
-		background: radial-gradient(#700 00%, black 70%);
-		position: fixed;
-		z-index: -1;
-		width: 100vw;
-		height: 100dvh;
-	}
-
-	.spacer {
-		width: 100%;
-		height: 50dvh;
-		min-height: 50dvh;
-	}
-
-	#page1 {
-		display: flex;
-		flex-direction: column;
-		position: relative;
-	}
-
-	img {
-		width: 100%;
-		height: 100%;
-	}
-
-	.overlayGradient {
-		background: linear-gradient(to bottom, transparent, black, transparent);
-		transform: translateY(-50%);
-		width: 100%;
-		height: 400px;
-		position: absolute;
-		z-index: 10;
-	}
-
-	app-gallery {
-		z-index: 100;
-	}
-
-	#room {
-		position: relative;
-	}
-
-	/*#imgRoom {
-		height: auto;
-		width: 100%;
-	}
-
-	#imgLogo {
-		height: auto;
-		width: 40%;
-		position: absolute;
-		top: 50%;
-		left: 50%;
-		transform: translate(-50%, -50%);
-	}*/
-
-	/* -------------------------------------- */
-	#logoAnim {
-		height: 600dvh;
-	}
-
-	#back {
-		z-index: 0;
-		position: sticky;
-		top: 0;
-		left: 0;
-		right: 0;
-		height: 400dvh;
-	}
-
-	#backAnim {
-		position: sticky;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100dvh;
-		background-color: var(--background);
-		background-image: url(/images/logo_room0014.png);
-		background-position: center;
-		background-size: cover;
-		background-repeat: no-repeat;
-		filter: brightness(0.4);
-	}
-
-	video {
-		width: 100%;
-		height: 100%;
-		max-width: 100%;
-		max-height: 100%;
-		object-fit: cover;
-		position: relative;
-	}
-
-	#logo {
-		position: absolute;
-		width: 40%;
-		top: 50%;
-		left: 50%;
-		transform: translate(-50%, -50%);
-	}
-
-	#logoContainer {
-		height: 100dvh;
-		position: sticky;
-		top: 0;
-	}
-
-	#absLogoContainer {
-		position: absolute;
-		top: 0;
-		width: 100%;
-		height: 400dvh;
-	}
-	#absContactContainer {
-		position: absolute;
-		top: 400dvh;
-		width: 100%;
-		height: 100dvh;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		color: white;
-	}
-
-	/* -------------------------------------- */
-
-	#listNextEvents {
-		list-style: none;
-		margin: 0;
-		padding: 0;
-	}
-
-	canvas {
-		width: 100%;
-		height: 100%;
-	}
-
-	app-contact-form {
-		width: 80%;
-		margin: 50px;
-	}
-
-	#about-us-content {
-		position: relative;
-	}
-
-	#about-us {
-		z-index: 100;	
-	}
-
-	#about-us-logo {
-		padding: 3%;
-		min-width: 35%;
-		max-width: 35%;
-		box-sizing: border-box;
-		height: auto;
-		position: sticky;
-		top: 50%;
-		margin-left: 5%;
-		transform: translateY(-50%);
-		float: left;
-	}
-
-	#about-us-text {
-		min-width: 40%;
-		max-width: 40%;
-		padding-top: 20px;
-		font-size: min(18pt, 5vw);
-		padding-left: 50px;
-		padding-right: 50px;
-		border-left: 1px solid transparent;
-		border-image: linear-gradient(to bottom, transparent 0%, white 20%, white 97%, transparent 100%) 1;
-		background: linear-gradient(to bottom, transparent 0%, #0008 20%, #0008 97%, transparent 100%);
-		border-image-slice: 1;
-		font-weight: bold;
-		margin-left: auto;
-		margin-right: 10%;
-		box-sizing: border-box;
-	}
-
-	p.fade-scroll-item {
-		color: white;
-	}
-	.fade-scroll-item {
-		top: 0px;
-		position: sticky;
-		padding-bottom: 20px;
-		margin: 0;
-	}
-	.fade-scroll-item-spacer {
-		height: 800px;
-		margin: 0;
-	}
-
-	@media screen and (max-width: 700px) {
-		#bandname {
-			font-size: 10vw;
-			text-align: center;
-			left: 50%;
-			transform: translateX(-50%);
-		}
-		
-		#bannerNav > ul {
-			left: 0;
-			width: 100%;
-		}
-
-		#bannerNav > ul > li {
-			width: 100%;
-			margin: 10px;
-			text-align: center;
-		}
-
-		#about-us-text {
-			min-width: 100%;
-			max-width: 100%;
-			border: none;
-
-		}
-
-		#about-us-logo {
-			position: fixed;
-			top: 0;
-			left: 50%;
-			margin: 0 !important;
-			padding: 10px !important;
-			height: 100px !important;
-			width: auto !important;
-			max-width: unset !important;
-			min-width: unset !important;
-			transform: translateX(-50%);
-			float: none;
-		}
-	}
-
-
-</style>
+@if(this.doShowPrivacyPolicy) {
+<div class="overlay">
+	<app-slot title="Datenschutzerklärung" [defaultScroll]="true" [hasCloseButton]="true"
+		(closeEvent)="this.doShowPrivacyPolicy=false">
+		<app-privacypolicy></app-privacypolicy>
+	</app-slot>
+</div>
+}
+@if(this.doShowImpressum) {
+<div class="overlay">
+	<app-slot title="Impressum" [defaultScroll]="true" [hasCloseButton]="true"
+		(closeEvent)="this.doShowImpressum=false">
+		<app-impressum></app-impressum>
+	</app-slot>
+</div>
+}
 
 <router-outlet />

@@ -1,23 +1,14 @@
-<app-slot [oneLineText]="this.oneLineText" imgUrl="/images/retro_microphone0001.png" title="Kontakt">
-    <form #slot id="slot" method="POST" action="/contact">
+<app-slot [oneLineText]="this.oneLineText" imgUrl="/images/retro_microphone0001.png" [defaultScroll]="true" title="Kontakt">
+    <form #slot id="slot" [formGroup]="contactFormGroup" [class.valid]="contactFormGroup.valid" (submit)="submitForm()">
         <div id="name">
-            <input name="firstname" type="text" placeholder="Vorname" />
-            <input name="surname" type="text" placeholder="Nachname" />
+            <input name="firstname" type="text" placeholder="Vorname" formControlName="firstName" />
+            <input name="surname" type="text" placeholder="Nachname" formControlName="surName" />
         </div>
 
-        <input name="email" type="text" placeholder="E-Mail" />
-        <textarea name="message" placeholder="Deine Nachricht..." rows="6"></textarea>
+        <input name="email" type="text" placeholder="E-Mail" formControlName="email" />
+        <textarea name="message" placeholder="Deine Nachricht..." rows="6" formControlName="message"></textarea>
 
-        <!-- <div class="h-captcha" data-sitekey="951c3b36-6e44-4c64-abce-866c48a27300"></div> -->
-        <app-hcaptcha></app-hcaptcha>
-        <!--
-        token = request.POST["h-captcha-response"]
-        params = {
-        "secret": "your_secret_key stored in bitwarden hCaptchaSecret",
-        "response": token
-        }
-        json = http.POST("https://hcaptcha.com/siteverify", params)
-        -->
+        <app-hcaptcha #captcha formControlName="captcha"></app-hcaptcha>
 
         <button type="submit">Nachricht abschicken</button>
     </form>

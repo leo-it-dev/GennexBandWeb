@@ -1,0 +1,61 @@
+:host {
+    background-color: rgba(0, 0, 0, 0.5);
+    position: fixed;
+    width: 100vw;
+    height: 100dvh;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.overlayContainer {
+    padding: 20px;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+}
+
+#close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 15pt;
+    line-height: 15pt;
+    font-weight: bold;
+    margin: 0;
+    color: red;
+    cursor: pointer;
+}
+
+input {
+    width: 100%;
+    border: 1px solid black;
+    box-sizing: border-box;
+    margin-top: 10px;
+    letter-spacing: 10px;
+    text-align: center;
+    font-weight: bolder;
+    font-family: sans-serif;
+    font-size: 20pt;
+    text-transform: uppercase;
+}
+
+img {
+    width: 10vw;
+}
+
+div {
+    font-size: 15pt;
+    margin: 0 auto;
+}
+
+.erronousinput {
+    border-color: red;
+    color: red;
+}

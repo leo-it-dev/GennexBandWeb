@@ -27,6 +27,10 @@ button {
     margin: 4px 20px;
 }
 
+button {
+    cursor: pointer;
+}
+
 input[type=text]:focus,
 button:focus,
 textarea:focus {
@@ -35,4 +39,40 @@ textarea:focus {
 
 app-hcaptcha {
     margin: 4px 20px;
+}
+
+input.ng-invalid:not(form),
+textarea.ng-invalid,
+app-hcaptcha.ng-invalid {
+    border-left: 4px solid red !important;
+}
+
+
+button.action {
+    background-color: white;
+    border: 3px solid;
+    border-image: linear-gradient(45deg, var(--primary1), var(--primary2));
+    cursor: pointer;
+    font-size: 15pt;
+    color: black;
+    margin: 0;
+}
+
+
+.overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: #000c;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+	z-index: 1000;
+}
+
+.overlay app-slot {
+	background-color: white;
 }

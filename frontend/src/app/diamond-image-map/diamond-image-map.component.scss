@@ -1,0 +1,65 @@
+:host {
+    width: 100%;
+    position: relative;
+    height: 70dvh;
+}
+
+#wrapper {
+	--size: 300px;
+    --off: calc(var(--size) * -0.304);
+    width: 100%;
+    box-sizing: border-box;
+    padding-top: calc(var(--size) * 0.207); // cube is 0.207*2 larger in width when rotated 45deg
+    padding-bottom: calc(var(--size) * 0.414); // cube is 0.207*2 larger in width when rotated 45deg
+}
+
+#wrapper.heightCrop {
+    transform: translateY(-30%);
+}
+
+.diamond {
+    display: inline-block;
+    width: var(--size);
+    height: var(--size);
+    transform: rotate(-45deg);
+    position: relative;
+    overflow: hidden;
+    margin-right: calc(var(--size) * 0.413); // cube is 0.207*2 larger in width when rotated 45deg
+    margin-bottom: var(--off);
+    box-sizing: border-box;
+    border: 5px solid transparent;
+    left: calc(0.207 * var(--size));
+    border-radius: 15px;
+}
+
+.diamondWrapper {
+    display: inline-block;
+}
+
+.diamondWrapper.noInsetScreenToSmall {
+    height: calc(var(--size) * 1.414);
+}
+
+.diamondWrapper.oddRow.firstOfRow {
+    margin-left: calc(var(--size)*0.707);
+}
+
+@media screen and (max-width: 700px) {
+    #wrapper {
+        --size: 80vw;
+        padding-left: unset !important;
+        padding-right: unset !important;
+    }
+
+    .diamond {
+        transform: unset !important;
+        margin-right: unset !important;
+        margin-bottom: unset !important;
+        border: unset !important;
+        left: 10vw !important;
+    }
+
+    .diamondWrapper {
+        height: unset !important;
+    }
+}

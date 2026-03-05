@@ -1,10 +1,10 @@
 import { AfterViewInit, Component, computed, ElementRef, Renderer2, Signal, signal, ViewChild, WritableSignal } from '@angular/core';
 import { SlotComponent, SlotScrollCommunication } from '../slot/slot.component';
-import { NgFor } from '@angular/common';
+
 
 @Component({
 	selector: 'app-samples-slot',
-	imports: [NgFor, SlotComponent],
+	imports: [SlotComponent],
 	templateUrl: './samples-slot.component.html',
 	styleUrl: './samples-slot.component.scss'
 })

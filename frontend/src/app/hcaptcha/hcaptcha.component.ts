@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, ElementRef, NgZone, ViewChild } from '@angular/core';
 import { ConfigService } from '../services/config.service';
+import { ControlValueAccessor, NgControl } from '@angular/forms';
 
 declare const hcaptcha: any;
 
@@ -9,14 +10,24 @@ declare const hcaptcha: any;
 	templateUrl: './hcaptcha.component.html',
 	styleUrl: './hcaptcha.component.scss'
 })
-export class HcaptchaComponent implements AfterViewInit {
+export class HcaptchaComponent implements AfterViewInit, ControlValueAccessor {
 
 	@ViewChild('hcaptchaContainer', { static: true })
 	container!: ElementRef;
 
-	captchaId!: number;
+	private captchaId!: number;
+	private onChange?: Function = undefined;
 
-	constructor(private zone: NgZone, private config: ConfigService) { }
+	constructor(private zone: NgZone, private config: ConfigService, private controlDir: NgControl) {
+		this.controlDir.valueAccessor = this;
+	}
+
+	writeValue(obj: any): void {}
+	registerOnTouched(fn: any): void {}
+	setDisabledState?(isDisabled: boolean): void {}
+	registerOnChange(fn: any): void {
+ 		this.onChange = fn;
+	}
 
 	ngAfterViewInit(): void {
 		// fetch hcaptcha key.
@@ -24,11 +35,16 @@ export class HcaptchaComponent implements AfterViewInit {
 			this.zone.runOutsideAngular(() => this.captchaId = hcaptcha.render(this.container.nativeElement, {
 				sitekey: conf.hcaptcha_key,
 				callback: (token: string) => {
+					if (this.onChange) this.onChange(token);
 					this.zone.run(() => {
 						console.log('Captcha token:', token);
 					});
 				}
 			}));
 		});
+	}
+
+	reset() {
+		hcaptcha.reset();
 	}
 }

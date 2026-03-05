@@ -2,14 +2,20 @@
     <div id="stickyBlock" #stickyBlock>
         <app-section-header [title]="this.title"></app-section-header>
         <div id="content" #contentBlock>
-            <div id="imgContainer">
-                <img src={{imgUrl}} />
-            </div>
-            <div id="itemContainerClip">
-                <ul id="itemContainer" #itemContainer>
+            @if(this.imgUrl != "") {
+                <div id="imgContainer">
+                    <img src={{imgUrl}} />
+                </div>
+            }
+            <div id="itemContainerClip" [class.defaultScroll]="this.defaultScroll">
+                <ul id="itemContainer" #itemContainer [class.fullWidth]="this.imgUrl == ''" [class.noPadding]="this.contentNoPadding">
                     <ng-content #content></ng-content>
                 </ul>
             </div>
         </div>
+
+        @if (this.hasCloseButton) {
+            <div id="close" (click)="this.close()">╳</div>
+        }
     </div>
 </div>

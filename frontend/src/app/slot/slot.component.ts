@@ -1,8 +1,8 @@
-import { AfterViewInit, Component, computed, effect, ElementRef, Input, Renderer2, Signal, signal, ViewChild, WritableSignal } from '@angular/core';
+import { AfterViewInit, Component, computed, effect, ElementRef, EventEmitter, Input, Output, Renderer2, Signal, signal, ViewChild, WritableSignal } from '@angular/core';
 import { SectionHeaderComponent } from '../section-header/section-header.component';
 
 export class SlotScrollCommunication {
-	stickyHeight: Signal<string> = signal("unset");
+	stickyHeight: Signal<string> = signal("100%");
 	scrollOffset: WritableSignal<number> = signal(0);
 	scrollTop: WritableSignal<number> = signal(0);
 	scrollBlockHeight: WritableSignal<number> = signal(0);
@@ -22,7 +22,7 @@ export class SlotComponent implements AfterViewInit {
 	@Input({ required: false})
 	oneLineText: string = "";
 
-	@Input({ required: true })
+	@Input({ required: false })
 	imgUrl: string = "";
 
 	@ViewChild('itemContainer')
@@ -40,6 +40,18 @@ export class SlotComponent implements AfterViewInit {
 	@Input({required: false})
 	scrollCommunication: SlotScrollCommunication = new SlotScrollCommunication();
 
+	@Input({required: false})
+	defaultScroll: boolean = false;
+
+	@Input({required: false})
+	hasCloseButton: boolean = false;
+	
+	@Input()
+	public contentNoPadding: boolean = false;
+
+	@Output()
+	closeEvent: EventEmitter<void> = new EventEmitter<void>();
+
 	constructor(private renderer: Renderer2) {
 		effect(() => {
 			let off = -(this.scrollCommunication?.scrollOffset() ?? 0) + "px";
@@ -47,6 +59,11 @@ export class SlotComponent implements AfterViewInit {
 				this.renderer.setStyle(this.scrollBlockElement?.nativeElement, 'top', off);
 			}
 		});
+	}
+
+	close() {
+		console.log(this.closeEvent);
+		this.closeEvent?.emit();
 	}
 
 	ngAfterViewInit(): void {

@@ -13,11 +13,16 @@
   },
   "dependencies": {
     "@types/config": "^3.3.5",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/lru-cache": "^7.10.9",
     "chalk": "^4",
     "compression": "^1.8.1",
     "config": "^4.1.1",
     "express": "^5.1.0",
-    "nodemailer": "^7.0.9",
+    "jsonwebtoken": "^9.0.3",
+    "lru-cache": "^11.2.4",
+    "nodemailer": "^7.0.12",
+    "sharp": "^0.34.5",
     "winston": "^3.19.0"
   },
   "devDependencies": {
