@@ -4,15 +4,6 @@ export const MAX_TTL_MINUTES = 15;
 export const VERIFICATION_CODE_ALPHABET = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 export const VERIFICATION_CODE_LENGTH = 6;
 
-export type ContactFormularRequest = {
-	firstName: string,
-	surName: string,
-	email: string,
-	message: string,
-	captcha: string,
-	mailVerificationCode: string
-};
-
 export let contactFormularRequestVerification = new InputVerifierTemplate({
 	fields: {
 		'firstName': { 'default': "", verifiers: [new VRequired(), new VMaxLength(30)] },

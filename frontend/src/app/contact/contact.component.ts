@@ -3,7 +3,8 @@ import { SlotComponent } from '../slot/slot.component';
 import { HcaptchaComponent } from '../hcaptcha/hcaptcha.component';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { LoadingoverlayService } from '../services/loadingoverlay.service';
-import { ContactFormularRequest, contactFormularRequestVerification, ContactFormularResponse, ContactFormularStatusCodes, VERIFICATION_CODE_LENGTH } from '../../../../api_common/verification';
+import { contactFormularRequestVerification, ContactFormularResponse, ContactFormularStatusCodes, VERIFICATION_CODE_LENGTH } from '../../../../api_common/verification';
+import { ApiInterfaceContactIn, ApiInterfaceContactOut } from '../../../../api_common/contact';
 import { formBuilderGroupFromInputVerifierTemplate } from '../formVerifier';
 
 @Component({
@@ -26,11 +27,11 @@ export class ContactComponent {
 	private formBuilder = inject(FormBuilder);
 	contactFormGroup = formBuilderGroupFromInputVerifierTemplate(this.formBuilder, contactFormularRequestVerification);
 
-	async sendContactFormular(request: ContactFormularRequest): Promise<ContactFormularResponse> {
+	async sendContactFormular(request: ApiInterfaceContactIn): Promise<ContactFormularResponse> {
 		this.loadingser.showLoadingOverlay(["Bitte warten"], "/images/loading.webm", true, false, "", 0, (nt: string) => { });
 
 		return new Promise((res, _) => {
-			fetch(document.location.origin + "/contact", {
+			fetch(document.location.origin + "/module/contact/contact", {
 				method: "POST",
 				body: JSON.stringify(request),
 				headers: {
