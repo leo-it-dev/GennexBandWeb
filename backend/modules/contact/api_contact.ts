@@ -1,9 +1,8 @@
+import * as config from 'config';
 import { ApiInterfaceContactIn, ApiInterfaceContactOut } from "../../../api_common/contact";
-import { ApiInterfaceGalleryIn, ApiInterfaceGalleryOut } from "../../../api_common/gallery";
 import { contactFormularRequestVerification, ContactFormularStatusCodes } from "../../../api_common/verification";
 import { ApiModule } from "../../api_module";
 import { generateContactEmailVerifyCode, validateContactEmailVerifyCode } from "../../contact_verification_token";
-import * as config from 'config';
 import * as mailer from '../../mailer';
 
 enum CaptchaVerificationResult {
@@ -30,8 +29,8 @@ export class ApiModuleContact extends ApiModule {
             if (!contactFormularRequestVerification.verify(req.body)) {
                 return {
                     error: 'Your request is malformed or your request data is too big!',
-                    statusCode: ContactFormularStatusCodes.MALFORMED_REQUEST,
-                    responseObject: {}
+                    statusCode: 400,
+                    responseObject: { result: ContactFormularStatusCodes.MALFORMED_REQUEST }
                 }
             }
 
@@ -69,8 +68,8 @@ export class ApiModuleContact extends ApiModule {
                 } else {
                     return {
                         error: 'Your provided verification code is incorrect!',
-                        statusCode: ContactFormularStatusCodes.EMAIL_VERIFICATION_CODE_INVALID,
-                        responseObject: {}
+                        statusCode: 200,
+                        responseObject: { result: ContactFormularStatusCodes.EMAIL_VERIFICATION_CODE_INVALID }
                     }
                 }
             } else {
@@ -79,14 +78,14 @@ export class ApiModuleContact extends ApiModule {
                     case CaptchaVerificationResult.CAPTCHA_COMMUNICATION_ERROR:
                         return {
                             error: 'Error verifying captcha!',
-                            statusCode: ContactFormularStatusCodes.INTERNAL_SERVER_ERROR,
-                            responseObject: {}
+                            statusCode: 200,
+                            responseObject: { result: ContactFormularStatusCodes.INTERNAL_SERVER_ERROR }
                         }
                     case CaptchaVerificationResult.CAPTCHA_INVALID:
                         return {
                             error: 'HCaptcha reponse invalid!',
-                            statusCode: ContactFormularStatusCodes.CAPTCHA_INVALID,
-                            responseObject: {}
+                            statusCode: 200,
+                            responseObject: { result: ContactFormularStatusCodes.CAPTCHA_INVALID }
                         }
                     case CaptchaVerificationResult.SUCCESS:
                         // TODO: Check if user mail is already verified.
@@ -110,8 +109,8 @@ Anfrage: --------<br/>\
 
                     return {
                         error: undefined,
-                        statusCode: ContactFormularStatusCodes.MESSAGE_SENT,
-                        responseObject: {}
+                        statusCode: 200,
+                        responseObject: { result: ContactFormularStatusCodes.MESSAGE_SENT }
                     }
                 case ContinuationAction.SEND_EMAIL_VERIFICATION_MESSAGE:
                     let verificationCode = generateContactEmailVerifyCode(req.body.email);
@@ -120,10 +119,9 @@ Anfrage: --------<br/>\
 
                     return {
                         error: undefined,
-                        statusCode: ContactFormularStatusCodes.EMAIL_VERIFICATION_REQUIRED,
-                        responseObject: {}
+                        statusCode: 200,
+                        responseObject: { result: ContactFormularStatusCodes.EMAIL_VERIFICATION_REQUIRED }
                     }
-                    break;
             }
         });
     }

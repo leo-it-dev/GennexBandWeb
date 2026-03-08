@@ -1,4 +1,5 @@
 import { ApiModuleInterfaceB2F, ApiModuleInterfaceF2B } from "./backend_call"
+import { ContactFormularStatusCodes } from "./verification"
 
 /* Api endpoint contact */
 
@@ -10,4 +11,6 @@ export interface ApiInterfaceContactIn extends ApiModuleInterfaceF2B {
     captcha: string,
     mailVerificationCode: string
 };
-export interface ApiInterfaceContactOut extends ApiModuleInterfaceB2F {  };
+export interface ApiInterfaceContactOut extends ApiModuleInterfaceB2F {
+    result: ContactFormularStatusCodes
+};

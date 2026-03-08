@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ElementRef, NgZone, ViewChild } from '@angular/core';
-import { ConfigService } from '../services/config.service';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
+import { ConfigService } from '../services/config.service';
 
 declare const hcaptcha: any;
 

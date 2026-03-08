@@ -132,7 +132,8 @@ async function initializeModules() {
         ApiModuleVideos,
         ApiModuleGallery,
         ApiModuleConfig,
-        ApiModuleContact
+        ApiModuleContact,
+        ApiModuleVideos
     ]
 
     let moduleLoaderLogger = getLogger('module-loader');

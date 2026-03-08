@@ -1,11 +1,13 @@
 import { Component, inject, ViewChild } from '@angular/core';
-import { SlotComponent } from '../slot/slot.component';
-import { HcaptchaComponent } from '../hcaptcha/hcaptcha.component';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
-import { LoadingoverlayService } from '../services/loadingoverlay.service';
-import { contactFormularRequestVerification, ContactFormularResponse, ContactFormularStatusCodes, VERIFICATION_CODE_LENGTH } from '../../../../api_common/verification';
 import { ApiInterfaceContactIn, ApiInterfaceContactOut } from '../../../../api_common/contact';
+import { contactFormularRequestVerification, ContactFormularResponse, ContactFormularStatusCodes, VERIFICATION_CODE_LENGTH } from '../../../../api_common/verification';
 import { formBuilderGroupFromInputVerifierTemplate } from '../formVerifier';
+import { HcaptchaComponent } from '../hcaptcha/hcaptcha.component';
+import { LoadingoverlayService } from '../services/loadingoverlay.service';
+import { SlotComponent } from '../slot/slot.component';
+import { BackendService } from '../api/backend.service';
+import { ContactBackendService } from '../modules/contact/contact-backend.service';
 
 @Component({
 	selector: 'app-contact',
@@ -20,7 +22,7 @@ export class ContactComponent {
 	@ViewChild('captcha')
 	private captcha!: HcaptchaComponent;
 
-	constructor(private loadingser: LoadingoverlayService) {
+	constructor(private loadingser: LoadingoverlayService, private backendService: BackendService) {
 
 	}
 
@@ -31,16 +33,8 @@ export class ContactComponent {
 		this.loadingser.showLoadingOverlay(["Bitte warten"], "/images/loading.webm", true, false, "", 0, (nt: string) => { });
 
 		return new Promise((res, _) => {
-			fetch(document.location.origin + "/module/contact/contact", {
-				method: "POST",
-				body: JSON.stringify(request),
-				headers: {
-					'Content-Type': 'application/json',
-					'Accept': 'application/json'
-				}
-			}).then(async resp => {
-				const json = (await resp.json());
-				switch (resp.status) {
+			this.backendService.anonymousBackendCall<ApiInterfaceContactIn, ApiInterfaceContactOut>(ContactBackendService.API_URL_CONTACT, request).then(async (dat) => {
+				switch (dat.result) {
 					case ContactFormularStatusCodes.MESSAGE_SENT:
 						res(ContactFormularResponse.SUCCESS);
 						return;
@@ -54,7 +48,7 @@ export class ContactComponent {
 						res(ContactFormularResponse.EMAIL_VERIFICATION_REQUIRED);
 						return;
 					case ContactFormularStatusCodes.INTERNAL_SERVER_ERROR:
-						throw new Error("Error during online backend request: " + resp.status + ": " + (json.error ?? "Unknown server error"));
+						throw new Error("Error during online backend request: " + dat.result);
 				}
 			}).catch(err => {
 				console.error(err);

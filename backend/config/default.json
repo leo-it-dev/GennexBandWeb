@@ -13,5 +13,9 @@
         "SMTP_PASSWORD": "",
         "SMTP_USE_SSL": false,
         "MAIL_FROM_HEADER": "\"Max Mustermann\" <info@maxmustermann.de>"
+    },
+    "youtube": {
+        "YT_DATA_API_KEY": "enter_your_key_here",
+        "CHANNEL_ID": "enter_your_channel_id_here"
     }
 }
