@@ -14,10 +14,11 @@ import { exit } from 'process';
 import * as mailer from './mailer';
 import { generateContactEmailVerifyCode, validateContactEmailVerifyCode } from './contact_verification_token';
 import { ContactFormularRequest, contactFormularRequestVerification, ContactFormularStatusCodes } from '../api_common/verification';
+import { ApiModuleVideos } from './modules/videos/api_videos';
+import { ApiModule } from './api_module';
+import * as ssl from './framework/ssl';
 
 let mainLogger = getLogger("index");
-var privateKey = fs.readFileSync('ssl/privkey.pem');
-var certificate = fs.readFileSync('ssl/gennex_band_bundle.crt');
 
 const httpPort = config.get('generic.HTTP_PORT');
 const httpsPort = config.get('generic.HTTPS_PORT');
@@ -40,7 +41,7 @@ let deploymentType: DeploymentType = DeploymentType.DEVELOPMENT;
 if (fs.existsSync(filePathFrontendDev)) {
     deploymentType = DeploymentType.DEVELOPMENT;
     mainLogger.info("File structure indicates deployment mode", { mode: "DEVELOPMENT" });
-    // initializeDevelopmentBuildEnvironment(projectRoot);
+    initializeDevelopmentBuildEnvironment(projectRoot);
 } else if (fs.existsSync(filePathFrontendDepl)) {
     deploymentType = DeploymentType.PRODUCTION;
     mainLogger.info("File structure indicates deployment mode", { mode: "PRODUCTION" });
@@ -48,6 +49,9 @@ if (fs.existsSync(filePathFrontendDev)) {
     mainLogger.error("File structure seems odd. Can't find frontend, won't start!");
     exit(1);
 }
+
+ssl.initSSL();
+
 const filePathFrontend = deploymentType == DeploymentType.PRODUCTION ? filePathFrontendDepl : filePathFrontendDev;
 
 const urlPathBandpics = "/images/bandpic"
@@ -61,6 +65,9 @@ fs.readdirSync(filePathBandpics).forEach(file => {
         galleryFiles.push(file);
     }
 });
+
+let apiModulesInstances = [];
+
 
 // add compression middleware to speed up loading times.
 app.use(compression({ filter: shouldCompress }));
@@ -248,7 +255,7 @@ async function generateBandpicThumbnails(sourceImagesPath: string, thumbnailFold
             thumbnailLogger.info("Compressing image " + file + "...");
             await sharp(file)
                 .resize(thumbnailImageWidth)
-                .webp({quality:70})
+                .webp({ quality: 70 })
                 .toFile(thumbnailFolderOut + '/' + compressedImageName);
         }
         thumbnailLogger.info("Finished image compression!");
@@ -282,10 +289,55 @@ async function runSecureRedirectServer() {
 }
 
 // Startup secure SSL port 443 Server
-let serv = https.createServer({
-    key: privateKey,
-    cert: certificate
-}, app);
+let serv = https.createServer(ssl.SSL_OPTIONS, app);
+
+
+function initializeDevelopmentBuildEnvironment(projectRoot: string) {
+    const logger = getLogger("dev-init");
+    logger.info("--- Preparing development environment ---");
+    let runtimeRoot = path.join(projectRoot, 'js', 'backend');
+
+    let copyPaths = [
+        {
+            src: path.join(projectRoot, 'ssl'),
+            dest: path.join(runtimeRoot, 'ssl')
+        },
+        {
+            src: path.join(projectRoot, 'framework', 'databases'),
+            dest: path.join(runtimeRoot, 'framework', 'databases')
+        }
+    ]
+
+    for (let copyPath of copyPaths) {
+        logger.info("    - Copying path ", {src: copyPath.src, dst: copyPath.dest});
+        fs.cpSync(copyPath.src, copyPath.dest, { recursive: true });
+    }
+
+    logger.info("--- Preparing development environment finished ---");
+}
+
+
+async function initializeModules() {
+    const apiModules = [
+        ApiModuleVideos
+    ]
+
+    let moduleLoaderLogger = getLogger('module-loader');
+    moduleLoaderLogger.info("Starting module loader ---");
+
+    for (let apiModuleClass of apiModules) {
+        let apiModule = new apiModuleClass(app);
+        moduleLoaderLogger.info("Loading Api Backend Module on basepath: ", { module: apiModuleClass.name, basepath: apiModule.basepath() });
+        await apiModule.initializeModuleInternal();
+        await apiModule.initialize();
+        apiModule.registerEndpoints();
+        apiModulesInstances.push(apiModule);
+    }
+    moduleLoaderLogger.info("Finished module loader ---");
+}
+
+
+initializeModules();
 
 mainLogger.info("Backend server starting up...");
 generateBandpicThumbnails(filePathBandpics, filePathBandpicsThumbnails, 1024).then(() => {
@@ -294,3 +346,13 @@ generateBandpicThumbnails(filePathBandpics, filePathBandpicsThumbnails, 1024).th
     serv.listen(httpsPort, '0.0.0.0');
 });
 
+
+
+export function getApiModule<T = ApiModule>(apiModuleClass: { new(...args: any[]): T }): T | undefined {
+    for (let apiModule of apiModulesInstances) {
+        if (apiModule instanceof apiModuleClass) {
+            return apiModule;
+        }
+    }
+    return undefined;
+}
