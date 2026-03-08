@@ -1,10 +1,9 @@
 const express = require('express')
-const fs = require('fs');
 const https = require('https')
 const path = require('path');
 const compression = require('compression');
+const fs = require('fs');
 const app = express();
-import sharp = require('sharp');
 
 import { Request, Response } from 'express';
 import { getLogger } from './logger';
@@ -17,6 +16,7 @@ import { ContactFormularRequest, contactFormularRequestVerification, ContactForm
 import { ApiModuleVideos } from './modules/videos/api_videos';
 import { ApiModule } from './api_module';
 import * as ssl from './framework/ssl';
+import { ApiModuleGallery } from './modules/gallery/api_gallery';
 
 let mainLogger = getLogger("index");
 
@@ -54,18 +54,6 @@ ssl.initSSL();
 
 const filePathFrontend = deploymentType == DeploymentType.PRODUCTION ? filePathFrontendDepl : filePathFrontendDev;
 
-const urlPathBandpics = "/images/bandpic"
-const urlPathBandpicsThumbs = "/images/bandpic/thumbs"
-const filePathBandpics = filePathFrontend + urlPathBandpics;
-const filePathBandpicsThumbnails = filePathFrontend + urlPathBandpicsThumbs;
-
-const galleryFiles = [];
-fs.readdirSync(filePathBandpics).forEach(file => {
-    if (fs.lstatSync(filePathBandpics + "/" + file).isFile()) {
-        galleryFiles.push(file);
-    }
-});
-
 let apiModulesInstances = [];
 
 
@@ -87,16 +75,6 @@ app.get("/config", (req: Request, res: Response) => {
     res.status(200);
     res.json({
         hcaptcha_key: config.get("generic.HCAPTCHA_SITEKEY")
-    });
-});
-
-app.get("/gallery", (req: Request, res: Response) => {
-    res.status(200);
-    res.json({
-        files: galleryFiles,
-        thumbnails: urlPathBandpicsThumbs,
-        big: urlPathBandpics,
-        thumbnailFormat: "webp"
     });
 });
 
@@ -231,38 +209,6 @@ Anfrage: --------<br/>\
     }
 })
 
-async function generateBandpicThumbnails(sourceImagesPath: string, thumbnailFolderOut: string, thumbnailImageWidth: number): Promise<void> {
-    if (!fs.existsSync(thumbnailFolderOut)) {
-        fs.mkdirSync(thumbnailFolderOut);
-    }
-    let thumbnailLogger = getLogger('thumbnail-compressor');
-    thumbnailLogger.info("Starting image compression...");
-    let filePaths = [];
-    fs.readdirSync(sourceImagesPath).forEach(file => {
-        let abspath = sourceImagesPath + "/" + file;
-        if (fs.lstatSync(abspath).isFile()) {
-            filePaths.push(abspath);
-        }
-    });
-
-    return new Promise<void>(async (res, _) => {
-        for (let file of filePaths) {
-            let basename: string = path.basename(file);
-            let sepIdx = basename.lastIndexOf(".");
-            let stem = basename.substring(0, sepIdx);
-            let compressedImageName = stem + ".webp";
-
-            thumbnailLogger.info("Compressing image " + file + "...");
-            await sharp(file)
-                .resize(thumbnailImageWidth)
-                .webp({ quality: 70 })
-                .toFile(thumbnailFolderOut + '/' + compressedImageName);
-        }
-        thumbnailLogger.info("Finished image compression!");
-        res();
-    });
-}
-
 function shouldCompress(req, res) {
     if (req.headers['x-no-compression']) {
         // don't compress responses with this request header
@@ -291,6 +237,9 @@ async function runSecureRedirectServer() {
 // Startup secure SSL port 443 Server
 let serv = https.createServer(ssl.SSL_OPTIONS, app);
 
+runSecureRedirectServer();
+mainLogger.info("Backend server up and running on Port " + httpsPort + ". Have a nice day!");
+serv.listen(httpsPort, '0.0.0.0');
 
 function initializeDevelopmentBuildEnvironment(projectRoot: string) {
     const logger = getLogger("dev-init");
@@ -319,7 +268,8 @@ function initializeDevelopmentBuildEnvironment(projectRoot: string) {
 
 async function initializeModules() {
     const apiModules = [
-        ApiModuleVideos
+        ApiModuleVideos,
+        ApiModuleGallery
     ]
 
     let moduleLoaderLogger = getLogger('module-loader');
@@ -339,15 +289,6 @@ async function initializeModules() {
 
 initializeModules();
 
-mainLogger.info("Backend server starting up...");
-generateBandpicThumbnails(filePathBandpics, filePathBandpicsThumbnails, 1024).then(() => {
-    runSecureRedirectServer()
-    mainLogger.info("Backend server up and running on Port " + httpsPort + ". Have a nice day!");
-    serv.listen(httpsPort, '0.0.0.0');
-});
-
-
-
 export function getApiModule<T = ApiModule>(apiModuleClass: { new(...args: any[]): T }): T | undefined {
     for (let apiModule of apiModulesInstances) {
         if (apiModule instanceof apiModuleClass) {
@@ -355,4 +296,8 @@ export function getApiModule<T = ApiModule>(apiModuleClass: { new(...args: any[]
         }
     }
     return undefined;
+}
+
+export function getFilePathFrontend() {
+    return filePathFrontend;
 }

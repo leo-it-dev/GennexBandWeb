@@ -41,12 +41,13 @@ export class GalleryComponent implements AfterViewInit {
 
 	ngAfterViewInit(): void {
 
-		fetch(document.location.origin + "/gallery", {
+		fetch(document.location.origin + "/module/gallery/gallery", {
 			method: "GET",
 			headers: {
 				'Accept': 'application/json'
 			}
 		}).then(async resp => resp.json()).then(galleryList => {
+			galleryList = galleryList.content;
 			let files: string[] = galleryList["files"];
 			let thumbnails = galleryList["thumbnails"];
 			let big = galleryList["big"];
