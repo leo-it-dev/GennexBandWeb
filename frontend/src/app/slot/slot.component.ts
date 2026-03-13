@@ -49,6 +49,9 @@ export class SlotComponent implements AfterViewInit {
 	@Input()
 	public contentNoPadding: boolean = false;
 
+	@Input({required: false})
+	public controlSelectElements: string[] = [];
+
 	@Output()
 	closeEvent: EventEmitter<void> = new EventEmitter<void>();
 
@@ -62,13 +65,14 @@ export class SlotComponent implements AfterViewInit {
 	}
 
 	close() {
-		console.log(this.closeEvent);
 		this.closeEvent?.emit();
 	}
 
 	ngAfterViewInit(): void {
 		document.addEventListener("scroll", e => {
 			e.preventDefault();
+			(this.scrollContainerElement?.nativeElement as HTMLElement).style.setProperty("--stickyHeight", this.scrollCommunication.stickyHeight());
+
 			let scrollContHeight = (this.scrollContainerElement?.nativeElement as HTMLElement).getBoundingClientRect().height;
 			let stickyBlockHeight = ((this.stickyBlockElement?.nativeElement as HTMLElement).getBoundingClientRect().height);
 			let stickyBlockTop = (this.stickyBlockElement?.nativeElement as HTMLElement).getBoundingClientRect().top;

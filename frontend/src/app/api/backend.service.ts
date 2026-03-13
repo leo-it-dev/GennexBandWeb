@@ -8,7 +8,7 @@ import { ApiModuleBody, ApiModuleInterfaceB2F, ApiModuleInterfaceF2B } from '../
 export abstract class BackendService implements IModule {
 
 	constructor(
-		private injector: Injector
+		protected injector: Injector
 	) { };
 
 	anonymousBackendCall<REQ extends ApiModuleInterfaceF2B, RES extends ApiModuleInterfaceB2F>(url: string, body: REQ|undefined = undefined): Promise<RES> {

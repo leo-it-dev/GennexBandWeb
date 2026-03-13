@@ -11,6 +11,7 @@ export type PlaylistInfo = {
 export type VideoInfo = {
     videoID: string;
     videoName: string;
+    videoURL: string;
     videoDescription: string;
 }
 

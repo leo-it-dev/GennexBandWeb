@@ -16,6 +16,12 @@
     },
     "youtube": {
         "YT_DATA_API_KEY": "enter_your_key_here",
-        "CHANNEL_ID": "enter_your_channel_id_here"
+        "CHANNEL_ID": "enter_your_channel_id_here",
+        "UPDATE_INTERVAL_MINUTES": 86400
+    },
+    "calendar": {
+        "CALENDAR_DATA_API_KEY": "enter_your_key_here",
+        "CALENDAR_ID": "your_calender_id@group.calendar.google.com",
+        "UPDATE_INTERVAL_MINUTES": 1440
     }
 }

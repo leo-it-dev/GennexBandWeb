@@ -1,21 +1,22 @@
-import { AfterViewInit, Component, computed, ElementRef, HostListener, OnInit, QueryList, Renderer2, Signal, signal, ViewChild, ViewChildren, WritableSignal } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, QueryList, Renderer2, signal, ViewChild, ViewChildren, WritableSignal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { GalleryComponent } from './gallery/gallery.component';
-import { MP4FrameExtractionService } from './services/mp4frame/mp4-frame-extraction.service';
 import { ContactComponent } from './contact/contact.component';
-import { NewsletterComponent } from './newsletter/newsletter.component';
-import { SamplesSlotComponent } from './samples-slot/samples-slot.component';
-import { SectionHeaderComponent } from './section-header/section-header.component';
 import { DynamicBackgroundImageComponent } from './dynamic-background-image/dynamic-background-image.component';
-import { LoadingoverlayService } from './services/loadingoverlay.service';
+import { GalleryComponent } from './gallery/gallery.component';
+import { ImpressumComponent } from './impressum/impressum.component';
 import { LoadingoverlayComponent } from './loadingoverlay/loadingoverlay.component';
 import { PrivacypolicyComponent } from './privacypolicy/privacypolicy.component';
+import { SectionHeaderComponent } from './section-header/section-header.component';
+import { LoadingoverlayService } from './services/loadingoverlay.service';
+import { MP4FrameExtractionService } from './services/mp4frame/mp4-frame-extraction.service';
 import { SlotComponent } from './slot/slot.component';
-import { ImpressumComponent } from './impressum/impressum.component';
+import { VideoListComponent } from './video-list/video-list.component';
+import { ContactChannelsComponent } from './contact-channels/contact-channels.component';
+import { CalendarListComponent } from './calendar-list/calendar-list/calendar-list.component';
 
 @Component({
 	selector: 'app-root',
-	imports: [RouterOutlet, LoadingoverlayComponent, GalleryComponent, ContactComponent, SamplesSlotComponent, SectionHeaderComponent, DynamicBackgroundImageComponent, PrivacypolicyComponent, ImpressumComponent, SlotComponent],
+	imports: [RouterOutlet, LoadingoverlayComponent, GalleryComponent, ContactComponent, SectionHeaderComponent, DynamicBackgroundImageComponent, PrivacypolicyComponent, ImpressumComponent, SlotComponent, VideoListComponent, ContactChannelsComponent, CalendarListComponent],
 	templateUrl: './app.component.html',
 	styleUrl: './app.component.scss'
 })

@@ -70,11 +70,23 @@
     border-bottom: 5px solid;
 }
 
+app-section-header {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+}
+
 @media screen and (max-width: 700px) {
     #wrapper {
         --size: 200px;
     }
     :host {
         height: 200dvh;
+    }
+
+    app-section-header {
+        position: sticky;
     }
 }

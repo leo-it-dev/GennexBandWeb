@@ -34,7 +34,7 @@
                 box-shadow: 0px 0px 5px black;
                 cursor: pointer;
             }
-            
+
             #header {
                 position: relative;
                 width: max-content;
@@ -79,8 +79,25 @@
                 border-right: 25px solid #fffc;
             }
 
+            select {
+                width: 100%;
+                height: 100%;
+                background: transparent;
+                border: none;
+                font-family: agencyfb-reg !important;
+                font-weight: bolder;
+                font-size: 20pt;
+                text-overflow: ellipsis;
+                max-width: 100%;
+            }
+
+            option {
+                font-family: agencyfb-reg !important;
+                font-size: 15pt;
+            }
+
             #content {
-                height: calc(100% - 100px);
+                height: calc(100% - 50px);
                 position: relative;
                 width: 100%;
 
@@ -111,17 +128,18 @@
 
                     #itemContainer {
                         list-style: none;
-                        padding: 0;
+                        padding: 0px 20px;
                         margin: 0;
                         z-index: 1;
                         width: 75%;
                         left: calc(25%);
                         position: absolute;
                         top: 0;
-                        transition: top 0.15s ease-out;
+                        transition: top 0.3s ease-out;
                         display: flex;
                         flex-direction: column;
                         flex-wrap: nowrap;
+                        box-sizing: border-box;
                     }
                 }
 
@@ -152,8 +170,10 @@
             #itemContainer {
                 width: 100% !important;
                 left: 0 !important;
+                padding: 0px !important;
                 padding-top: 30px !important;
             }
+
             #imgContainer {
                 display: none !important;
             }
@@ -165,6 +185,13 @@
                 max-height: 100dvh !important;
                 top: 0px !important;
 
+                select {
+                    width: initial !important;
+                    text-align: left;
+                    color: white !important;
+                    text-shadow: 0px 0px 5px black;
+                }
+
                 #close {
                     top: 0;
                     right: 0;
@@ -173,10 +200,14 @@
                 }
 
                 #headerBack {
-                    width: 100% !important;;
-                    line-height: 100px !important;;
-                    height: 100px !important;;
+                    width: 100% !important;
+                    ;
+                    line-height: 100px !important;
+                    ;
+                    height: 100px !important;
+                    ;
                     transform: unset !important;
+
                     #header {
                         width: initial !important;
                         text-align: left;

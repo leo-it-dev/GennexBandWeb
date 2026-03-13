@@ -1,11 +1,11 @@
+<app-section-header title="Galerie"></app-section-header>
+
 <div id="mask">
     <app-diamond-image-map [images]="this.thumbnailImageURLs" [slideshow]="true" (imageClicked)="openBigImage($event)" [parentContainer]="this.elRef" [heightCrop]="true"></app-diamond-image-map>
 </div>
 <button class="action" (click)="openBigGallery()">Zeig mir mehr →</button>
 
-<div id="background-border">
-    <app-section-header title="Galerie"></app-section-header>
-</div>
+<div id="background-border"></div>
 
 @if(this.showBigGallery) {
 <div class="overlay">

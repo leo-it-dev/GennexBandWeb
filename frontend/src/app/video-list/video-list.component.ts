@@ -1,0 +1,63 @@
+import { Component, computed, effect, ElementRef, QueryList, ViewChildren } from '@angular/core';
+import { YouTubePlayer } from '@angular/youtube-player';
+import { VideosBackendService } from '../modules/videos/videos-backend.service';
+import { SlotComponent, SlotScrollCommunication } from '../slot/slot.component';
+
+@Component({
+	selector: 'app-video-list',
+	imports: [YouTubePlayer, SlotComponent],
+	templateUrl: './video-list.component.html',
+	styleUrl: './video-list.component.scss',
+})
+export class VideoListComponent {
+
+	heightPerElement = "70vh";
+
+	scrollCommunication: SlotScrollCommunication = new SlotScrollCommunication();
+
+	@ViewChildren("mediaVideo")
+	videoElementsDOM!: QueryList<ElementRef<HTMLElement>>;
+
+	constructor(private videoService: VideosBackendService) {
+		console.log("Video list initialized!");
+
+		effect(() => {
+			let videoCount = this.videoService.getVideoList()().map(p => p.videos.length).reduce((p, n) => p + n);
+			this.scrollCommunication.stickyHeight = computed(() => videoCount * this.vhToPixels(parseInt(this.heightPerElement)) + "px");
+			
+			console.log("Updated sticky height based on new element count: ", videoCount);
+		});
+
+		document.addEventListener("scroll", e => {
+			e.preventDefault();
+			let videoList = this.videoService.getVideoList();
+			let videoCount = videoList().map(p => p.videos.length).reduce((p, n) => p + n);
+			let heightPerElement = this.scrollCommunication.scrollBlockHeight() / (videoCount);
+			let nthElement = Math.round(this.scrollCommunication.scrollTop() / heightPerElement);
+			let snappingScrollTop = (nthElement / videoCount) * this.scrollCommunication.scrollBlockHeight();
+			this.scrollCommunication.scrollOffset.set(snappingScrollTop);
+
+			if (this.videoElementsDOM) {
+				for (let i = 0; i < this.videoElementsDOM.length; i++) {
+					if (nthElement == i) {
+						this.videoElementsDOM.get(i)?.nativeElement.classList.add("visible")
+					} else {
+						this.videoElementsDOM.get(i)?.nativeElement.classList.remove("visible")
+					}
+				}
+			}
+		});
+	}
+
+	getMediaPlaylists() {
+		return this.videoService.getVideoList();
+	}
+
+	getMediaPlaylistNames() {
+		return this.getMediaPlaylists()().map(p => p.playlist.playlistName);
+	}
+
+	vhToPixels(dvh: number) {
+		return window.innerHeight / 100 * dvh;
+	}
+}

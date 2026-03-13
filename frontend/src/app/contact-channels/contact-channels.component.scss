@@ -1,0 +1,39 @@
+:host {
+    width: 100%;
+    z-index: 100;
+    background-color: #0008;
+    background-repeat: no-repeat;
+    background-size: cover;
+    border-top: 5px solid transparent;
+    border-image: linear-gradient(45deg, var(--primary1) 0%, var(--primary2) 100%) 25%;
+    border-bottom: 5px solid;
+}
+
+#contact-channels {
+    padding: 50px;
+    box-sizing: border-box;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 30px;
+}
+
+.contact-cont {
+    padding: 50px;
+    background-color: white;
+    transition: background-color .3s ease-out, transform .3s ease-out;
+    cursor: pointer;
+}
+
+.contact-cont:hover {
+    background-color: #fff7;
+    transform: scale(1.2);
+    transform-origin: center;
+}
+
+.contact-cont > img {
+    width: 80px;
+    height: 80px;
+    
+}

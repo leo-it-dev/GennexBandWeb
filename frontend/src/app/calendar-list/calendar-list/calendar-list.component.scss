@@ -1,0 +1,97 @@
+:host {
+    width: 100%;
+    position: relative;
+}
+
+#background-border {
+    position: absolute;
+    height: 100%;
+    z-index: -1;
+    background-color: #0008;
+    top: 0%;
+    left: 0%;
+    width: 100%;
+    border-top: 5px solid transparent;
+    border-image: linear-gradient(45deg, var(--primary1) 0%, var(--primary2) 100%) 25%;
+    border-bottom: 5px solid;
+}
+
+app-section-header {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+}
+
+#calendar-entries {
+    z-index: 1;
+    padding: 50px;
+    position: relative;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    box-sizing: border-box;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+
+.calendar-entry {
+    max-width: 45vw;
+    width: 45vw;
+    background-color: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0px 0px 5px black;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 20px;
+}
+
+#section-left {
+    background-color: wheat;
+    height: auto;
+    flex: 1;
+}
+
+#section-right {
+    padding: 50px;
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    row-gap: 20px;
+}
+
+#section-right > * {
+    margin: 0;
+}
+
+#background-border {
+    z-index: 1;
+}
+
+#no-gigs-planned {
+    z-index: 2;
+    color: white;
+    margin: 0 auto;
+}
+
+#section-left iframe {
+    width: 100%;
+    height: 100%;
+}
+
+@media screen and (max-width: 700px) {
+    .calendar-entry {
+        width: 100vw;
+        max-width: 100vw;
+        flex-direction: column;
+    }
+
+    app-section-header {
+        position: sticky;
+    }
+}

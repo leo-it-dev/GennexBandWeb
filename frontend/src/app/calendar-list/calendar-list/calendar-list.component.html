@@ -1,0 +1,26 @@
+<app-section-header title="Nächste Gigs"></app-section-header>
+
+<div id="background-border"></div>
+
+<div id="calendar-entries">
+    @if(this.getCalendarEntries()().entries.length == 0) {
+        <h1 id="no-gigs-planned">🥁 Aktuell haben wir keine Events geplant. Schau doch gerne später wieder vorbei 🎸 </h1>
+    }
+
+
+    @for(entry of this.getCalendarEntries()().entries; track entry.id) {
+        <div class="calendar-entry">
+            <div id="section-left">
+
+                <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d2660.4923904756256!2d12.428206937033073!3d48.17786373824725!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sde!2sde!4v1773363771491!5m2!1sde!2sde" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+
+            </div>
+            <div id="section-right">
+                <h2 class="calendar-entry-title">{{entry.title}}</h2>
+                <h3 class="calendar-entry-descr">{{entry.description}}</h3>
+                <h3 class="calendar-entry-location">{{entry.location}}</h3>
+                <h3 class="calendar-entry-date">{{entry.date}}</h3>
+            </div>
+        </div>
+    }
+</div>

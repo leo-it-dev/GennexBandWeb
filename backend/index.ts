@@ -16,8 +16,12 @@ import { ApiModuleConfig } from './modules/config/api_config';
 import { ApiModuleContact } from './modules/contact/api_contact';
 import { ApiModuleGallery } from './modules/gallery/api_gallery';
 import { ApiModuleVideos } from './modules/videos/api_videos';
+import { RepeatedTaskScheduler } from './framework/scheduled_events';
+import { ApiModuleCalendar } from './modules/calendar/api_calendar';
 
 let mainLogger = getLogger("index");
+
+let repeatedTaskScheduler = new RepeatedTaskScheduler();
 
 const httpPort = config.get('generic.HTTP_PORT');
 const httpsPort = config.get('generic.HTTPS_PORT');
@@ -50,6 +54,7 @@ if (fs.existsSync(filePathFrontendDev)) {
 }
 
 ssl.initSSL();
+repeatedTaskScheduler.schedulerInit();
 
 const filePathFrontend = deploymentType == DeploymentType.PRODUCTION ? filePathFrontendDepl : filePathFrontendDev;
 
@@ -133,7 +138,8 @@ async function initializeModules() {
         ApiModuleGallery,
         ApiModuleConfig,
         ApiModuleContact,
-        ApiModuleVideos
+        ApiModuleVideos,
+        ApiModuleCalendar
     ]
 
     let moduleLoaderLogger = getLogger('module-loader');
@@ -164,4 +170,8 @@ export function getApiModule<T = ApiModule>(apiModuleClass: { new(...args: any[]
 
 export function getFilePathFrontend() {
     return filePathFrontend;
+}
+
+export function getRepeatedScheduler(): RepeatedTaskScheduler {
+    return repeatedTaskScheduler;
 }

@@ -51,11 +51,13 @@ export class YoutubeHelper {
                             let videoId = videoSnippet.resourceId.videoId;
                             let videoName = videoSnippet.title;
                             let videoDescription = videoSnippet.description;
+                            let videoURL = "https://www.youtube.com/embed/" + videoId;
 
                             videos.push({
                                 videoDescription: videoDescription,
                                 videoID: videoId,
-                                videoName: videoName
+                                videoName: videoName,
+                                videoURL: videoURL
                             })
                         }                        
                     }

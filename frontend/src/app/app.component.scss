@@ -11,13 +11,14 @@
 * {
 	--primary1: #4538FF77;
 	--primary2: #FF383877;
+	--primary1NoAlpha: #4538FF;
+	--primary2NoAlpha: #FF3838;
 	font-family: agencyfb-reg;
 }
 
 :host {
 	height: 100%;
 	position: relative;
-
 	--bandname-letter-space: 30px;
 }
 
@@ -266,7 +267,7 @@ app-contact-form {
 	min-width: 40%;
 	max-width: 40%;
 	padding-top: 20px;
-	font-size: min(13pt, 5vw);
+	font-size: min(16pt, 5vw);
 	padding-left: 50px;
 	padding-right: 50px;
 	border-left: 1px solid transparent;
@@ -293,6 +294,12 @@ p.fade-scroll-item {
 .fade-scroll-item-spacer {
 	height: 800px;
 	margin: 0;
+}
+
+#about-us-header {
+	position: sticky;
+	top: 10vh;
+	z-index: 1000;
 }
 
 
@@ -330,6 +337,10 @@ footer {
 		width: 100%;
 		margin: 10px;
 		text-align: center;
+	}
+
+	#about-us-header {
+		top: 0px !important;
 	}
 
 	#about-us-text {

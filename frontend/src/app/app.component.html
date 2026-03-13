@@ -13,14 +13,17 @@
 				<a href="#about-us">
 					<li>About us</li>
 				</a>
-				<a href="#samples">
+				<!-- <a href="#samples">
 					<li>Samples</li>
+				</a> -->
+				<a href="#live">
+					<li>Videos</li>
 				</a>
 				<a href="#gallery">
 					<li>Gallery</li>
 				</a>
-				<a href="#newsletter">
-					<li>Events</li>
+				<a href="#gigs">
+					<li>Nächste Events</li>
 				</a>
 				<a href="#contact">
 					<li>Contact</li>
@@ -32,7 +35,7 @@
 	<div #backgroundTrigger class="background-trigger" img="/images/bandpic/20250802_221853.jpg"></div>
 	<div id="about-us" class="fade-scroll-items-container" #fadeScrollItemContainer>
 		<div id="about-us-content">
-			<app-section-header class="fade-scroll-item" title="Über uns"></app-section-header>
+			<app-section-header id="about-us-header" title="Über uns"></app-section-header>
 			<img id="about-us-logo" src="/images/logo0014.png" />
 			<div id="about-us-text">
 
@@ -65,7 +68,11 @@
 	</div>
 	<div class="spacer"></div>
 
-	<app-samples-slot id="samples"></app-samples-slot>
+	<!--<app-samples-slot id="samples"></app-samples-slot>
+	<div class="spacer"></div>!-->
+
+	<app-video-list id="live"></app-video-list>
+
 	<div class="spacer"></div>
 	<div #backgroundTrigger class="background-trigger" img="/images/logo_room0014.png"></div>
 	<app-gallery id="gallery">
@@ -104,11 +111,17 @@
 
 	<!-- <div class="spacer"></div> -->
 
+	<div class="spacer"></div>
+	<app-calendar-list id="gigs"></app-calendar-list>
+
+	<div class="halfSpacer"></div>
 	<div #backgroundTrigger class="background-trigger" img="/images/crowd.jpeg"></div>
+	<div class="halfSpacer"></div>
 
 	<!-- <app-newsletter id="newsletter"></app-newsletter> -->
-	<div class="spacer"></div>
 	<app-contact id="contact"></app-contact>
+	<div class="halfSpacer"></div>
+	<app-contact-channels></app-contact-channels>
 	<div class="halfSpacer"></div>
 
 </div>
