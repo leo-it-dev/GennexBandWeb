@@ -46,7 +46,7 @@
 
 @media screen and (max-width: 700px) {
     #wrapper {
-        --size: 80vw;
+        --size: 38vw;
         padding-left: unset !important;
         padding-right: unset !important;
     }
@@ -61,5 +61,6 @@
 
     .diamondWrapper {
         height: unset !important;
+        padding: 1vw;
     }
 }

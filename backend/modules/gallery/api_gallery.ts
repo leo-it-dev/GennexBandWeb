@@ -25,7 +25,6 @@ export class ApiModuleGallery extends ApiModule {
             }
         });
 
-        this.logger().info("Backend server starting up...");
         this.generateBandpicThumbnails(this.filePathBandpics, this.filePathBandpicsThumbnails, 1024).then(() => {
             // done.
         });

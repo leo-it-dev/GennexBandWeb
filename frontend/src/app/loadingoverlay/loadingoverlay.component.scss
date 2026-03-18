@@ -6,10 +6,20 @@
     top: 0;
     left: 0;
     z-index: 1000;
+}
+
+#overlayFullSize {
+    width: 100%;
+    height: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    transition: backdrop-filter .5s ease-out;
+}
+
+.fadeIn {
+    backdrop-filter: blur(36px);
 }
 
 .overlayContainer {
@@ -41,9 +51,9 @@ input {
     letter-spacing: 10px;
     text-align: center;
     font-weight: bolder;
-    font-family: sans-serif;
     font-size: 20pt;
     text-transform: uppercase;
+    font-family: agencyfb-reg;
 }
 
 img {
@@ -53,6 +63,20 @@ img {
 div {
     font-size: 15pt;
     margin: 0 auto;
+}
+
+#buttons {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 10px;
+    width: 100%;
+    margin-top: 20px;
+}
+
+button {
+    flex: 1;
+    margin: 0;
 }
 
 .erronousinput {

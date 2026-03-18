@@ -20,6 +20,12 @@ export class VMaxLength implements InputStringVerifier {
     }
 }
 
+export class VEMailAddress implements InputStringVerifier {
+    go(input: string): boolean {
+        return input != undefined && /^\S+@\S+\.\S+$/.test(input);
+    }
+}
+
 export type InputVerifierTemplateType = {
     fields: {
         [key: string]: {

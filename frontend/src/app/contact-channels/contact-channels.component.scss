@@ -7,9 +7,10 @@
     border-top: 5px solid transparent;
     border-image: linear-gradient(45deg, var(--primary1) 0%, var(--primary2) 100%) 25%;
     border-bottom: 5px solid;
+    backdrop-filter: blur(16px);
 }
 
-#contact-channels {
+#channels {
     padding: 50px;
     box-sizing: border-box;
     width: 100%;
@@ -17,6 +18,7 @@
     flex-direction: row;
     flex-wrap: wrap;
     gap: 30px;
+    justify-content: center;
 }
 
 .contact-cont {
@@ -36,4 +38,51 @@
     width: 80px;
     height: 80px;
     
+}
+
+#subscribe-mails {
+    color: white;
+    text-align: center;
+    margin: 40px 0px;
+}
+
+#subscribe-mails > h1, h3 {
+    margin: 0;
+}
+
+#subscribe-inputs > input {
+    margin: 0;
+    flex: 1;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+#subscribe-inputs > button {
+    flex: 0;
+    margin: 0px;
+    width: 100%;
+}
+
+app-hcaptcha {
+    margin: 10px 0px;
+}
+
+#subscribe-inputs {
+    width: 30%;
+    margin: 40px auto;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    box-sizing: border-box;
+    align-items: start;
+}
+
+
+@media screen and (max-width: 700px) {
+    #subscribe-inputs {
+        flex-direction: column;
+        width: 100%;
+        padding: 30px;
+        box-sizing: border-box;
+    }
 }

@@ -13,10 +13,11 @@ export const SSL_OPTIONS = {
 };
 
 const logger = getLogger('ssl');
+export const SSL_FOLDER_PATH = __dirname + '/../ssl/';
 
 export function initSSL() {
-    this.intranetCertificate = fs.readFileSync(__dirname + '/../ssl/gennex_band_bundle.crt');
-    this.intranetPrivateKey = fs.readFileSync(__dirname + '/../ssl/privkey.pem');
+    this.intranetCertificate = fs.readFileSync(SSL_FOLDER_PATH + 'gennex_band_bundle.crt');
+    this.intranetPrivateKey = fs.readFileSync(SSL_FOLDER_PATH + 'privkey.pem');
 
     SSL_OPTIONS.key = intranetPrivateKey;
     SSL_OPTIONS.cert = intranetCertificate;

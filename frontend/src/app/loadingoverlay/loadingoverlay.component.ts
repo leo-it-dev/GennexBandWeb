@@ -1,7 +1,6 @@
 
 import { AfterViewInit, Component, effect, ElementRef, EventEmitter, Input, OnDestroy, Output, signal, Signal, ViewChild } from '@angular/core';
-import { LoadingoverlayService } from '../services/loadingoverlay.service';
-import { ValueChangeEvent } from '@angular/forms';
+import { LoadingoverlayService, OverlayButton } from '../services/loadingoverlay.service';
 
 @Component({
 	selector: 'app-loadingoverlay',
@@ -19,6 +18,8 @@ export class LoadingoverlayComponent implements AfterViewInit, OnDestroy {
 			}
 		});
 	}
+
+	fadeIn: boolean = false;
 
 	close() {
 		this.serv.hideLoadingOverlay();
@@ -44,13 +45,27 @@ export class LoadingoverlayComponent implements AfterViewInit, OnDestroy {
 	inputTextChange: EventEmitter<string> = new EventEmitter<string>();
 	@Input({required: false})
 	inputMarkedErronous: Signal<boolean> = signal(false);
+	@Input({required: false})
+	buttons: Signal<OverlayButton[]> = signal([]);
+	@Output()
+	buttonClicked: EventEmitter<string> = new EventEmitter<string>();
 
-	ngAfterViewInit() { }
+	ngAfterViewInit() {
+		setTimeout(() => {
+			this.fadeIn = true;
+		});
+	}
 
-	ngOnDestroy() { }
+	ngOnDestroy() {
+		this.fadeIn = false;
+	}
 
 	inputTextChanges(event: Event) {
 		let text = (event.target as HTMLInputElement).value;
 		this.inputTextChange.emit(text);
+	}
+
+	buttonClickedEvt(evt: PointerEvent) {
+		this.buttonClicked.emit((evt.target as HTMLButtonElement).textContent);
 	}
 }

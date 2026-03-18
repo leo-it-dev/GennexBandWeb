@@ -6,12 +6,18 @@ export type CalendarEntry = {
     title: string,
     description: string,
     date: Date,
-    location: string,
+    location?: Location,
+    locationString: string,
     id: string
 }
 
 export type CalendarList = {
     entries: CalendarEntry[]
+}
+
+export type Location = {
+    lat: number,
+    lon: number
 }
 
 export interface ApiInterfaceCalendarIn extends ApiModuleInterfaceF2B { };

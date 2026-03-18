@@ -1,5 +1,5 @@
 import { Injectable, Injector, Signal, signal, WritableSignal } from '@angular/core';
-import { ApiInterfaceCalendarIn, ApiInterfaceCalendarOut, CalendarList } from '../../../../../api_common/calendar';
+import { ApiInterfaceCalendarIn, ApiInterfaceCalendarOut, CalendarEntry, CalendarList } from '../../../../../api_common/calendar';
 import { BackendService } from '../../api/backend.service';
 
 @Injectable({
@@ -21,6 +21,10 @@ export class CalendarBackendService extends BackendService {
 		super(injector)
 
 		this.anonymousBackendCall<ApiInterfaceCalendarIn, ApiInterfaceCalendarOut>(CalendarBackendService.API_URL_CALENDAR).then(dat => {
+			for(let e of dat.calendar.entries) {
+				e.date = new Date(e.date);
+			}
+
 			this.calendarData.set(dat.calendar);
 		}).catch(err => {
 			console.error("Error retrieving calendar list: ", err);

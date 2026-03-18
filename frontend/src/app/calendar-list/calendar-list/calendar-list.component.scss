@@ -1,6 +1,7 @@
 :host {
     width: 100%;
     position: relative;
+    backdrop-filter: blur(16px);
 }
 
 #background-border {

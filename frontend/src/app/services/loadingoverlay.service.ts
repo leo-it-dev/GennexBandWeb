@@ -1,5 +1,10 @@
 import { Injectable, Signal, signal, WritableSignal } from '@angular/core';
 
+export type OverlayButton = {
+	text: string,
+	color: string
+}
+
 @Injectable({
 	providedIn: 'root'
 })
@@ -15,8 +20,11 @@ export class LoadingoverlayService {
 	inputPlaceholder: WritableSignal<string> = signal("Placeholder");
 	inputMaxLength: WritableSignal<number> = signal(100);
 	subscribeTextChange?: Function = undefined;
+	subscribeButtonClicked?: Function = undefined;
 
 	inputInvalid: WritableSignal<boolean> = signal(false);
+
+	buttons: WritableSignal<OverlayButton[]> = signal([]);
 
 	inputTextChange(newText: string) {
 		if (this.subscribeTextChange) {
@@ -25,11 +33,17 @@ export class LoadingoverlayService {
 		this.inputInvalid.set(false);
 	}
 
+	buttonClicked(text: string) {
+		if (this.subscribeButtonClicked) {
+			this.subscribeButtonClicked(text);
+		}
+	}
+
 	constructor() {
 		
 	}
 
-	showLoadingOverlay(message: string[], videoURL: string, videoShouldRepeat: boolean, hasInputText: boolean, inputPlaceholder: string, inputMaxLength: number, inputTextChange: Function) {
+	showLoadingOverlay(message: string[], videoURL: string, videoShouldRepeat: boolean, hasInputText: boolean, inputPlaceholder: string, inputMaxLength: number, inputTextChange: Function, buttons: OverlayButton[] = [], buttonClicked: Function = (btn: OverlayButton) => {}) {
 		this.videoURL.set(videoURL);
 		this.message.set(message);
 		this.hasInputText.set(hasInputText);
@@ -37,6 +51,8 @@ export class LoadingoverlayService {
 		this.inputPlaceholder.set(inputPlaceholder);
 		this.inputMaxLength.set(inputMaxLength);
 		this.subscribeTextChange = inputTextChange;
+		this.buttons.set(buttons);
+		this.subscribeButtonClicked = buttonClicked;
 		this.loadingOverlayVisible.set(true);
 		this.inputInvalid.set(false);
 	}

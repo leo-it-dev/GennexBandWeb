@@ -1,4 +1,4 @@
-const express = require('express')
+import * as express from 'express';
 const https = require('https')
 const path = require('path');
 const compression = require('compression');
@@ -11,6 +11,8 @@ import { exit } from 'process';
 import { ApiModule } from './api_module';
 import { DeploymentType } from './deployment';
 import * as ssl from './framework/ssl';
+import * as jwt from './framework/jwt';
+import * as agent from './modules/agent/api_agent';
 import { getLogger } from './logger';
 import { ApiModuleConfig } from './modules/config/api_config';
 import { ApiModuleContact } from './modules/contact/api_contact';
@@ -18,6 +20,9 @@ import { ApiModuleGallery } from './modules/gallery/api_gallery';
 import { ApiModuleVideos } from './modules/videos/api_videos';
 import { RepeatedTaskScheduler } from './framework/scheduled_events';
 import { ApiModuleCalendar } from './modules/calendar/api_calendar';
+import { ApiModuleSubscribe } from './modules/subscribe/api_subscribe';
+import { ApiModuleAgentHandler } from './modules/agent/api_agent';
+import { AgentTrigger } from './modules/agent/agent';
 
 let mainLogger = getLogger("index");
 
@@ -54,6 +59,7 @@ if (fs.existsSync(filePathFrontendDev)) {
 }
 
 ssl.initSSL();
+jwt.initJwtBackend();
 repeatedTaskScheduler.schedulerInit();
 
 const filePathFrontend = deploymentType == DeploymentType.PRODUCTION ? filePathFrontendDepl : filePathFrontendDev;
@@ -68,12 +74,6 @@ app.use(express.json())
 
 // serve static files in frontend dist folder.
 app.use(express.static(path.join(__dirname, filePathFrontend)));
-
-// /{*splat}
-// for default requests (to /) serve index.html
-app.get("/", (req: Request, res: Response) => {
-    res.sendFile(path.join(__dirname, path.join(filePathFrontend, 'index.html')));
-});
 
 function shouldCompress(req, res) {
     if (req.headers['x-no-compression']) {
@@ -138,8 +138,9 @@ async function initializeModules() {
         ApiModuleGallery,
         ApiModuleConfig,
         ApiModuleContact,
-        ApiModuleVideos,
-        ApiModuleCalendar
+        ApiModuleCalendar,
+        ApiModuleSubscribe,
+        ApiModuleAgentHandler
     ]
 
     let moduleLoaderLogger = getLogger('module-loader');
@@ -159,6 +160,12 @@ async function initializeModules() {
 
 initializeModules();
 
+// /{*splat}
+// for default requests (to /) serve index.html
+app.get(/^(?!\/module).*/, (req: Request, res: Response) => {
+    res.sendFile(path.join(__dirname, path.join(filePathFrontend, 'index.html')));
+});
+
 export function getApiModule<T = ApiModule>(apiModuleClass: { new(...args: any[]): T }): T | undefined {
     for (let apiModule of apiModulesInstances) {
         if (apiModule instanceof apiModuleClass) {
@@ -174,4 +181,8 @@ export function getFilePathFrontend() {
 
 export function getRepeatedScheduler(): RepeatedTaskScheduler {
     return repeatedTaskScheduler;
+}
+
+export function runAgentTrigger(trigger: AgentTrigger) {
+    getApiModule(ApiModuleAgentHandler).runTrigger(trigger);
 }

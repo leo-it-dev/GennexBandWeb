@@ -1,5 +1,5 @@
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { VMaxLength, VRequired, InputVerifierTemplate } from '../../../api_common/verifier';
+import { VMaxLength, VRequired, InputVerifierTemplate, VEMailAddress } from '../../../api_common/verifier';
 
 export function formBuilderGroupFromInputVerifierTemplate(formBuilder: FormBuilder, verifierTemplate: InputVerifierTemplate): FormGroup {
     let fields: { [key:string]:any } = {};
@@ -14,6 +14,8 @@ export function formBuilderGroupFromInputVerifierTemplate(formBuilder: FormBuild
                 fieldValidatorsSync.push( Validators.required );
             } else if (validator instanceof VMaxLength) {
                 fieldValidatorsSync.push( Validators.maxLength(validator.maxLength) )
+            } else if (validator instanceof VEMailAddress) {
+                fieldValidatorsSync.push( Validators.email )
             } else {
                 throw Error("Tried to convert InputVerifierTemplate to formBuilder group but this verifier is not yet implemented in frontend: " + (typeof validator) + "!");
             }

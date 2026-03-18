@@ -22,27 +22,31 @@ export class VideoListComponent {
 		console.log("Video list initialized!");
 
 		effect(() => {
-			let videoCount = this.videoService.getVideoList()().map(p => p.videos.length).reduce((p, n) => p + n);
-			this.scrollCommunication.stickyHeight = computed(() => videoCount * this.vhToPixels(parseInt(this.heightPerElement)) + "px");
-			
-			console.log("Updated sticky height based on new element count: ", videoCount);
+			if (this.videoService.getVideoList()().length > 0) {
+				let videoCount = this.videoService.getVideoList()().map(p => p.videos.length).reduce((p, n) => p + n);
+				this.scrollCommunication.stickyHeight = computed(() => videoCount * this.vhToPixels(parseInt(this.heightPerElement)) + "px");
+
+				console.log("Updated sticky height based on new element count: ", videoCount);
+			}
 		});
 
 		document.addEventListener("scroll", e => {
 			e.preventDefault();
-			let videoList = this.videoService.getVideoList();
-			let videoCount = videoList().map(p => p.videos.length).reduce((p, n) => p + n);
-			let heightPerElement = this.scrollCommunication.scrollBlockHeight() / (videoCount);
-			let nthElement = Math.round(this.scrollCommunication.scrollTop() / heightPerElement);
-			let snappingScrollTop = (nthElement / videoCount) * this.scrollCommunication.scrollBlockHeight();
-			this.scrollCommunication.scrollOffset.set(snappingScrollTop);
+			let videoList = this.videoService.getVideoList()();
+			if (videoList.length > 0) {
+				let videoCount = videoList.map(p => p.videos.length).reduce((p, n) => p + n);
+				let heightPerElement = this.scrollCommunication.scrollBlockHeight() / (videoCount);
+				let nthElement = Math.round(this.scrollCommunication.scrollTop() / heightPerElement);
+				let snappingScrollTop = (nthElement / videoCount) * this.scrollCommunication.scrollBlockHeight();
+				this.scrollCommunication.scrollOffset.set(snappingScrollTop);
 
-			if (this.videoElementsDOM) {
-				for (let i = 0; i < this.videoElementsDOM.length; i++) {
-					if (nthElement == i) {
-						this.videoElementsDOM.get(i)?.nativeElement.classList.add("visible")
-					} else {
-						this.videoElementsDOM.get(i)?.nativeElement.classList.remove("visible")
+				if (this.videoElementsDOM) {
+					for (let i = 0; i < this.videoElementsDOM.length; i++) {
+						if (nthElement == i) {
+							this.videoElementsDOM.get(i)?.nativeElement.classList.add("visible")
+						} else {
+							this.videoElementsDOM.get(i)?.nativeElement.classList.remove("visible")
+						}
 					}
 				}
 			}

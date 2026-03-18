@@ -1,5 +1,7 @@
 import { AfterViewInit, Component, ElementRef, HostListener, QueryList, Renderer2, signal, ViewChild, ViewChildren, WritableSignal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { CalendarListComponent } from './calendar-list/calendar-list/calendar-list.component';
+import { ContactChannelsComponent } from './contact-channels/contact-channels.component';
 import { ContactComponent } from './contact/contact.component';
 import { DynamicBackgroundImageComponent } from './dynamic-background-image/dynamic-background-image.component';
 import { GalleryComponent } from './gallery/gallery.component';
@@ -11,8 +13,6 @@ import { LoadingoverlayService } from './services/loadingoverlay.service';
 import { MP4FrameExtractionService } from './services/mp4frame/mp4-frame-extraction.service';
 import { SlotComponent } from './slot/slot.component';
 import { VideoListComponent } from './video-list/video-list.component';
-import { ContactChannelsComponent } from './contact-channels/contact-channels.component';
-import { CalendarListComponent } from './calendar-list/calendar-list/calendar-list.component';
 
 @Component({
 	selector: 'app-root',
@@ -28,11 +28,11 @@ export class AppComponent implements AfterViewInit {
 		public loadingOverlay: LoadingoverlayService
 	) { }
 
-	@ViewChild('canv')
-	private canvas: ElementRef | undefined = undefined;
+	// @ViewChild('canv')
+	// private canvas: ElementRef | undefined = undefined;
 
-	@ViewChild('absLogoContainer')
-	private scrollTrigger: ElementRef | undefined = undefined;
+	// @ViewChild('absLogoContainer')
+	// private scrollTrigger: ElementRef | undefined = undefined;
 
 	contactInfo = [
 		"El1",
@@ -51,6 +51,9 @@ export class AppComponent implements AfterViewInit {
 
 	@ViewChildren('fadeScrollItemContainer')
 	private fadeScrollItemContainers: ElementRef[] | undefined = undefined;
+
+	@ViewChild('aboutUsText')
+	private aboutUsText: ElementRef | undefined = undefined;
 
 	@ViewChildren('backgroundTrigger')
 	private backgroundTriggerList!: QueryList<ElementRef>;
@@ -99,7 +102,12 @@ export class AppComponent implements AfterViewInit {
 					let elRect = (el as HTMLElement).getBoundingClientRect();
 					let scrollPercentTop = Math.min(1.0, Math.max(0.0, 1.0 - (elRect.top - parseInt(getComputedStyle(el).top)) / 200));
 					let scrollPercentBtm = (cont.nativeElement.getBoundingClientRect().bottom - elRect.bottom) / 200;
-					this.renderer.setStyle(el, 'opacity', Math.min(scrollPercentTop, scrollPercentBtm).toString());
+					let scrollPercent = Math.min(scrollPercentTop, scrollPercentBtm);
+					this.renderer.setStyle(el, 'opacity', scrollPercent.toString());
+
+					if (el == els[0]) {
+						this.renderer.setStyle(this.aboutUsText?.nativeElement, 'backdrop-filter', 'blur(' + (scrollPercentTop * 10).toString() + 'px)');
+					}
 				}
 			}
 		});

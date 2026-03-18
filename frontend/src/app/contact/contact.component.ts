@@ -48,6 +48,7 @@ export class ContactComponent {
 						res(ContactFormularResponse.EMAIL_VERIFICATION_REQUIRED);
 						return;
 					case ContactFormularStatusCodes.INTERNAL_SERVER_ERROR:
+					case ContactFormularStatusCodes.MALFORMED_REQUEST:
 						throw new Error("Error during online backend request: " + dat.result);
 				}
 			}).catch(err => {

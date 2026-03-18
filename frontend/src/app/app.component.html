@@ -28,6 +28,9 @@
 				<a href="#contact">
 					<li>Contact</li>
 				</a>
+				<a href="#channels">
+					<li>Unsere Kanäle</li>
+				</a>
 			</ul>
 		</nav>
 	</div>
@@ -37,7 +40,7 @@
 		<div id="about-us-content">
 			<app-section-header id="about-us-header" title="Über uns"></app-section-header>
 			<img id="about-us-logo" src="/images/logo0014.png" />
-			<div id="about-us-text">
+			<div id="about-us-text" #aboutUsText>
 
 				<p class="fade-scroll-item"> </p>
 				<p class="fade-scroll-item-spacer"></p>
@@ -121,7 +124,7 @@
 	<!-- <app-newsletter id="newsletter"></app-newsletter> -->
 	<app-contact id="contact"></app-contact>
 	<div class="halfSpacer"></div>
-	<app-contact-channels></app-contact-channels>
+	<app-contact-channels id="channels"></app-contact-channels>
 	<div class="halfSpacer"></div>
 
 </div>
@@ -132,7 +135,9 @@
 	[maxInputLength]="this.loadingOverlay.inputMaxLength"
 	(inputTextChange)="this.loadingOverlay.inputTextChange($event)"
 	[inputMarkedErronous]="this.loadingOverlay.inputInvalid"
-	[videoShouldRepeat]="this.loadingOverlay.videoShouldRepeat"></app-loadingoverlay>
+	[videoShouldRepeat]="this.loadingOverlay.videoShouldRepeat"
+	[buttons]="this.loadingOverlay.buttons"
+	(buttonClicked)="this.loadingOverlay.buttonClicked($event)"></app-loadingoverlay>
 }
 
 <footer>
@@ -159,4 +164,4 @@
 </div>
 }
 
-<router-outlet />
+<router-outlet></router-outlet>
