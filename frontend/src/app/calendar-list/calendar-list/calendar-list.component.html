@@ -4,24 +4,57 @@
 
 <div id="calendar-entries">
     @if(this.elements.length == 0) {
-        <h1 id="no-gigs-planned">🥁 Aktuell haben wir keine Events geplant. Schau doch gerne später wieder vorbei 🎸 </h1>
+    <h1 id="no-gigs-planned">🥁 Aktuell haben wir keine Events geplant. Schau doch gerne später wieder vorbei 🎸 </h1>
     }
 
     @for(entry of this.elements; track entry.entry.id) {
-        <div class="calendar-entry">
-            <div id="section-left">
+    <div class="calendar-entry" (click)="this.bigImageEntry.set(entry)">
+        <div id="section-left">
 
-                @if (entry.entry.location !== undefined) {
-                    <iframe [src]="entry.url" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-                }
+            @if (entry.entry.location !== undefined) {
+            <iframe [src]="entry.url" style="border:0;" allowfullscreen="" loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"></iframe>
+            }
 
-            </div>
-            <div id="section-right">
-                <h2 class="calendar-entry-title">{{entry.entry.title}}</h2>
-                <h3 class="calendar-entry-descr">{{entry.entry.description}}</h3>
-                <h3 class="calendar-entry-location">{{entry.entry.locationString}}</h3>
-                <h3 class="calendar-entry-date">{{formatDate(entry.entry.date)}}</h3>
-            </div>
         </div>
+        <div id="section-right">
+            <h2 class="calendar-entry-title">{{entry.entry.title}}</h2>
+            <h3 class="calendar-entry-descr">{{entry.entry.description}}</h3>
+            <h3 class="calendar-entry-location">{{entry.entry.locationString}}</h3>
+            <h3 class="calendar-entry-date">{{formatDate(entry.entry.date)}}</h3>
+        </div>
+    </div>
     }
 </div>
+
+
+@if(this.bigImageEntry() != undefined) {
+<div id="calendar-entry-big-view">
+    <div id="calendar-entry-big-blur">
+        <div id="calendar-entry-big-view-content">
+            @if (this.bigImageEntry()!.entry.location !== undefined) {
+            <iframe [src]="this.bigImageEntry()!.url" style="border:0;" allowfullscreen="" loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"></iframe>
+            }
+
+            <div id="split-view">
+                <div>
+                    <h2 class="calendar-entry-title">{{this.bigImageEntry()!.entry.title}}</h2>
+                    <h3 class="calendar-entry-descr">{{this.bigImageEntry()!.entry.description}}</h3>
+                    <h3 class="calendar-entry-location">{{this.bigImageEntry()!.entry.locationString}}</h3>
+                    <h3 class="calendar-entry-date">{{formatDate(this.bigImageEntry()!.entry.date)}}</h3>
+                </div>
+                <div>
+                    @for(attachment of this.bigImageEntry()!.entry.attachments; track attachment.url; let idx = $index) {
+                        <h1>{{attachment.title}}</h1>
+                        <h1>{{attachment.mimeType}}</h1>
+                        <iframe [src]="this.bigImageEntry()!.attachmentURLs[idx]"></iframe>
+                    }
+                </div>
+            </div>
+
+            <h1 id="calendarBigImageClose" (click)="this.bigImageEntry.set(undefined);">✕</h1>
+        </div>
+    </div>
+</div>
+}

@@ -1,7 +1,8 @@
-import { AfterViewInit, Component, computed, ElementRef, QueryList, Signal, signal, ViewChild, ViewChildren, WritableSignal } from '@angular/core';
+import { AfterViewInit, Component, computed, effect, ElementRef, QueryList, Signal, signal, ViewChild, ViewChildren, WritableSignal } from '@angular/core';
 import { SectionHeaderComponent } from '../section-header/section-header.component';
 import { SlotComponent } from '../slot/slot.component';
 import { DiamondImageMapComponent } from '../diamond-image-map/diamond-image-map.component';
+import { PageControlService } from '../services/page-control.service';
 
 @Component({
 	selector: 'app-gallery',
@@ -25,9 +26,14 @@ export class GalleryComponent implements AfterViewInit {
 
 	public thumbnailURLPath = "";
 	public bigURLPath = "";
-	public showBigGallery = false;
+	public showBigGallery: WritableSignal<boolean> = signal(false);
 
-	constructor(public elRef: ElementRef) {
+	public showBigImage: WritableSignal<string> = signal("");
+
+	constructor(public elRef: ElementRef, private pageControl: PageControlService) {
+		effect(() => {
+			this.pageControl.preventBodyScrolling.set(this.showBigGallery() || this.showBigImage() != "");
+		});
 	}
 
 	setClass(obj: HTMLElement, className: string, set: boolean) {
@@ -40,7 +46,6 @@ export class GalleryComponent implements AfterViewInit {
 	}
 
 	ngAfterViewInit(): void {
-
 		fetch(document.location.origin + "/module/gallery/gallery", {
 			method: "GET",
 			headers: {
@@ -73,24 +78,12 @@ export class GalleryComponent implements AfterViewInit {
 	}
 
 	openBigImage(url: string) {
-		if (this.bigImageViewer && this.bigImage) {
-			let thumbBaseName = new URL("https://" + location.host + url).pathname.split("/").pop();
-			let bigFileName = this.images()[thumbBaseName ?? ""];
-			(this.bigImageViewer.nativeElement as HTMLImageElement).src = "";
-			setTimeout(() => {
-				(this.bigImageViewer?.nativeElement as HTMLImageElement).src = this.bigURLPath + "/" + bigFileName;
-				(this.bigImage?.nativeElement as HTMLElement).classList.add("showBigImage");
-			}, 10);
-		}
+		let thumbBaseName = new URL("https://" + location.host + url).pathname.split("/").pop();
+		let bigFileName = this.images()[thumbBaseName ?? ""];
+		this.showBigImage.set(this.bigURLPath + "/" + bigFileName);
 	}
 
 	closeBigImage(evt: Event) {
-		if (this.bigImage) {
-			(this.bigImage.nativeElement as HTMLElement).classList.remove("showBigImage");
-		}
-	}
-
-	openBigGallery() {
-		this.showBigGallery = true;
+		this.showBigImage.set("");
 	}
 }

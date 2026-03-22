@@ -1,10 +1,16 @@
-import { Agent, AgentTrigger } from "../modules/agent/agent";
+import { Agent } from "../modules/agent/agent";
+import { AgentTrigger, AgentTriggerCalendarCreate, AgentTriggerCalendarDelete, AgentTriggerCalendarModify } from "../modules/agent/agent_trigger";
+import * as mailer from '../mailer';
+import * as config from 'config';
+import { MailNewEventMessage } from "../email/event-new-message";
 
 export class AgentSendEventNotification extends Agent {
 
     constructor() {
         super([
-            AgentTrigger.EVENT_CALENDAR_UPDATED
+            AgentTriggerCalendarCreate,
+            AgentTriggerCalendarDelete,
+            AgentTriggerCalendarModify,
         ]);
     }
 
@@ -13,10 +19,14 @@ export class AgentSendEventNotification extends Agent {
     }
     
     initialize() {
-        this.logger().info("Agent got initialized 🥳");
     }
 
     triggeredBy(trigger: AgentTrigger) {
-        this.logger().info("Hello from Agent, we just received a brand new trigger event to process 👀: ", trigger);
+        if (trigger instanceof AgentTriggerCalendarCreate) {
+            for(let entry of trigger.calendarEntries) {
+                let newEventMail = new MailNewEventMessage(entry, "bla");
+                mailer.sendEmail([config.get('mail.SMTP_USERNAME')], newEventMail);
+            }
+        }
     }
 }

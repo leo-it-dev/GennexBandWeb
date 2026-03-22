@@ -5,6 +5,8 @@ import { ApiModule } from "../../api_module";
 import { generateContactEmailVerifyCode, validateContactEmailVerifyCode } from "../../contact_verification_token";
 import * as mailer from '../../mailer';
 import { CaptchaVerificationResult, verifyCaptcha } from '../../framework/captcha_helper';
+import { MailContactNewMessage } from '../../email/contact-new-message';
+import { MailContactVerificationCode } from '../../email/contact-verification-code-message';
 
 export class ApiModuleContact extends ApiModule {
 
@@ -93,14 +95,8 @@ export class ApiModuleContact extends ApiModule {
 
             switch (finalAction) {
                 case ContinuationAction.FINAL_SEND_MESSAGE:
-                    let finalMessageStr = "Neue Anfrage über Kontaktformular: \
-" + req.body.firstName + " " + req.body.surName + "<br/> \
-Email Addresse: " + req.body.email + "<br/>\
-Anfrage: --------<br/>\
-" + req.body.message + "<br/>\
---------------------<br/>";
-
-                    await mailer.sendEmail([config.get('mail.SMTP_USERNAME')], "(Web) Kontaktanfrage", finalMessageStr, finalMessageStr);
+                    let mail = new MailContactNewMessage(req.body.firstName, req.body.surName, req.body.email, req.body.message);
+                    await mailer.sendEmail([config.get('mail.SMTP_USERNAME')], mail);
 
                     return {
                         error: undefined,
@@ -109,7 +105,8 @@ Anfrage: --------<br/>\
                     }
                 case ContinuationAction.SEND_EMAIL_VERIFICATION_MESSAGE:
                     let verificationCode = generateContactEmailVerifyCode(req.body.email);
-                    await mailer.sendEmail([req.body.email], "Kontakt: Bitte verifiziere deine E-Mail Addresse!", "Dein Verifikationscode: " + verificationCode, "<h5> Dein Verifikations Code: </h5><center><br><h1>" + verificationCode + "</h1></center>");
+                    let mail2 = new MailContactVerificationCode(verificationCode);
+                    await mailer.sendEmail([req.body.email], mail2);
 
 
                     return {

@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, HostListener, QueryList, Renderer2, signal, ViewChild, ViewChildren, WritableSignal } from '@angular/core';
+import { AfterViewInit, Component, DOCUMENT, effect, ElementRef, HostListener, Inject, QueryList, Renderer2, signal, ViewChild, ViewChildren, WritableSignal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { CalendarListComponent } from './calendar-list/calendar-list/calendar-list.component';
 import { ContactChannelsComponent } from './contact-channels/contact-channels.component';
@@ -13,6 +13,7 @@ import { LoadingoverlayService } from './services/loadingoverlay.service';
 import { MP4FrameExtractionService } from './services/mp4frame/mp4-frame-extraction.service';
 import { SlotComponent } from './slot/slot.component';
 import { VideoListComponent } from './video-list/video-list.component';
+import { PageControlService } from './services/page-control.service';
 
 @Component({
 	selector: 'app-root',
@@ -25,8 +26,23 @@ export class AppComponent implements AfterViewInit {
 
 	constructor(private renderer: Renderer2,
 		private mp4Extract: MP4FrameExtractionService,
-		public loadingOverlay: LoadingoverlayService
-	) { }
+		public loadingOverlay: LoadingoverlayService,
+		public pageControl: PageControlService,
+		@Inject(DOCUMENT)
+		private document: Document
+	) {
+		effect(() => {
+			if (this.pageControl.preventBodyScrolling()) {
+				this.document.body.classList.add("preventBodyScrolling");
+			} else {
+				this.document.body.classList.remove("preventBodyScrolling");
+			}
+		});
+
+		effect(() => {
+			this.pageControl.preventBodyScrolling.set(this.loadingOverlay.loadingOverlayVisible());
+		});
+	}
 
 	// @ViewChild('canv')
 	// private canvas: ElementRef | undefined = undefined;

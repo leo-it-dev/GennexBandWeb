@@ -1,5 +1,6 @@
 const nodemailer = require("nodemailer");
 import * as config from 'config';
+import { MailTemplate } from './email/mail-template';
 
 // Create a transporter using Ethereal test credentials.
 // For production, replace with your actual SMTP server details.
@@ -16,15 +17,15 @@ const transporter = nodemailer.createTransport({
 });
 
 // Send an email using async/await
-export async function sendEmail(destinationAddress: string[], subject: string, text: string, html: string) {
-	console.log("Try to send mail:", destinationAddress, subject, text, html);
+export async function sendEmail(destinationAddress: string[], mail: MailTemplate) {
+	console.log("Try to send mail:", destinationAddress, mail.getSubject(), mail.getTextContent(), mail.getHtmlContent());
 
 	const info = await transporter.sendMail({
 		from: config.get('mail.MAIL_FROM_HEADER'),
 		to: destinationAddress.join(', '),
-		subject: subject,
-		text: text, // Plain-text version of the message
-		html: html, // HTML version of the message
+		subject: mail.getSubject(),
+		text: mail.getTextContent(), // Plain-text version of the message
+		html: mail.getHtmlContent(), // HTML version of the message
 	});
 	console.log("Message sent:", info.messageId);
 }

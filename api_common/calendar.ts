@@ -2,16 +2,36 @@ import { ApiModuleInterfaceB2F, ApiModuleInterfaceF2B } from "./backend_call"
 
 /* Api endpoint calendar */
 
+export enum CalendarEntryState {
+    CREATED = "CREATED",
+    MODIFIED = "MODIFIED",
+    DELETED = "DELETED",
+    DEFAULT = "DEFAULT"
+}
+
+export enum Visibility {
+    PRIVATE = "PRIVATE", PUBLIC = "PUBLIC"
+}
+
+export type Attachment = {
+    title: string;
+    url: string;
+    mimeType: string;
+}
+
 export type CalendarEntry = {
     title: string,
     description: string,
     date: Date,
     location?: Location,
     locationString: string,
-    id: string
+    id: string,
+    state: CalendarEntryState,
+    visibility: Visibility
+    attachments: Attachment[]
 }
 
-export type CalendarList = {
+export type Calendar = {
     entries: CalendarEntry[]
 }
 
@@ -21,4 +41,4 @@ export type Location = {
 }
 
 export interface ApiInterfaceCalendarIn extends ApiModuleInterfaceF2B { };
-export interface ApiInterfaceCalendarOut extends ApiModuleInterfaceB2F { calendar: CalendarList };
+export interface ApiInterfaceCalendarOut extends ApiModuleInterfaceB2F { calendar: Calendar };

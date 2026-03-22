@@ -3,19 +3,21 @@
 <div id="mask">
     <app-diamond-image-map [images]="this.thumbnailImageURLs" [slideshow]="true" (imageClicked)="openBigImage($event)" [parentContainer]="this.elRef" [heightCrop]="true"></app-diamond-image-map>
 </div>
-<button class="action" (click)="openBigGallery()">Zeig mir mehr →</button>
+<button class="action" (click)="this.showBigGallery.set(true)">Zeig mir mehr →</button>
 
 <div id="background-border"></div>
 
-@if(this.showBigGallery) {
+@if(this.showBigGallery()) {
 <div class="overlay">
-    <app-slot title="Galerie" [defaultScroll]="true" [hasCloseButton]="true" (closeEvent)="this.showBigGallery=false" [contentNoPadding]="true">
+    <app-slot title="Galerie" [defaultScroll]="true" [hasCloseButton]="true" (closeEvent)="this.showBigGallery.set(false)" [contentNoPadding]="true">
         <app-diamond-image-map [images]="this.thumbnailImageURLs" [slideshow]="false" (imageClicked)="openBigImage($event)" [parentContainer]="this.elRef" [heightCrop]="false"></app-diamond-image-map>
     </app-slot>
 </div>
 }
 
+@if(this.showBigImage() != "") {
 <div id="galleryBigImage" #bigImage>
-    <img #bigImageViewer src="" id="galleryBigImageViewer" (click)="closeBigImage($event)">
+    <img #bigImageViewer [src]="this.showBigImage()" id="galleryBigImageViewer" (click)="closeBigImage($event)">
     <h1 id="galeryBigImageClose" (click)="closeBigImage($event)">✕</h1>
 </div>
+}

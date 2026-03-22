@@ -1,28 +1,19 @@
 import { getLogger } from "../../logger";
-
-export enum AgentTrigger {
-    TIME_24H = "24h",
-    TIME_12H = "12h",
-    TIME_4H = "4h",
-    TIME_1H = "1h",
-    TIME_5M = "5m",
-    TIME_1M = "1m",
-    EVENT_CALENDAR_UPDATED = "CALENDAR_UPDATE",
-}
+import { AgentTrigger } from "./agent_trigger";
 
 export abstract class Agent {
 
-    private triggers: AgentTrigger[];
+    private triggers: (new (...args) => AgentTrigger)[];
 
     private _logger = getLogger("agent-" + this.name());
 
-    constructor(triggers: AgentTrigger[]) {
+    constructor(triggers: (new (...args) => AgentTrigger)[]) {
         this.triggers = triggers;
         this.logger().info("Initialized new agent!", { agent: this.name(), triggers: this.triggers });
     }
 
     public processTrigger(trigger: AgentTrigger) {
-        if (this.triggers.includes(trigger)) {
+        if (this.triggers.find(t => trigger instanceof t) != undefined) {
             this.triggeredBy(trigger);
         }
     }

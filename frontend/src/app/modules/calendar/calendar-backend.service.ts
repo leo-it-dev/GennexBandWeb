@@ -1,5 +1,5 @@
 import { Injectable, Injector, Signal, signal, WritableSignal } from '@angular/core';
-import { ApiInterfaceCalendarIn, ApiInterfaceCalendarOut, CalendarEntry, CalendarList } from '../../../../../api_common/calendar';
+import { ApiInterfaceCalendarIn, ApiInterfaceCalendarOut, Calendar, CalendarEntry } from '../../../../../api_common/calendar';
 import { BackendService } from '../../api/backend.service';
 
 @Injectable({
@@ -9,7 +9,7 @@ export class CalendarBackendService extends BackendService {
 
 	public static API_URL_CALENDAR = "/module/calendar/calendar"
 
-	private calendarData: WritableSignal<CalendarList> = signal({entries: []});
+	private calendarData: WritableSignal<Calendar> = signal({entries: []});
 
 	name(): string {
 		return "Calendar";
@@ -31,7 +31,7 @@ export class CalendarBackendService extends BackendService {
 		});
 	};
 
-	public getCalendarData(): Signal<CalendarList> {
+	public getCalendarData(): Signal<Calendar> {
 		return this.calendarData;
 	}
 }

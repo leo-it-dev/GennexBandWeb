@@ -2,9 +2,9 @@ import * as express from 'express';
 const https = require('https')
 const path = require('path');
 const compression = require('compression');
-const fs = require('fs');
 const app = express();
 
+import * as fs from 'fs';
 import * as config from 'config';
 import { Request, Response } from 'express';
 import { exit } from 'process';
@@ -22,7 +22,7 @@ import { RepeatedTaskScheduler } from './framework/scheduled_events';
 import { ApiModuleCalendar } from './modules/calendar/api_calendar';
 import { ApiModuleSubscribe } from './modules/subscribe/api_subscribe';
 import { ApiModuleAgentHandler } from './modules/agent/api_agent';
-import { AgentTrigger } from './modules/agent/agent';
+import { AgentTrigger } from './modules/agent/agent_trigger';
 
 let mainLogger = getLogger("index");
 
@@ -115,17 +115,26 @@ function initializeDevelopmentBuildEnvironment(projectRoot: string) {
     let copyPaths = [
         {
             src: path.join(projectRoot, 'ssl'),
-            dest: path.join(runtimeRoot, 'ssl')
+            dest: path.join(runtimeRoot, 'ssl'),
+            forceOverwrite: true
         },
         {
             src: path.join(projectRoot, 'framework', 'databases'),
-            dest: path.join(runtimeRoot, 'framework', 'databases')
+            dest: path.join(runtimeRoot, 'framework', 'databases'),
+            forceOverwrite: false
+        },
+        {
+            src: path.join(projectRoot, 'email', 'templates'),
+            dest: path.join(runtimeRoot, 'email', 'templates'),
+            forceOverwrite: true
         }
     ]
 
     for (let copyPath of copyPaths) {
-        logger.info("    - Copying path ", {src: copyPath.src, dst: copyPath.dest});
-        fs.cpSync(copyPath.src, copyPath.dest, { recursive: true });
+        if (!fs.existsSync(copyPath.dest) || copyPath.forceOverwrite) {
+            logger.info("    - Copying path ", { src: copyPath.src, dst: copyPath.dest });
+            fs.cpSync(copyPath.src, copyPath.dest, { recursive: true });
+        }
     }
 
     logger.info("--- Preparing development environment finished ---");
@@ -185,4 +194,9 @@ export function getRepeatedScheduler(): RepeatedTaskScheduler {
 
 export function runAgentTrigger(trigger: AgentTrigger) {
     getApiModule(ApiModuleAgentHandler).runTrigger(trigger);
+}
+
+export function getBaseURL() {
+    let httpsPort = config.get("generic.HTTPS_PORT");
+    return "https://" + config.get("generic.SERVE_DOMAIN") + (httpsPort != 443 ? ":" + httpsPort : "") + "/";
 }

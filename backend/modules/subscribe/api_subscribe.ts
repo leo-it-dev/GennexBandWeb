@@ -7,6 +7,10 @@ import * as mailer from '../../mailer';
 import { CaptchaVerificationResult, verifyCaptcha } from '../../framework/captcha_helper';
 import { SqlUpdate } from '../../framework/sqlite_database';
 import { generateJWTtoken, validateJWTtokenExtractPayload } from '../../framework/jwt';
+import { getBaseURL } from '../..';
+import { MailNewsletterSubscriptionSuccess } from '../../email/newsletter-subscription-success';
+import { MailNewsletterVerifyCode } from '../../email/newsletter-verification-code-message';
+import { MailNewsletterEndSubscription } from '../../email/newsletter-end-subscription-message';
 
 export class ApiModuleSubscribe extends ApiModule {
 
@@ -91,12 +95,10 @@ export class ApiModuleSubscribe extends ApiModule {
     }
 
     generateUnsubscribeUrl(email: string) {
-        let httpsPort = config.get("generic.HTTPS_PORT");
-        return "https://" + config.get("generic.SERVE_DOMAIN") + (httpsPort != 443 ? ":" + httpsPort : "") + "/unsubscribe?t=" + this.emailToToken(email);
+        return getBaseURL() + "unsubscribe?t=" + this.emailToToken(email);
     }
     getSubscribeUrl() {
-        let httpsPort = config.get("generic.HTTPS_PORT");
-        return "https://" + config.get("generic.SERVE_DOMAIN") + (httpsPort != 443 ? ":" + httpsPort : "") + "/#channels";
+        return getBaseURL() + "#channels";
     }
 
     registerEndpoints(): void {
@@ -195,20 +197,14 @@ export class ApiModuleSubscribe extends ApiModule {
 
             switch (finalAction) {
                 case ContinuationAction.FINAL_SEND_MESSAGE:
-                    // let finalMessageStr = "TODO";
-                    // await mailer.sendEmail([config.get('mail.SMTP_USERNAME')], "(Web) Kontaktanfrage", finalMessageStr, finalMessageStr);
                     try {
                         await this.addSubscription(req.body.email);
 
                         console.log("Successfully got subscription: ", req.body);
 
                         let unsubscribe = this.generateUnsubscribeUrl(req.body.email);
-                        await mailer.sendEmail(
-                            [req.body.email],
-                            "Newsletter: Anmeldung erfolgreich!",
-                            "Du wurdest erfolgreich zu unserem Newsletter angemeldet. Newsletter hier abmelden: " + unsubscribe,
-                            "<h3>Du wurdest erfolgreich zu unserem Newsletter angemeldet.<br><h5><a href=\"" + unsubscribe + "\">Hier Newsletter abbestellen</a></h5></h3>"
-                        );
+                        let mail = new MailNewsletterSubscriptionSuccess(unsubscribe);
+                        await mailer.sendEmail([req.body.email], mail);
                         return {
                             error: undefined,
                             statusCode: 200,
@@ -224,7 +220,8 @@ export class ApiModuleSubscribe extends ApiModule {
                     }
                 case ContinuationAction.SEND_EMAIL_VERIFICATION_MESSAGE:
                     let verificationCode = generateContactEmailVerifyCode(req.body.email);
-                    await mailer.sendEmail([req.body.email], "Newsletter: Bitte verifiziere deine E-Mail Addresse!", "Dein Verifikationscode: " + verificationCode, "<h5> Dein Verifikations Code: </h5><center><br><h1>" + verificationCode + "</h1></center>");
+                    let mail = new MailNewsletterVerifyCode(verificationCode);
+                    await mailer.sendEmail([req.body.email], mail);
 
                     return {
                         error: undefined,
@@ -262,12 +259,8 @@ export class ApiModuleSubscribe extends ApiModule {
                         await this.removeSubscription(email)
                         let subscribeUrl = this.getSubscribeUrl();
 
-                        await mailer.sendEmail(
-                            [email],
-                            "Newsletter: Abmeldung erfolgreich!",
-                            "Du wurdest erfolgreich von unserem Newsletter abgemeldet. Solltest Du zukünftig wieder Nachrichten von uns wünschen, kannst Du den Newsletter wieder direkt auf unserer Seite abonnieren: " + subscribeUrl,
-                            "<h3>Du wurdest erfolgreich von unserem Newsletter abgemeldet.<br>Solltest Du zukünftig wieder Nachrichten von uns wünschen, kannst Du den Newsletter wieder direkt auf unserer Seite abonnieren: <a href=\"" + subscribeUrl + "\">Hier zum Newsletter anmelden</a></h3>"
-                        );
+                        let mail = new MailNewsletterEndSubscription(subscribeUrl);
+                        await mailer.sendEmail([email], mail);
 
                         return {
                             error: undefined,
