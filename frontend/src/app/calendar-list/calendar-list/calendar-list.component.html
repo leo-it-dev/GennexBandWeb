@@ -8,9 +8,8 @@
     }
 
     @for(entry of this.elements; track entry.entry.id) {
-    <div class="calendar-entry" (click)="this.bigImageEntry.set(entry)">
+    <div class="calendar-entry" (click)="this.bigImageEntry.set(entry);">
         <div id="section-left">
-
             @if (entry.entry.location !== undefined) {
             <iframe [src]="entry.url" style="border:0;" allowfullscreen="" loading="lazy"
                 referrerpolicy="no-referrer-when-downgrade"></iframe>
@@ -33,7 +32,7 @@
     <div id="calendar-entry-big-blur">
         <div id="calendar-entry-big-view-content">
             @if (this.bigImageEntry()!.entry.location !== undefined) {
-            <iframe [src]="this.bigImageEntry()!.url" style="border:0;" allowfullscreen="" loading="lazy"
+            <iframe id="calendar-entry-big-map" [src]="this.bigImageEntry()!.url" style="border:0;" allowfullscreen="" loading="lazy"
                 referrerpolicy="no-referrer-when-downgrade"></iframe>
             }
 
@@ -45,11 +44,16 @@
                     <h3 class="calendar-entry-date">{{formatDate(this.bigImageEntry()!.entry.date)}}</h3>
                 </div>
                 <div>
-                    @for(attachment of this.bigImageEntry()!.entry.attachments; track attachment.url; let idx = $index) {
-                        <h1>{{attachment.title}}</h1>
-                        <h1>{{attachment.mimeType}}</h1>
-                        <iframe [src]="this.bigImageEntry()!.attachmentURLs[idx]"></iframe>
+                    @for(attachment of this.bigImageEntry()!.attachmentURLs; track attachment) {
+                        @for(attachmentPageURL of attachment; track attachmentPageURL) {
+                            <img [src]="attachmentPageURL" />
+                        }
                     }
+
+                    @if (this.bigImageEntry()!.attachmentURLs.length == 0) {
+                        <h2>Für dieses Event sind keine Anhänge hinterlegt.</h2>
+                    }
+
                 </div>
             </div>
 

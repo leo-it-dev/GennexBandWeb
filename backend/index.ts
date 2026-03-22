@@ -12,7 +12,6 @@ import { ApiModule } from './api_module';
 import { DeploymentType } from './deployment';
 import * as ssl from './framework/ssl';
 import * as jwt from './framework/jwt';
-import * as agent from './modules/agent/api_agent';
 import { getLogger } from './logger';
 import { ApiModuleConfig } from './modules/config/api_config';
 import { ApiModuleContact } from './modules/contact/api_contact';
@@ -23,6 +22,7 @@ import { ApiModuleCalendar } from './modules/calendar/api_calendar';
 import { ApiModuleSubscribe } from './modules/subscribe/api_subscribe';
 import { ApiModuleAgentHandler } from './modules/agent/api_agent';
 import { AgentTrigger } from './modules/agent/agent_trigger';
+import { ApiModuleRenderedPDFs } from './modules/renderedpdf/api_renderedpdf';
 
 let mainLogger = getLogger("index");
 
@@ -58,14 +58,12 @@ if (fs.existsSync(filePathFrontendDev)) {
     exit(1);
 }
 
+const filePathFrontend = deploymentType == DeploymentType.PRODUCTION ? filePathFrontendDepl : filePathFrontendDev;
+let apiModulesInstances = [];
+
 ssl.initSSL();
 jwt.initJwtBackend();
 repeatedTaskScheduler.schedulerInit();
-
-const filePathFrontend = deploymentType == DeploymentType.PRODUCTION ? filePathFrontendDepl : filePathFrontendDev;
-
-let apiModulesInstances = [];
-
 
 // add compression middleware to speed up loading times.
 app.use(compression({ filter: shouldCompress }));
@@ -149,7 +147,8 @@ async function initializeModules() {
         ApiModuleContact,
         ApiModuleCalendar,
         ApiModuleSubscribe,
-        ApiModuleAgentHandler
+        ApiModuleAgentHandler,
+        ApiModuleRenderedPDFs
     ]
 
     let moduleLoaderLogger = getLogger('module-loader');

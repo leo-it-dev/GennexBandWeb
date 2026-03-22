@@ -3,6 +3,8 @@ import { CalendarEntry, CalendarEntryState, Calendar, Location, Visibility, Atta
 import { getLogger } from '../../logger';
 import { getAuthenticatedServiceAccount, ServiceAccountAccess } from '../../framework/service-account';
 import { SQLiteDB } from '../../framework/sqlite_database';
+import { getApiModule } from '../..';
+import { ApiModuleRenderedPDFs } from '../renderedpdf/api_renderedpdf';
 
 export type CalendarWatcherWebHook = {
     id: string,
@@ -88,6 +90,23 @@ export class CalendarAPIHelper {
                                 let attachments: Attachment[] = (entry.attachments as any[] || []).map(attachment => {
                                     return { title: attachment.title, url: attachment.fileUrl, mimeType: attachment.mimeType }
                                 });
+
+                                for(let attachment of attachments) {
+                                    if (attachment.mimeType == "application/pdf") {
+                                        try {
+                                            await getApiModule(ApiModuleRenderedPDFs).renderPdfToPngs(attachment.url, attachment.title);
+                                        } catch(err) {
+                                            CalendarAPIHelper.logger.error("Error downloading pdf attachment from calendar entry!", {error: err});
+                                        }
+                                    }
+                                    if (attachment.mimeType.startsWith("image/")) {
+                                        try {
+                                            await getApiModule(ApiModuleRenderedPDFs).publishImage(attachment.url, attachment.title);
+                                        } catch(err) {
+                                            CalendarAPIHelper.logger.error("Error downloading pdf attachment from calendar entry!", {error: err});
+                                        }
+                                    }
+                                }
 
                                 let calendarEntry: CalendarEntry = {
                                     date: new Date(start),

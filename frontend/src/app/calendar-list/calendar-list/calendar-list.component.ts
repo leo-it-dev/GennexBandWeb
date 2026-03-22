@@ -1,14 +1,15 @@
-import { Component, computed, effect, signal, Signal, untracked, WritableSignal } from '@angular/core';
+import { Component, effect, signal, WritableSignal } from '@angular/core';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { Attachment, CalendarEntry } from '../../../../../api_common/calendar';
 import { CalendarBackendService } from '../../modules/calendar/calendar-backend.service';
 import { SectionHeaderComponent } from '../../section-header/section-header.component';
-import { CalendarEntry } from '../../../../../api_common/calendar';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { PageControlService } from '../../services/page-control.service';
+import { PdfRenderService } from '../../services/pdf-render.service';
 
 export type CalendarEntryWithUrl = {
 	entry: CalendarEntry,
 	url: SafeResourceUrl,
-	attachmentURLs: SafeResourceUrl[]
+	attachmentURLs: string[][]
 }
 
 @Component({
@@ -24,15 +25,21 @@ export class CalendarListComponent {
 
 	constructor(private calendar: CalendarBackendService,
 		private domSan: DomSanitizer,
-		private pageControl: PageControlService) {
+		private pageControl: PageControlService,
+		private pdfRender: PdfRenderService) {
 
-		effect(() => {
+		effect(async () => {
 			this.elements = [];
 			for (let el of this.calendar.getCalendarData()().entries) {
+				let mappedAttachments: string[][] = [];
+				for(let attachment of el.attachments) {
+					let resolvedImageURLs = await this.resolveAttachment(attachment);
+					mappedAttachments.push(resolvedImageURLs);
+				}
 				this.elements.push({
 					entry: el,
 					url: this.domSan.bypassSecurityTrustResourceUrl("https://www.google.com/maps?q=" + el.location?.lat + "," + el.location?.lon + "&z=15&output=embed"),
-					attachmentURLs: el.attachments.map(a => this.domSan.bypassSecurityTrustResourceUrl(this.formatAttachmentUrl(a.url)))
+					attachmentURLs: mappedAttachments
 				});
 			}
 		});
@@ -47,18 +54,16 @@ export class CalendarListComponent {
 			+ (date.getHours() < 10 ? "0" : "") + date.getHours() + ":" + (date.getMinutes() < 10 ? "0" : "") + date.getMinutes();
 	}
 
-	formatAttachmentUrl(urlstr: string): string {
-		let url = new URL(urlstr);
-		switch(url.host) {
-			case "drive.google.com":
-				// transform: // https://drive.google.com/file/d/<file>/view?usp=drivesdk to https://drive.google.com/uc?export=download&id=<file>
-				if (url.pathname.toLowerCase().endsWith("/view")) {
-					let fileId = url.pathname.split("\/d\/")[1].split("/view")[0];
-					url.pathname = "/uc"
-					url.search = "?export=download&id=" + fileId;
-				}
-				break;
+	async resolveAttachment(attachment: Attachment): Promise<string[]> {
+		if (attachment.mimeType == "application/pdf" || attachment.mimeType.startsWith("image/")) {
+			let pdfRenders = await this.pdfRender.awaitPdfRenders();
+			let renderedPdf = pdfRenders.find(render => render.sourceURL.toLowerCase() == attachment.url.toLowerCase());
+			if (!renderedPdf) {
+				return []
+			}
+			return renderedPdf.pagePngURLs;
+		} else {
+			return [attachment.url];
 		}
-		return url.toString();
 	}
 }

@@ -128,9 +128,9 @@ app-section-header {
 }
 
 #calendarBigImageClose {
-    position: absolute;
-    right: 20px;
-    top: 20px;
+    position: fixed;
+    right: 8%;
+    top: 8%;
     font-size: 20pt;
     color: white;
     margin: 0;
@@ -145,16 +145,45 @@ app-section-header {
     cursor: pointer;
 }
 
+
+#calendar-entry-big-map {
+    height: 200px;
+}
+
 #split-view {
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
+    height: calc(100% - 200px);
 }
 
 #split-view > div {
     flex: 1;
     padding: 30px;
     box-sizing: border-box;
+    max-height: 100%;
+    overflow-y: scroll;
+}
+
+#split-view > div:nth-child(1) {
+    border-right: 1px solid gray;
+}
+
+#split-view > div:nth-child(2) {
+    background: linear-gradient(to right, var(--primary1), var(--primary2));
+}
+
+#split-view img {
+    width: 90%;
+    margin: 50px;
+    box-sizing: border-box;
+    box-shadow: 0px 0px 10px black;
+    display: block;
+    margin: 0 auto;
+}
+
+#split-view img:nth-child(n+2) {
+    margin-top: 30px;
 }
 
 @media screen and (max-width: 700px) {
@@ -166,5 +195,18 @@ app-section-header {
 
     app-section-header {
         position: sticky;
+    }
+
+    #split-view {
+        flex-direction: column !important;
+        height: unset !important;
+    }
+
+    #split-view > div:nth-child(1) {
+        flex: unset !important;
+    }
+
+    #calendar-entry-big-view-content {
+        overflow-y: scroll;
     }
 }
