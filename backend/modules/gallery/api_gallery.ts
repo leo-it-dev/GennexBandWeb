@@ -19,18 +19,17 @@ export class ApiModuleGallery extends ApiModule {
         this.filePathBandpics = getFilePathFrontend() + this.urlPathBandpics;
         this.filePathBandpicsThumbnails = getFilePathFrontend() + this.urlPathBandpicsThumbs;
 
-        await immich.getAllImagesFromGallery();
+        immich.getAllImagesFromGallery().then(() => {
+            fs.readdirSync(this.filePathBandpics).forEach(file => {
+                if (fs.lstatSync(this.filePathBandpics + "/" + file).isFile()) {
+                    this.galleryFiles.push(file);
+                }
+            });
 
-        fs.readdirSync(this.filePathBandpics).forEach(file => {
-            if (fs.lstatSync(this.filePathBandpics + "/" + file).isFile()) {
-                this.galleryFiles.push(file);
-            }
+            this.generateBandpicThumbnails(this.filePathBandpics, this.filePathBandpicsThumbnails, 1024).then(() => {
+                // done.
+            });
         });
-
-        this.generateBandpicThumbnails(this.filePathBandpics, this.filePathBandpicsThumbnails, 1024).then(() => {
-            // done.
-        });
-
     }
 
     modname(): string {

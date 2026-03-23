@@ -1,6 +1,9 @@
 const nodemailer = require("nodemailer");
 import * as config from 'config';
 import { MailTemplate } from './email/mail-template';
+import { getLogger } from './logger';
+
+const logger = getLogger("email");
 
 // Create a transporter using Ethereal test credentials.
 // For production, replace with your actual SMTP server details.
@@ -20,12 +23,18 @@ const transporter = nodemailer.createTransport({
 export async function sendEmail(destinationAddress: string[], mail: MailTemplate) {
 	console.log("Try to send mail:", destinationAddress, mail.getSubject(), mail.getTextContent(), mail.getHtmlContent());
 
-	const info = await transporter.sendMail({
-		from: config.get('mail.MAIL_FROM_HEADER'),
-		to: destinationAddress.join(', '),
-		subject: mail.getSubject(),
-		text: mail.getTextContent(), // Plain-text version of the message
-		html: mail.getHtmlContent(), // HTML version of the message
-	});
-	console.log("Message sent:", info.messageId);
+	logger.info("Trying to send mail!", {destinationCount: destinationAddress.length, subject: mail.getSubject()})
+
+	try {
+		const info = await transporter.sendMail({
+			from: config.get('mail.MAIL_FROM_HEADER'),
+			to: destinationAddress.join(', '),
+			subject: mail.getSubject(),
+			text: mail.getTextContent(), // Plain-text version of the message
+			html: mail.getHtmlContent(), // HTML version of the message
+		});
+		logger.info("Message sent!", {destinationCount: destinationAddress.length, subject: mail.getSubject(), messageId: info.messageId});
+	} catch(error) {
+		logger.error("Error sending message!", {destinationCount: destinationAddress.length, subject: mail.getSubject(), error: error});
+	}
 }

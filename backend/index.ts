@@ -31,7 +31,7 @@ let repeatedTaskScheduler = new RepeatedTaskScheduler();
 
 const httpPort = config.get('generic.HTTP_PORT') as number;
 const httpsPort = config.get('generic.HTTPS_PORT') as number;
-const baseUrl = config.get("generic.APPLICATION_URL");
+const baseUrl = config.get("generic.APPLICATION_URL") + ((config.get('generic.APPLICATION_URL') as string).endsWith('/') ? '' : '/');
 const domain = config.get('generic.SERVE_DOMAIN');
 
 // Change directory to project root (ts-files)
