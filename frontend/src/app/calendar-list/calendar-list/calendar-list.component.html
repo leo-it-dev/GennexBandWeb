@@ -18,9 +18,8 @@
         </div>
         <div id="section-right">
             <h2 class="calendar-entry-title">{{entry.entry.title}}</h2>
-            <h3 class="calendar-entry-descr">{{entry.entry.description}}</h3>
-            <h3 class="calendar-entry-location">{{entry.entry.locationString}}</h3>
             <h3 class="calendar-entry-date">{{formatDate(entry.entry.date)}}</h3>
+            <h3 class="calendar-click-to-show">Details anzeigen »</h3>
         </div>
     </div>
     }
@@ -38,16 +37,28 @@
 
             <div id="split-view">
                 <div>
-                    <h2 class="calendar-entry-title">{{this.bigImageEntry()!.entry.title}}</h2>
-                    <h3 class="calendar-entry-descr">{{this.bigImageEntry()!.entry.description}}</h3>
-                    <h3 class="calendar-entry-location">{{this.bigImageEntry()!.entry.locationString}}</h3>
-                    <h3 class="calendar-entry-date">{{formatDate(this.bigImageEntry()!.entry.date)}}</h3>
+                    <table>
+                        <tr>
+                            <td>Was?</td>
+                            <td>{{this.bigImageEntry()!.entry.title}}</td>
+                        </tr>
+                        <tr>
+                            <td>Wo?</td>
+                            <td>{{this.bigImageEntry()!.entry.locationString}}</td>
+                        </tr>
+                        <tr>
+                            <td>Wann?</td>
+                            <td>{{formatDate(this.bigImageEntry()!.entry.date)}}</td>
+                        </tr>
+                        <tr>
+                            <td>Details:</td>
+                            <td>{{this.bigImageEntry()!.entry.description}}</td>
+                        </tr>
+                    </table>
                 </div>
                 <div>
                     @for(attachment of this.bigImageEntry()!.attachmentURLs; track attachment) {
-                        @for(attachmentPageURL of attachment; track attachmentPageURL) {
-                            <img [src]="attachmentPageURL" />
-                        }
+                        <img [src]="attachment.renderedPng" (click)="open(attachment.sourceURL)" />
                     }
 
                     @if (this.bigImageEntry()!.attachmentURLs.length == 0) {

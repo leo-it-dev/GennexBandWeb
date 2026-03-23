@@ -6,10 +6,15 @@ import { SectionHeaderComponent } from '../../section-header/section-header.comp
 import { PageControlService } from '../../services/page-control.service';
 import { PdfRenderService } from '../../services/pdf-render.service';
 
+type AttachmentMapped = {
+	sourceURL: string,
+	renderedPng: string,
+}
+
 export type CalendarEntryWithUrl = {
 	entry: CalendarEntry,
 	url: SafeResourceUrl,
-	attachmentURLs: string[][]
+	attachmentURLs: AttachmentMapped[]
 }
 
 @Component({
@@ -31,10 +36,15 @@ export class CalendarListComponent {
 		effect(async () => {
 			this.elements = [];
 			for (let el of this.calendar.getCalendarData()().entries) {
-				let mappedAttachments: string[][] = [];
+				let mappedAttachments: AttachmentMapped[] = [];
 				for(let attachment of el.attachments) {
 					let resolvedImageURLs = await this.resolveAttachment(attachment);
-					mappedAttachments.push(resolvedImageURLs);
+					for (let renderedPng of resolvedImageURLs) {
+						mappedAttachments.push({
+							renderedPng: renderedPng,
+							sourceURL: attachment.url
+						});
+					}
 				}
 				this.elements.push({
 					entry: el,
@@ -65,5 +75,9 @@ export class CalendarListComponent {
 		} else {
 			return [attachment.url];
 		}
+	}
+
+	open(url: string) {
+		window.open(url, '_blank');
 	}
 }

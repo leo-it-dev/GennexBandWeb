@@ -12,6 +12,7 @@ import { ApiModule } from './api_module';
 import { DeploymentType } from './deployment';
 import * as ssl from './framework/ssl';
 import * as jwt from './framework/jwt';
+import * as immich from './framework/immich_api'
 import { getLogger } from './logger';
 import { ApiModuleConfig } from './modules/config/api_config';
 import { ApiModuleContact } from './modules/contact/api_contact';
@@ -28,8 +29,9 @@ let mainLogger = getLogger("index");
 
 let repeatedTaskScheduler = new RepeatedTaskScheduler();
 
-const httpPort = config.get('generic.HTTP_PORT');
-const httpsPort = config.get('generic.HTTPS_PORT');
+const httpPort = config.get('generic.HTTP_PORT') as number;
+const httpsPort = config.get('generic.HTTPS_PORT') as number;
+const baseUrl = config.get("generic.APPLICATION_URL");
 const domain = config.get('generic.SERVE_DOMAIN');
 
 // Change directory to project root (ts-files)
@@ -63,6 +65,7 @@ let apiModulesInstances = [];
 
 ssl.initSSL();
 jwt.initJwtBackend();
+immich.initImmich();
 repeatedTaskScheduler.schedulerInit();
 
 // add compression middleware to speed up loading times.
@@ -99,11 +102,16 @@ async function runSecureRedirectServer() {
 }
 
 // Startup secure SSL port 443 Server
-let serv = https.createServer(ssl.SSL_OPTIONS, app);
-
-runSecureRedirectServer();
-mainLogger.info("Backend server up and running on Port " + httpsPort + ". Have a nice day!");
-serv.listen(httpsPort, '0.0.0.0');
+if (httpsPort && httpsPort != -1) {
+    let serv = https.createServer(ssl.SSL_OPTIONS, app);
+    runSecureRedirectServer();
+    mainLogger.info("Backend server up and running on Port " + httpsPort + ". Have a nice day!");
+    serv.listen(httpsPort, '0.0.0.0');
+} else {
+    app.listen(httpPort, "0.0.0.0", () => {
+        mainLogger.info("Backend server up and running on Port " + httpsPort + ". Have a nice day!");
+    });
+}
 
 function initializeDevelopmentBuildEnvironment(projectRoot: string) {
     const logger = getLogger("dev-init");
@@ -196,6 +204,5 @@ export function runAgentTrigger(trigger: AgentTrigger) {
 }
 
 export function getBaseURL() {
-    let httpsPort = config.get("generic.HTTPS_PORT");
-    return "https://" + config.get("generic.SERVE_DOMAIN") + (httpsPort != 443 ? ":" + httpsPort : "") + "/";
+    return baseUrl;
 }

@@ -12,9 +12,11 @@
     "watch": "node watch"
   },
   "dependencies": {
+    "@immich/sdk": "^2.6.1",
     "@types/config": "^3.3.5",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/lru-cache": "^7.10.9",
+    "@types/unzipper": "^0.10.11",
     "chalk": "^4",
     "compression": "^1.8.1",
     "config": "^4.1.1",
@@ -26,6 +28,7 @@
     "sharp": "^0.34.5",
     "sqlite": "^5.1.1",
     "sqlite3": "^5.1.7",
+    "unzipper": "^0.12.3",
     "winston": "^3.19.0"
   },
   "devDependencies": {

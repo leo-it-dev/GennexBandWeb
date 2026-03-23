@@ -65,7 +65,7 @@ export class GalleryComponent implements AfterViewInit {
 			files.map(file => {
 				let basename = file;
 				let sepIdx = basename.lastIndexOf(".");
-				let stem = basename.substring(0, sepIdx);
+				let stem = sepIdx != -1 ? basename.substring(0, sepIdx) : basename;
 
 				let thumbnailURL = stem + "." + thumbnailFormat;
 				let bigURL = basename;

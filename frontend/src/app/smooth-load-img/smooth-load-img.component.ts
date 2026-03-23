@@ -40,6 +40,9 @@ export class SmoothLoadImgComponent implements OnDestroy, AfterViewInit {
 
 	@ViewChild('fadeOverlay') viewOverlay!: ElementRef;
 
+	@ViewChild('img')
+	image!: ElementRef;
+
 	ngAfterViewInit(): void {
 		this.startImageCycle();
 	}
@@ -77,12 +80,10 @@ export class SmoothLoadImgComponent implements OnDestroy, AfterViewInit {
 		const images = this.imageURLs();
 		if (!images.length) return;
 
-		let newImage;
-		do {
-			newImage = images[Math.floor(Math.random() * images.length)];
-		} while(newImage == this._src);
-
-		this.src = newImage;
+		let imageSelectionPool = this.imageURLs().filter(u => u != this._src);
+		if (imageSelectionPool.length > 0) {
+			this.src = imageSelectionPool[Math.floor(Math.random() * imageSelectionPool.length)];
+		}
 	}
 
 	/** Called when image fully loaded */

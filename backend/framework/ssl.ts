@@ -1,6 +1,7 @@
 import fs = require('node:fs');
 import https = require('https');
 import { getLogger } from '../logger';
+import * as config from 'config';
 
 export let CA_CERT: string = "";
 export let ADFS_CERT: string = "";
@@ -16,16 +17,18 @@ const logger = getLogger('ssl');
 export const SSL_FOLDER_PATH = __dirname + '/../ssl/';
 
 export function initSSL() {
-    this.intranetCertificate = fs.readFileSync(SSL_FOLDER_PATH + 'gennex_band_bundle.crt');
-    this.intranetPrivateKey = fs.readFileSync(SSL_FOLDER_PATH + 'privkey.pem');
+    if (config.has("generic.SSL_CERTIFICATE_FILENAME") && config.has("generic.SSL_PRIVKEY_FILENAME")) {
+        this.intranetCertificate = fs.readFileSync(SSL_FOLDER_PATH + config.get('generic.SSL_CERTIFICATE_FILENAME'));
+        this.intranetPrivateKey = fs.readFileSync(SSL_FOLDER_PATH + config.get('generic.SSL_PRIVKEY_FILENAME'));
 
-    SSL_OPTIONS.key = intranetPrivateKey;
-    SSL_OPTIONS.cert = intranetCertificate;
+        SSL_OPTIONS.key = intranetPrivateKey;
+        SSL_OPTIONS.cert = intranetCertificate;
+    }
 }
 
-export function httpsRequest(hostname: string, path: string, method: string, body: string, contentType?: string, authorization?: string): Promise<{'statusCode': number, 'data': string}> {
-    return new Promise<{'statusCode': number, 'data': string}>((res, rej) => {
-        logger.debug("Performing https request!", {hostname: hostname, path: path, method: method});
+export function httpsRequest(hostname: string, path: string, method: string, body: string, contentType?: string, authorization?: string): Promise<{ 'statusCode': number, 'data': string }> {
+    return new Promise<{ 'statusCode': number, 'data': string }>((res, rej) => {
+        logger.debug("Performing https request!", { hostname: hostname, path: path, method: method });
         let reqHeaders = {};
         if (contentType) {
             reqHeaders = { 'content-type': contentType };
@@ -33,7 +36,7 @@ export function httpsRequest(hostname: string, path: string, method: string, bod
         if (authorization) {
             reqHeaders = { ...reqHeaders, 'Authorization': authorization };
         }
-    
+
         reqHeaders = {
             ...reqHeaders,
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:132.0) Gecko/20100101 Firefox/132.0",
@@ -45,7 +48,7 @@ export function httpsRequest(hostname: string, path: string, method: string, bod
             "Cache-Control": "no-cache",
             "content-length": body.length
         };
-        
+
         const requ = https.request({
             hostname: hostname,
             path: path,
@@ -57,11 +60,11 @@ export function httpsRequest(hostname: string, path: string, method: string, bod
             let data = "";
             response.on('data', (chunk) => data += chunk.toString());
             response.on('error', (err) => {
-                logger.error("Received error while trying to perform SSL https request!", {hostname: hostname, path: path, method: method, body: body, contenetType: contentType, authorization: authorization, error: err});
+                logger.error("Received error while trying to perform SSL https request!", { hostname: hostname, path: path, method: method, body: body, contenetType: contentType, authorization: authorization, error: err });
                 rej(err);
             });
             response.on('end', () => {
-                res({'statusCode': response.statusCode, 'data': data});
+                res({ 'statusCode': response.statusCode, 'data': data });
             });
         });
         requ.write(body);

@@ -1,4 +1,4 @@
-<img id="display" [src]="this.src" (load)="onLoaded()" (error)="onError()">
+<img #img id="display" [src]="this.src" (load)="onLoaded()" (error)="onError()">
 @if(this.showFade()) {
     <div id="fade-overlay" [animate.enter]="'fade-in'" [animate.leave]="'fade-out'" [style.--fadeDuration]="this.fadeDuration + 'ms'" ></div>
 }
