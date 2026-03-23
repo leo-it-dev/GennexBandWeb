@@ -34,6 +34,7 @@
     "immich": {
         "API_KEY": "enter_your_api_key_here",
         "API_URL": "http://url_to_immich_server:2283",
-        "GALLERY_ALBUM": "gallery"
+        "GALLERY_ALBUM": "gallery",
+        "SYNCHRONIZE_INTERVAL_MINUTES": 20
     }
 }

@@ -1,35 +1,42 @@
-import { getFilePathFrontend } from "../..";
+import { getFilePathFrontend, getRepeatedScheduler } from "../..";
 import { ApiInterfaceGalleryIn, ApiInterfaceGalleryOut } from "../../../api_common/gallery";
 import { ApiModule } from "../../api_module";
 import sharp = require('sharp');
 import * as immich from '../../framework/immich_api';
 import * as fs from 'fs';
-const path = require('path');
+import * as config from 'config';
+import * as path from 'path';
 
 export class ApiModuleGallery extends ApiModule {
 
-    galleryFiles: string[];
+    SYNCHRONIZE_INTERVAL_MINUTES = config.get('immich.SYNCHRONIZE_INTERVAL_MINUTES') as number;
+
+    galleryFiles: string[] = [];
     urlPathBandpics = "/gallery"
     urlPathBandpicsThumbs = "/gallery/thumbs"
     filePathBandpics = "";
     filePathBandpicsThumbnails = "";
 
     async initialize() {
-        this.galleryFiles = [];
         this.filePathBandpics = getFilePathFrontend() + this.urlPathBandpics;
         this.filePathBandpicsThumbnails = getFilePathFrontend() + this.urlPathBandpicsThumbs;
 
-        immich.getAllImagesFromGallery().then(() => {
-            fs.readdirSync(this.filePathBandpics).forEach(file => {
-                if (fs.lstatSync(this.filePathBandpics + "/" + file).isFile()) {
-                    this.galleryFiles.push(file);
-                }
-            });
+        getRepeatedScheduler().scheduleRepeatedEvent(this, "gallery-sync", 60 * this.SYNCHRONIZE_INTERVAL_MINUTES, (finished) => {
+            immich.syncGalleryWithImmich().then(syncResult => {
 
-            this.generateBandpicThumbnails(this.filePathBandpics, this.filePathBandpicsThumbnails, 1024).then(() => {
-                // done.
+                let updatedGalleryFiles = [];
+                fs.readdirSync(this.filePathBandpics).forEach(file => {
+                    if (fs.lstatSync(this.filePathBandpics + "/" + file).isFile()) {
+                        updatedGalleryFiles.push(file);
+                    }
+                });
+                this.galleryFiles = updatedGalleryFiles;
+
+                this.generateAssetThumbnails(this.filePathBandpics, this.filePathBandpicsThumbnails, syncResult, 1024).then(() => {
+                    finished();
+                });
             });
-        });
+        }, true);
     }
 
     modname(): string {
@@ -51,35 +58,40 @@ export class ApiModuleGallery extends ApiModule {
         });
     }
 
-    async generateBandpicThumbnails(sourceImagesPath: string, thumbnailFolderOut: string, thumbnailImageWidth: number): Promise<void> {
+    async generateAssetThumbnails(sourceImagesPath: string, thumbnailFolderOut: string, assetSyncResult: immich.SyncGalleryResult, thumbnailImageWidth: number): Promise<void> {
         if (!fs.existsSync(thumbnailFolderOut)) {
             fs.mkdirSync(thumbnailFolderOut);
         }
+
         let thumbnailLogger = this.logger().child({ service: 'thumbnail-compressor' });
         thumbnailLogger.info("Starting image compression...");
+
         let filePaths = [];
-        fs.readdirSync(sourceImagesPath).forEach(file => {
-            let abspath = sourceImagesPath + "/" + file;
-            if (fs.lstatSync(abspath).isFile()) {
-                filePaths.push(abspath);
+        fs.readdirSync(sourceImagesPath).forEach(assetId => {
+            let assetIdThumbnailPath = path.resolve(sourceImagesPath, assetId);
+            if (fs.lstatSync(assetIdThumbnailPath).isFile()) {
+                if (assetSyncResult.updateAssetsIDs.includes(assetId)) {
+                    filePaths.push(assetIdThumbnailPath);
+                    thumbnailLogger.info("Generating asset thumbnail!", { assetId: assetId });
+                }
+                else if (assetSyncResult.deleteAssetsIDs.includes(assetId)) {
+                    fs.rmSync(assetIdThumbnailPath, { force: true, maxRetries: 3, recursive: false, retryDelay: 1 })
+                    thumbnailLogger.info("Deleting asset thumbnail!", { assetId: assetId });
+                }
             }
         });
 
-        return new Promise<void>(async (res, _) => {
-            for (let file of filePaths) {
-                let basename: string = path.basename(file);
-                let sepIdx = basename.lastIndexOf(".");
-                let stem = sepIdx != -1 ? basename.substring(0, sepIdx) : basename;
-                let compressedImageName = stem + ".webp";
+        await Promise.all(filePaths.map(async file => {
+            let basename: string = path.basename(file);
+            let sepIdx = basename.lastIndexOf(".");
+            let stem = sepIdx != -1 ? basename.substring(0, sepIdx) : basename;
+            let compressedImageName = stem + ".webp";
 
-                thumbnailLogger.info("Compressing image " + file + "...");
-                await sharp(file)
-                    .resize(thumbnailImageWidth)
-                    .webp({ quality: 70 })
-                    .toFile(thumbnailFolderOut + '/' + compressedImageName);
-            }
-            thumbnailLogger.info("Finished image compression!");
-            res();
-        });
+            await sharp(file)
+                .resize(thumbnailImageWidth)
+                .webp({ quality: 70 })
+                .toFile(thumbnailFolderOut + '/' + compressedImageName);
+        }));
+        thumbnailLogger.info("Finished image compression!");
     }
 }
