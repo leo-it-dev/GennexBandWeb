@@ -21,8 +21,6 @@ const transporter = nodemailer.createTransport({
 
 // Send an email using async/await
 export async function sendEmail(destinationAddress: string[], mail: MailTemplate) {
-	console.log("Try to send mail:", destinationAddress, mail.getSubject(), mail.getTextContent(), mail.getHtmlContent());
-
 	logger.info("Trying to send mail!", {destinationCount: destinationAddress.length, subject: mail.getSubject()})
 
 	try {

@@ -5,7 +5,7 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link href="https://fonts.googleapis.com/css2?family=Permanent+Marker:wght@100;200;300;400;500;600;700;800;900" rel="stylesheet" type="text/css">
-	<title>Gennex Partyband | Neues Event</title>
+	<title>Gennex Partyband | {subjectTitle}</title>
 
 	<style>
 		html {
@@ -48,7 +48,7 @@
 				<table class="row-content" width="100%">
 					<tr>
 						<td style="background:#353535; padding:35px; font-size: 0; line-height: 0;" align="center">
-							<img src="https://gennex.band/images/logo0014.png" width="153" alt="Logo" style="display: block; line-height: 0; font-size: 0; border: 0; margin: 0; padding: 0;">
+							<img src="{serverBaseURL}/images/logo0014.png" width="153" alt="Logo" style="display: block; line-height: 0; font-size: 0; border: 0; margin: 0; padding: 0;">
 						</td>
 					</tr>
 
@@ -56,7 +56,7 @@
 						<td style="background-color: #d5d5d5; background-image: url('https://media.beefree.cloud/pub/bfra/nnpmtsfv/yhr/q8j/jm0/Screenshot%202026-03-21%20001852.png'); background-repeat: no-repeat; background-size: cover; padding:20px 20px; text-align:center;">
 
 							<h1 style="color:#ffffff; font-family:'Permanent Marker', Impact, Charcoal, sans-serif; font-size:32px; letter-spacing:3px; margin:0;">
-								Neues Event Angekündigt
+								{subject}
 							</h1>
 
 						</td>
@@ -70,71 +70,7 @@
 					</tr>
 				</table>
 
-				<table class="row-content row-content-dat" style="border-bottom: 1px solid #e4e4e4; width:100%">
-					<tr>
-
-						<td width="40%" valign="top" style="padding:30px 0;vertical-align: middle;">
-							<h2 style="color:#7200d6; margin:0; font-family: Arial, Helvetica Neue, Helvetica, sans-serif; font-size: 38px; font-weight: 700">
-								Was?</h2>
-						</td>
-
-						<td width="60%" valign="top" style="padding:30px 0;vertical-align: middle;">
-							<p style="margin:0; font-family: Arial, Helvetica Neue, Helvetica, sans-serif">
-								{title}
-							</p>
-						</td>
-
-					</tr>
-				</table>
-
-				<table class="row-content row-content-dat" style="border-bottom: 1px solid #e4e4e4; width:100%">
-					<tr>
-
-						<td width="40%" valign="top" style="padding:30px 0;vertical-align: middle;">
-							<h2 style="color:#9d00d6; margin:0; font-family: Arial, Helvetica Neue, Helvetica, sans-serif; font-size: 38px; font-weight: 700">
-								Wann?</h2>
-						</td>
-
-						<td width="60%" valign="top" style="padding:30px 0;vertical-align: middle;">
-							<p style="margin:0; font-family: Arial, Helvetica Neue, Helvetica, sans-serif">
-								{date}
-							</p>
-						</td>
-
-					</tr>
-				</table>
-
-				<table class="row-content row-content-dat" style="border-bottom: 1px solid #e4e4e4; width:100%">
-					<tr>
-
-						<td width="40%" valign="top" style="padding:30px 0;vertical-align: middle;">
-							<h2 style="color:#ba00d6; margin:0; font-family: Arial, Helvetica Neue, Helvetica, sans-serif; font-size: 38px; font-weight: 700">
-								Wo?</h2>
-						</td>
-
-						<td width="60%" valign="top" style="padding:30px 0;vertical-align: middle;">
-							<p style="margin:0; font-family: Arial, Helvetica Neue, Helvetica, sans-serif">
-								{location}
-							</p>
-						</td>
-
-					</tr>
-				</table>
-
-				<table class="row-content row-content-dat" style="width:100%">
-					<tr>
-						<td>
-
-							<h2 style="color:#d600b2; font-family: Arial, Helvetica Neue, Helvetica, sans-serif; font-size: 38px; font-weight: 700">
-								Infos:</h2>
-
-							<p style="font-family: Arial, Helvetica Neue, Helvetica, sans-serif" width="100%">
-								{description}
-							</p>
-
-						</td>
-					</tr>
-				</table>
+                {content}
 
 				<table class="row-content">
 					<tr>
@@ -160,23 +96,14 @@
 							</table>
 
 							<p style="font-size:14px; font-family: Arial, Helvetica Neue, Helvetica, sans-serif">
-								<a href="#">Unsubscribe</a>
+								<a href="{unsubscribeLink}">Unsubscribe</a>
 							</p>
 
 						</td>
 					</tr>
 				</table>
 
-				<table class="row-content" width="100%">
-					<tr>
-						<td style="background:#ff6666; padding:20px; text-align:center;" width="100%">
-							<a href="{publicationLink}" style="background:#4538ff; color:#ffffff; padding:12px 20px; text-decoration:none; display:inline-block; border-radius:4px; font-family: Arial, Helvetica Neue, Helvetica, sans-serif">
-								Email an Abonnenten veröffentlichen
-							</a>
-
-						</td>
-					</tr>
-				</table>
+                {adminAction}
 
 			</td>
 		</tr>
