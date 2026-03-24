@@ -13,12 +13,13 @@ const IMMICH_GALLERY_NAME = config.get('immich.GALLERY_ALBUM') as string;
 
 export type CachedPictureInfo = {
     modifiedAt: Date,
-    id: string
+    id: string,
+    extension: string
 }
 
 export type SyncGalleryResult = {
     updateAssetsIDs: string[],
-    deleteAssetsIDs: string[]
+    deleteAssetsIDs: CachedPictureInfo[]
 }
 
 // TODO: Periodic update, check if new assets are available.
@@ -43,13 +44,16 @@ function readLocalGalleryAssets(): CachedPictureInfo[] {
     }
 
     let cachedPictureInfo: CachedPictureInfo[] = [];
-    for (let assetId of fs.readdirSync(pathImages)) {
-        let assetImagePath = path.resolve(pathImages, assetId);
+    for (let assetIdfilename of fs.readdirSync(pathImages)) {
+        let assetImagePath = path.resolve(pathImages, assetIdfilename);
         if (fs.lstatSync(assetImagePath).isFile()) {
             let modifiedAt = fs.statSync(assetImagePath).mtime;
+            let assetId = assetIdfilename.split(".")[0]
+            let extension = assetIdfilename.split(".")[1]
             cachedPictureInfo.push({
                 id: assetId,
-                modifiedAt: modifiedAt
+                modifiedAt: modifiedAt,
+                extension: extension
             })
         }
     }
@@ -79,7 +83,7 @@ export async function syncGalleryWithImmich(): Promise<SyncGalleryResult> {
     // filter for assets that we need to redownload (either new or modified newer than our copy).
     let assetIDsToDownload = gallery.assets.filter(asset => !localGallery.find(cached => cached.id == asset.id && cached.modifiedAt.getTime() == new Date(asset.fileModifiedAt).getTime())).map(a => a.id)
     // filter for assets that we need to delete as they no longer are stored inside the immich album.
-    let assetIDsToDelete = localGallery.filter(cached => !gallery.assets.find(asset => asset.id == cached.id)).map(a => a.id);
+    let assetIDsToDelete = localGallery.filter(cached => !gallery.assets.find(asset => asset.id == cached.id));
 
     try {
         // we need to call getDownloadInfo in order to get an id we can then use to download all files.
@@ -87,7 +91,7 @@ export async function syncGalleryWithImmich(): Promise<SyncGalleryResult> {
             downloadInfoDto: {
                 assetIds: gallery.assets.filter(
                     asset => assetIDsToDownload.includes(asset.id)
-                        && !assetIDsToDelete.includes(asset.id))
+                        && !assetIDsToDelete.map(asset => asset.id).includes(asset.id))
                     .map(asset => asset.id)
             }
         });
@@ -97,20 +101,24 @@ export async function syncGalleryWithImmich(): Promise<SyncGalleryResult> {
             await Promise.all(downloadInfo.archives[0].assetIds.map(async (assetId) => {
                 let assetURL = IMMICH_API_URL + "/api/assets/" + assetId + "/original?apiKey=" + IMMICH_API_KEY;
                 let content = await fetch(assetURL);
-                const imageOutFile = path.resolve(pathImages, assetId);
+                let correspondingAsset = gallery.assets.find(a => a.id == assetId);
+                
+                let fileExtension = correspondingAsset.originalFileName.substring(correspondingAsset.originalFileName.lastIndexOf(".") + 1)
+                const imageOutFile = path.resolve(pathImages, assetId + "." + fileExtension);
+
                 const writeStream = fs.createWriteStream(imageOutFile, { flags: 'wx' })
                 await pipeline(Readable.fromWeb(content.body as any), writeStream);
 
-                let modifiedAtOnImmich = new Date(gallery.assets.find(a => a.id == assetId).fileModifiedAt);
-                fs.utimesSync(imageOutFile, modifiedAtOnImmich, modifiedAtOnImmich)
+                let dateModified = new Date(correspondingAsset.fileModifiedAt);
+                fs.utimesSync(imageOutFile, dateModified, dateModified)
                 logger.info("Writing gallery image.", { image: assetId });
             }));
         }
 
         // delete all entries that have been removed on immich from our gallery also.
-        for (let assedIdToDelete of assetIDsToDelete) {
-            const imageOutFile = path.resolve(pathImages, assedIdToDelete);
-            logger.info("Deleting trashed gallery image.", { image: assedIdToDelete });
+        for (let assetIdToDelete of assetIDsToDelete) {
+            const imageOutFile = path.resolve(pathImages, assetIdToDelete.id + "." + assetIdToDelete.extension);
+            logger.info("Deleting trashed gallery image.", { image: assetIdToDelete + "." + assetIdToDelete.extension });
             fs.rmSync(imageOutFile, { force: true, maxRetries: 3, recursive: false, retryDelay: 1 });
         }
 

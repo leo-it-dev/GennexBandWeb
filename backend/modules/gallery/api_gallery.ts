@@ -64,34 +64,36 @@ export class ApiModuleGallery extends ApiModule {
         }
 
         let thumbnailLogger = this.logger().child({ service: 'thumbnail-compressor' });
-        thumbnailLogger.info("Starting image compression...");
+        thumbnailLogger.info("Starting image thumbnail generation...");
 
         let filePaths = [];
-        fs.readdirSync(sourceImagesPath).forEach(assetId => {
-            let assetIdThumbnailPath = path.resolve(sourceImagesPath, assetId);
+        fs.readdirSync(sourceImagesPath).forEach(assetIdfileName => {
+            let assetId = assetIdfileName.split(".")[0];
+            let assetIdThumbnailPath = path.resolve(sourceImagesPath, assetIdfileName);
             if (fs.lstatSync(assetIdThumbnailPath).isFile()) {
                 if (assetSyncResult.updateAssetsIDs.includes(assetId)) {
                     filePaths.push(assetIdThumbnailPath);
-                    thumbnailLogger.info("Generating asset thumbnail!", { assetId: assetId });
+                    thumbnailLogger.info("Generating asset thumbnail!", { assetId: assetIdfileName });
                 }
-                else if (assetSyncResult.deleteAssetsIDs.includes(assetId)) {
+                else if (assetSyncResult.deleteAssetsIDs.map(asset => asset.id).includes(assetId)) {
                     fs.rmSync(assetIdThumbnailPath, { force: true, maxRetries: 3, recursive: false, retryDelay: 1 })
-                    thumbnailLogger.info("Deleting asset thumbnail!", { assetId: assetId });
+                    thumbnailLogger.info("Deleting asset thumbnail!", { assetId: assetIdfileName });
                 }
             }
         });
 
-        await Promise.all(filePaths.map(async file => {
-            let basename: string = path.basename(file);
+        await Promise.all(filePaths.map(async assetIdFileName => {
+            let basename: string = path.basename(assetIdFileName);
             let sepIdx = basename.lastIndexOf(".");
             let stem = sepIdx != -1 ? basename.substring(0, sepIdx) : basename;
-            let compressedImageName = stem + ".webp";
+            let thumbnailImageName = stem + ".webp";
+            let outputFile = path.resolve(thumbnailFolderOut, thumbnailImageName);
 
-            await sharp(file)
+            await sharp(assetIdFileName)
                 .resize(thumbnailImageWidth)
                 .webp({ quality: 70 })
-                .toFile(thumbnailFolderOut + '/' + compressedImageName);
+                .toFile(outputFile);
         }));
-        thumbnailLogger.info("Finished image compression!");
+        thumbnailLogger.info("Finished image thumbnail generation!");
     }
 }
