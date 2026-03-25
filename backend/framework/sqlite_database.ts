@@ -22,7 +22,7 @@ export class SQLiteDB {
 		this.database = new sqlite.Database(databasePath, sqlite.OPEN_CREATE | sqlite.OPEN_READWRITE);
 	}
 	
-	sqlUpdate(update: SqlUpdate) {
+	sqlUpdate(update: SqlUpdate): Promise<void> {
 		if (this.database == undefined) {
 			this.logger.error("Can't perform operation on sqlite database as it is not initialized!", { dbname: this.moduleName, op: "update", parameters: update.params });
 			return;

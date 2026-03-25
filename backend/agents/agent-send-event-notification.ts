@@ -1,10 +1,12 @@
+import * as config from 'config';
+import { getApiModule } from "..";
+import { MailNewEventMessage } from "../email/event-new-message";
 import { Agent } from "../modules/agent/agent";
 import { AgentTrigger, AgentTriggerCalendarCreate, AgentTriggerCalendarDelete, AgentTriggerCalendarModify } from "../modules/agent/agent_trigger";
-import * as mailer from '../mailer';
-import * as config from 'config';
-import { MailNewEventMessage } from "../email/event-new-message";
+import { ApiModuleCalendar } from "../modules/calendar/api_calendar";
+import { ApiModuleMailer } from '../modules/mailer/api_mailer';
 
-export class AgentSendEventNotification extends Agent {
+export class AgentSendCalendarEntryNotification extends Agent {
 
     constructor() {
         super([
@@ -15,17 +17,20 @@ export class AgentSendEventNotification extends Agent {
     }
 
     name() {
-        return "send-event-notifiations-mail"
-    }
-    
-    initialize() {
+        return "send-calendar-entry-notifiations-mail"
     }
 
-    triggeredBy(trigger: AgentTrigger) {
+    initialize() {
+
+    }
+
+    async triggeredBy(trigger: AgentTrigger) {
+        let mailer = getApiModule(ApiModuleMailer);
         if (trigger instanceof AgentTriggerCalendarCreate) {
-            for(let entry of trigger.calendarEntries) {
-                let newEventMail = new MailNewEventMessage(entry, "bla");
-                mailer.sendEmail([config.get('mail.SMTP_USERNAME')], newEventMail);
+            for (let entry of trigger.calendarEntries) {
+                let publishEventUrl = getApiModule(ApiModuleCalendar).generatePublishEventUrl(entry);
+                let newEventMail = new MailNewEventMessage(entry, publishEventUrl, true);
+                await mailer.sendEmail(newEventMail.toBatchMail([config.get('mail.SMTP_USERNAME')]));
             }
         }
     }

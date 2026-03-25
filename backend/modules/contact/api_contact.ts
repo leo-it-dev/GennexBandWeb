@@ -3,15 +3,18 @@ import { ApiInterfaceContactIn, ApiInterfaceContactOut } from "../../../api_comm
 import { contactFormularRequestVerification, ContactFormularStatusCodes } from "../../../api_common/verification";
 import { ApiModule } from "../../api_module";
 import { generateContactEmailVerifyCode, validateContactEmailVerifyCode } from "../../contact_verification_token";
-import * as mailer from '../../mailer';
 import { CaptchaVerificationResult, verifyCaptcha } from '../../framework/captcha_helper';
 import { MailContactNewMessage } from '../../email/contact-new-message';
 import { MailContactVerificationCode } from '../../email/contact-verification-code-message';
+import { ApiModuleMailer } from '../mailer/api_mailer';
+import { getApiModule } from '../..';
 
 export class ApiModuleContact extends ApiModule {
 
-    initialize() {
+    mailer: ApiModuleMailer;
 
+    initialize() {
+        this.mailer = getApiModule(ApiModuleMailer);
     }
 
     modname(): string {
@@ -96,7 +99,7 @@ export class ApiModuleContact extends ApiModule {
             switch (finalAction) {
                 case ContinuationAction.FINAL_SEND_MESSAGE:
                     let mail = new MailContactNewMessage(req.body.firstName, req.body.surName, req.body.email, req.body.message);
-                    await mailer.sendEmail([config.get('mail.SMTP_USERNAME')], mail);
+                    await this.mailer.sendEmail(mail.toBatchMail([config.get('mail.SMTP_USERNAME')]));
 
                     return {
                         error: undefined,
@@ -106,7 +109,7 @@ export class ApiModuleContact extends ApiModule {
                 case ContinuationAction.SEND_EMAIL_VERIFICATION_MESSAGE:
                     let verificationCode = generateContactEmailVerifyCode(req.body.email);
                     let mail2 = new MailContactVerificationCode(verificationCode);
-                    await mailer.sendEmail([req.body.email], mail2);
+                    await this.mailer.sendEmail(mail2.toBatchMail([req.body.email]));
 
 
                     return {

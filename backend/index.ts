@@ -24,6 +24,7 @@ import { ApiModuleSubscribe } from './modules/subscribe/api_subscribe';
 import { ApiModuleAgentHandler } from './modules/agent/api_agent';
 import { AgentTrigger } from './modules/agent/agent_trigger';
 import { ApiModuleRenderedPDFs } from './modules/renderedpdf/api_renderedpdf';
+import { ApiModuleMailer } from './modules/mailer/api_mailer';
 
 let mainLogger = getLogger("index");
 
@@ -149,6 +150,7 @@ function initializeDevelopmentBuildEnvironment(projectRoot: string) {
 
 async function initializeModules() {
     const apiModules = [
+        ApiModuleMailer,
         ApiModuleVideos,
         ApiModuleGallery,
         ApiModuleConfig,

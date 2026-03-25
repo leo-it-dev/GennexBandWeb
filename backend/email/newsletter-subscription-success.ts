@@ -1,33 +1,21 @@
-import { MailTemplate } from "./mail-template";
-import * as fs from 'fs';
-import * as config from 'config';
+import { MailFeaturePosition, MailFeatureUnsubscribeButton, MailTemplate } from "./mail-template";
 
 export class MailNewsletterSubscriptionSuccess extends MailTemplate {
 
-    serverBaseUrl = config.get('generic.APPLICATION_URL') as string;
-
     constructor(private unsubscribe: string) {
-        super();
+        super({
+            mailFeatures: [
+                new MailFeatureUnsubscribeButton(unsubscribe, MailFeaturePosition.FOOTER)
+            ],
+            subject: "Newsletter: Anmeldung erfolgreich!",
+            subjectTitle: "Newsletter: Anmeldung erfolgreich!",
+        });
     }
 
     getHtmlContent(): string {
-        let content = fs.readFileSync(__dirname + "/templates/content-newsletter-subscription-success.html", { encoding: 'utf-8' });
-
-        let baseTemplate = fs.readFileSync(__dirname + "/templates/base-template.html", { encoding: 'utf-8' })
-            .replace("{content}", content)
-            .replace("{subject}", "Newsletter Anmeldung erfolgreich")
-            .replace("{subjectTitle}", "Newsletter Anmeldung erfolgreich")
-            .replace("{adminAction}", "")
-            .replace("{unsubscribeLink}", this.unsubscribe);
-
-        return baseTemplate
-            .replace("{serverBaseURL}", this.serverBaseUrl)
+        return this.getTemplate("content-newsletter-subscription-success");
     }
     getTextContent(): string {
         return "Du wurdest erfolgreich zu unserem Newsletter angemeldet.";
-    }
-
-    getSubject(): string {
-        return "Newsletter: Anmeldung erfolgreich!";
     }
 }

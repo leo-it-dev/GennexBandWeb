@@ -1,14 +1,19 @@
 import * as config from 'config';
-import { getRepeatedScheduler, runAgentTrigger } from "../..";
+import { getApiModule, getBaseURL } from "../..";
 import { ApiInterfaceEmptyIn, ApiInterfaceEmptyOut } from '../../../api_common/backend_call';
-import { ApiInterfaceCalendarIn, ApiInterfaceCalendarOut, Calendar } from "../../../api_common/calendar";
+import { ApiInterfaceCalendarIn, ApiInterfaceCalendarOut, ApiInterfaceCalendarPublishIn, ApiInterfaceCalendarPublishOut, CalendarEntry } from "../../../api_common/calendar";
 import { ApiModule } from "../../api_module";
+import { generateJWTtoken, validateJWTtokenExtractPayload } from '../../framework/jwt';
 import { ScheduledRepeatedEvent } from "../../framework/scheduled_events";
 import { getAuthenticatedServiceAccount } from '../../framework/service-account';
 import { SqlUpdate } from '../../framework/sqlite_database';
-import { CalendarAPIHelper, CalendarSync } from './calendar_helper';
 import { GoogleCalendarWatchHandler } from './calendar-webhook';
 import { AccumulatedCalendarFilter } from './calendar_accumulated_filter';
+import { CalendarAPIHelper } from './calendar_helper';
+import { publishEventFormularVerificationTemplate, PublishFormularStatusCode } from '../../../api_common/verification';
+import { ApiModuleSubscribe } from '../subscribe/api_subscribe';
+import { MailNewEventMessage } from '../../email/event-new-message';
+import { ApiModuleMailer } from '../mailer/api_mailer';
 
 export class ApiModuleCalendar extends ApiModule {
 
@@ -18,6 +23,7 @@ export class ApiModuleCalendar extends ApiModule {
     calendarFilter: AccumulatedCalendarFilter = new AccumulatedCalendarFilter();
 
     updateCalInformationScheduler: ScheduledRepeatedEvent;
+    mailer: ApiModuleMailer;
 
     modname(): string {
         return "calendar";
@@ -45,8 +51,21 @@ export class ApiModuleCalendar extends ApiModule {
         this.helper = new CalendarAPIHelper(this.sqlite());
         this.calendarWatcher = new GoogleCalendarWatchHandler(this.helper, this.sqlite());
 
+        this.mailer = getApiModule(ApiModuleMailer);
+        
         await this.calendarWatcher.init();
         await this.calendarWatcher.register();
+    }
+
+    entryToToken(entry: CalendarEntry) {
+        return generateJWTtoken({ entryID: entry.id });
+    }
+    tokenToEntry(token: object) {
+        return token['entryID'];
+    }
+
+    generatePublishEventUrl(entry: CalendarEntry) {
+        return getBaseURL() + "publishEvent?t=" + this.entryToToken(entry);
     }
 
     registerEndpoints(): void {
@@ -71,7 +90,7 @@ export class ApiModuleCalendar extends ApiModule {
                         this.logger().info("Received correct webhook call (initial sync):", dat.request.headers);
                         this.handleCalendarChangeWebhookCall();
                     } else {
-                        this.logger().warn("Received calendar webhook call with unhandled resource state:", {state: dat.request.headers["x-goog-resource-state"]});
+                        this.logger().warn("Received calendar webhook call with unhandled resource state:", { state: dat.request.headers["x-goog-resource-state"] });
                     }
                 } else {
                     this.logger().warn("Received out of band webhook call! Propably old not yet stopped webhook. Trying to stop.", { channelId: dat.request.headers["x-goog-channel-id"] });
@@ -90,6 +109,55 @@ export class ApiModuleCalendar extends ApiModule {
             }
             return { error: undefined, responseObject: {}, statusCode: 200 };
         });
+
+        this.postJson<ApiInterfaceCalendarPublishIn, ApiInterfaceCalendarPublishOut>("publish-event-to-newsletter", async req => {
+            if (!publishEventFormularVerificationTemplate.verify(req.body)) {
+                return {
+                    error: 'Your request is malformed or your request data is too big!',
+                    statusCode: 400,
+                    responseObject: { result: PublishFormularStatusCode.MALFORMED_REQUEST }
+                }
+            }
+
+            let token = validateJWTtokenExtractPayload(req.body.token);
+            if (token) {
+                let entryId = this.tokenToEntry(token);
+                try {
+                    let entry = this.calendarFilter.getCurrentCalendarState().entries.find(e => e.id == entryId);
+                    if (!entry) {
+                        return {
+                            error: 'The requested event does not exist anymore!',
+                            statusCode: 200,
+                            responseObject: { result: PublishFormularStatusCode.INTERNAL_SERVER_ERROR }
+                        }
+                    }
+
+                    let subscribers = await getApiModule(ApiModuleSubscribe).getAllSubscriptions();
+                    let newEventMail = new MailNewEventMessage(entry, getApiModule(ApiModuleCalendar).generatePublishEventUrl(entry), false);
+                    await this.mailer.queueBatchEmail(newEventMail.toBatchMail(subscribers));
+
+                    return {
+                        error: undefined,
+                        statusCode: 200,
+                        responseObject: { result: PublishFormularStatusCode.PUBLISH_SUCCESS }
+                    }
+
+                } catch (e) {
+                    this.logger().error("Error publishing newsletter emails!", { token: token, error: e });
+                    return {
+                        error: 'Error deleting your subscription!',
+                        statusCode: 200,
+                        responseObject: { result: PublishFormularStatusCode.INTERNAL_SERVER_ERROR }
+                    }
+                }
+            } else {
+                return {
+                    error: 'Your token is invalid, malformed or not signed by our current crypto backend!',
+                    statusCode: 200,
+                    responseObject: { result: PublishFormularStatusCode.TOKEN_INVALID }
+                }
+            }
+        });
     }
 
     handleCalendarChangeWebhookCall() {
@@ -99,7 +167,7 @@ export class ApiModuleCalendar extends ApiModule {
     async updateCalendarData() {
         this.logger().info("Updating calendar information...");
         let calendarDat = await this.helper.getAllPublicCalendarEntriesIncr(this.calendarID, this.calendarFilter.getCurrentSyncToken());
-        this.calendarFilter.accumulateCalendarData(calendarDat)
+        await this.calendarFilter.accumulateCalendarData(calendarDat)
         this.logger().info("Updated calendar information! Found: " + this.calendarFilter.getCurrentCalendarState().entries.length + " public calendar entries!");
     }
 }

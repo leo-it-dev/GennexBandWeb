@@ -8,6 +8,7 @@ import { BackendService } from '../../api/backend.service';
 export class CalendarBackendService extends BackendService {
 
 	public static API_URL_CALENDAR = "/module/calendar/calendar"
+	public static API_URL_PUBLISH  = "/module/calendar/publish-event-to-newsletter"
 
 	private calendarData: WritableSignal<Calendar> = signal({entries: []});
 

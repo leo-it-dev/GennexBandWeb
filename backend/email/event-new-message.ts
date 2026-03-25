@@ -1,34 +1,26 @@
 import { CalendarEntry } from "../../api_common/calendar";
-import { MailTemplate } from "./mail-template";
-import * as fs from 'fs';
-import * as config from 'config';
+import { MailFeaturePosition, MailFeaturePublishEventToSubscribers, MailTemplate } from "./mail-template";
 
 export class MailNewEventMessage extends MailTemplate {
     
-    serverBaseUrl = config.get('generic.APPLICATION_URL') as string;
-
-    constructor(private entry: CalendarEntry, private publicationLink: string|undefined) {
-        super();
+    constructor(private entry: CalendarEntry, private publicationLink: string|undefined, private includePublishButton) {
+        super({
+            mailFeatures: includePublishButton ? [
+                new MailFeaturePublishEventToSubscribers(publicationLink, MailFeaturePosition.BELOW_MAIL),
+            ] : [],
+            subject: "Gennex Eventankündigung",
+            subjectTitle: "Gennex Eventankündigung",
+        });
     }
 
     getHtmlContent(): string {
-        let content = fs.readFileSync(__dirname + "/templates/content-newsletter-new-message.html", { encoding: 'utf-8' })
+        let content = this.getTemplate("content-newsletter-new-message")
             .replace("{title}", this.entry.title)
+            .replace("{date}", this.entry.date.toLocaleString("de-DE"))
             .replace("{description}", this.entry.description)
-            .replace("{date}", this.entry.date.toLocaleDateString("de-DE"))
             .replace("{location}", this.entry.locationString);
 
-        let actionAdminPublishNewsletter = fs.readFileSync(__dirname + "/templates/action-publish-newsletter.html", { encoding: 'utf-8' })
-            .replace("{publicationLink}", "https.//gennex.band:443/bla");
-
-        let baseTemplate = fs.readFileSync(__dirname + "/templates/base-template.html", { encoding: 'utf-8' })
-            .replace("{content}", content)
-            .replace("{subject}", "Neue Eventankündigung")
-            .replace("{subjectTitle}", "Neue Eventankündigung")
-            .replace("{adminAction}", actionAdminPublishNewsletter);
-
-        return baseTemplate
-            .replace("{serverBaseURL}", this.serverBaseUrl);
+        return content;
     }
 
     getTextContent(): string {
@@ -36,9 +28,5 @@ export class MailNewEventMessage extends MailTemplate {
                 + " " + this.entry.description 
                 + " Wann? " + this.entry.date.toLocaleString("de-DE")
                 + " Wo? " + this.entry.locationString
-    }
-
-    getSubject(): string {
-        return "Gennex Eventankündigung";
     }
 }

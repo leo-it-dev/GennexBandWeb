@@ -1,31 +1,21 @@
 import { MailTemplate } from "./mail-template";
-import * as config from 'config';
-import * as fs from 'fs';
 
 export class MailContactNewMessage extends MailTemplate {
 
-    serverBaseUrl = config.get('generic.APPLICATION_URL') as string;
-
     constructor(private firstName: string, private lastName: string, private email: string, private message: string) {
-        super();
+        super({
+            mailFeatures: [],
+            subject: "Web: Kontaktanfrage",
+            subjectTitle: "Web: Kontaktanfrage"
+        });
     }
 
     getHtmlContent(): string {
-
-        let content = fs.readFileSync(__dirname + "/templates/content-contact-new-message.html", { encoding: 'utf-8' })
+        return this.getTemplate("content-contact-new-message")
             .replace("{firstName}", this.firstName)
             .replace("{lastName}", this.lastName)
             .replace("{email}", this.email)
             .replace("{message}", this.message);
-
-        let baseTemplate = fs.readFileSync(__dirname + "/templates/base-template.html", { encoding: 'utf-8' })
-            .replace("{content}", content)
-            .replace("{subject}", "Neue Anfrage per Kontaktformular")
-            .replace("{subjectTitle}", "Anfrage per Kontaktformular")
-            .replace("{adminAction}", "");
-
-        return baseTemplate
-            .replace("{serverBaseURL}", this.serverBaseUrl)
     }
 
     getTextContent(): string {

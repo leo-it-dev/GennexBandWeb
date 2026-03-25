@@ -7,7 +7,7 @@ export class AccumulatedCalendarFilter {
     private calendar: Calendar = { entries: [] };
     private syncToken = undefined;
 
-    accumulateCalendarData(newCalendarChunk: CalendarSync) {
+    async accumulateCalendarData(newCalendarChunk: CalendarSync) {
         let entriesDeleted: CalendarEntry[] = [];
         let entriesCreated: CalendarEntry[] = [];
         let entriesModified: CalendarEntry[] = [];
@@ -43,9 +43,9 @@ export class AccumulatedCalendarFilter {
         // Therefore we don't call our agents on the first sync cycle and only call them once we do an incremental sync (this.syncToken != undefined).
         // From that point on the data we receive is actually indicating -changes- in our calendar.
         if (this.syncToken) {
-            if (entriesDeleted.length > 0) runAgentTrigger(new AgentTriggerCalendarDelete(entriesDeleted));
-            if (entriesModified.length > 0) runAgentTrigger(new AgentTriggerCalendarModify(entriesModified));
-            if (entriesCreated.length > 0) runAgentTrigger(new AgentTriggerCalendarCreate(entriesCreated));
+            if (entriesDeleted.length > 0) await runAgentTrigger(new AgentTriggerCalendarDelete(entriesDeleted));
+            if (entriesModified.length > 0) await runAgentTrigger(new AgentTriggerCalendarModify(entriesModified));
+            if (entriesCreated.length > 0) await runAgentTrigger(new AgentTriggerCalendarCreate(entriesCreated));
         }
 
         this.syncToken = newCalendarChunk.syncToken;

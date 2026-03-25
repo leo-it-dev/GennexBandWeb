@@ -12,9 +12,12 @@ export abstract class Agent {
         this.logger().info("Initialized new agent!", { agent: this.name(), triggers: this.triggers });
     }
 
-    public processTrigger(trigger: AgentTrigger) {
+    public async processTrigger(trigger: AgentTrigger) {
         if (this.triggers.find(t => trigger instanceof t) != undefined) {
-            this.triggeredBy(trigger);
+            let result = this.triggeredBy(trigger);
+            if (result instanceof Promise) {
+                await result;
+            }
         }
     }
 

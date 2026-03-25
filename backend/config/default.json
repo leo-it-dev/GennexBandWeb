@@ -15,7 +15,9 @@
         "SMTP_USERNAME": "info@maxmustermann.de",
         "SMTP_PASSWORD": "",
         "SMTP_USE_SSL": false,
-        "MAIL_FROM_HEADER": "\"Max Mustermann\" <info@maxmustermann.de>"
+        "MAIL_FROM_HEADER": "\"Max Mustermann\" <info@maxmustermann.de>",
+        "BATCH_MAX_CONTACTS_PER_MAIL_EVERY_5_MINUTES": 30,
+        "BATCH_MAIL_MAX_TRANSMIT_RETRIES": 3
     },
     "youtube": {
         "YT_DATA_API_KEY": "enter_your_key_here",

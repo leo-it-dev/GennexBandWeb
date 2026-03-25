@@ -1,21 +1,22 @@
-import * as config from 'config';
+import { getApiModule, getBaseURL } from '../..';
 import { ApiInterfaceSubscribeIn, ApiInterfaceSubscribeOut, ApiInterfaceUnsubscribeIn, ApiInterfaceUnsubscribeOut } from '../../../api_common/subscribe';
 import { subscribeFormularRequestVerification, SubscribeFormularStatusCodes, unsubscribeFormularRequestVerification, UnsubscribeFormularStatusCodes } from '../../../api_common/verification';
 import { ApiModule } from "../../api_module";
 import { generateContactEmailVerifyCode, validateContactEmailVerifyCode } from "../../contact_verification_token";
-import * as mailer from '../../mailer';
-import { CaptchaVerificationResult, verifyCaptcha } from '../../framework/captcha_helper';
-import { SqlUpdate } from '../../framework/sqlite_database';
-import { generateJWTtoken, validateJWTtokenExtractPayload } from '../../framework/jwt';
-import { getBaseURL } from '../..';
+import { MailNewsletterEndSubscription } from '../../email/newsletter-end-subscription-message';
 import { MailNewsletterSubscriptionSuccess } from '../../email/newsletter-subscription-success';
 import { MailNewsletterVerifyCode } from '../../email/newsletter-verification-code-message';
-import { MailNewsletterEndSubscription } from '../../email/newsletter-end-subscription-message';
+import { CaptchaVerificationResult, verifyCaptcha } from '../../framework/captcha_helper';
+import { generateJWTtoken, validateJWTtokenExtractPayload } from '../../framework/jwt';
+import { SqlUpdate } from '../../framework/sqlite_database';
+import { ApiModuleMailer } from '../mailer/api_mailer';
 
 export class ApiModuleSubscribe extends ApiModule {
 
-    initialize() {
+    mailer: ApiModuleMailer;
 
+    initialize() {
+        this.mailer = getApiModule(ApiModuleMailer);
     }
 
     modname(): string {
@@ -34,7 +35,7 @@ export class ApiModuleSubscribe extends ApiModule {
     async getAllSubscriptions(): Promise<string[]> {
         return new Promise<string[]>((res, rej) => {
             this.sqlite().sqlFetchAll("SELECT mail FROM subscriptions", []).then(mails => {
-                res(mails as string[]);
+                res(mails.map(m => m['mail']));
             }).catch(err => {
                 rej(err);
             });
@@ -204,7 +205,7 @@ export class ApiModuleSubscribe extends ApiModule {
 
                         let unsubscribe = this.generateUnsubscribeUrl(req.body.email);
                         let mail = new MailNewsletterSubscriptionSuccess(unsubscribe);
-                        await mailer.sendEmail([req.body.email], mail);
+                        await this.mailer.sendEmail(mail.toBatchMail([req.body.email]));
                         return {
                             error: undefined,
                             statusCode: 200,
@@ -221,7 +222,7 @@ export class ApiModuleSubscribe extends ApiModule {
                 case ContinuationAction.SEND_EMAIL_VERIFICATION_MESSAGE:
                     let verificationCode = generateContactEmailVerifyCode(req.body.email);
                     let mail = new MailNewsletterVerifyCode(verificationCode);
-                    await mailer.sendEmail([req.body.email], mail);
+                    await this.mailer.sendEmail(mail.toBatchMail([req.body.email]));
 
                     return {
                         error: undefined,
@@ -260,7 +261,7 @@ export class ApiModuleSubscribe extends ApiModule {
                         let subscribeUrl = this.getSubscribeUrl();
 
                         let mail = new MailNewsletterEndSubscription(subscribeUrl);
-                        await mailer.sendEmail([email], mail);
+                        await this.mailer.sendEmail(mail.toBatchMail([email]));
 
                         return {
                             error: undefined,
