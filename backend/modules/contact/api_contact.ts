@@ -99,7 +99,7 @@ export class ApiModuleContact extends ApiModule {
             switch (finalAction) {
                 case ContinuationAction.FINAL_SEND_MESSAGE:
                     let mail = new MailContactNewMessage(req.body.firstName, req.body.surName, req.body.email, req.body.message);
-                    await this.mailer.sendEmail(mail.toBatchMail([config.get('mail.SMTP_USERNAME')]));
+                    await this.mailer.sendEmailImmediately(mail.toBatchMail([config.get('mail.SMTP_USERNAME')]));
 
                     return {
                         error: undefined,
@@ -109,7 +109,7 @@ export class ApiModuleContact extends ApiModule {
                 case ContinuationAction.SEND_EMAIL_VERIFICATION_MESSAGE:
                     let verificationCode = generateContactEmailVerifyCode(req.body.email);
                     let mail2 = new MailContactVerificationCode(verificationCode);
-                    await this.mailer.sendEmail(mail2.toBatchMail([req.body.email]));
+                    await this.mailer.sendEmailImmediately(mail2.toBatchMail([req.body.email]));
 
 
                     return {

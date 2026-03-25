@@ -67,7 +67,7 @@ export class PublishEventComponent implements AfterViewInit {
 	handleServerResponse(response: PublishFormularResponse) {
 		switch (response) {
 			case PublishFormularResponse.SUCCESS:
-				this.loadingser.showLoadingOverlay(["Neues Event erfolgreich an alle Newsletter-Abonnenten versandt"], "/images/success.webm", false, false, "", 0, (nt: string) => { });
+				this.loadingser.showLoadingOverlay(["Neues Event erfolgreich in Newsletter-Warteschlange hinterlegt!"], "/images/success.webm", false, false, "", 0, (nt: string) => { });
 				break;
 			case PublishFormularResponse.INTERNAL_ERROR:
 				this.loadingser.showLoadingOverlay(["Fehler beim Absenden des Newsletter!", "Server log beachten!"], "/images/error.webm", true, false, "", 0, (nt: string) => { });

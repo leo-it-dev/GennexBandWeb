@@ -1,8 +1,20 @@
-import { ApiModule } from "../../api_module";
-import * as nodemailer from 'nodemailer';
+/**
+ * This api implements a "at-least-once" message queue, that ensures
+ * - atomatic claiming of email chunks from the database
+ * - retries for failed message transmissions (general errors as well as handling transmission errors on a subset of recipients)
+ * - transactional based deletion / retry-insertion mechanism when writing new state to the database
+ * 
+ * !!! ONE important caveat !!!
+ * This implements "at-least-once", meaning if the service crashes after sending a batch of mails but before completing the transaction
+ *  after a service restart the recipients of the current batch will receive the email twice.
+ * Not a problem, just a bit annoying.
+ * 
+ * May be refined in the future to represent a 'exactly-once' message queue.
+ */
+
 import * as config from 'config';
-import { MailTemplate } from '../../email/mail-template';
-import * as mutex from 'async-mutex';
+import * as nodemailer from 'nodemailer';
+import { ApiModule } from "../../api_module";
 import { SqlUpdate } from "../../framework/sqlite_database";
 
 export type BatchEmail = {
@@ -16,19 +28,31 @@ export type BatchEmail = {
 
 export class ApiModuleMailer extends ApiModule {
 
-    queuedBatchEmailsMutex = new mutex.Mutex();
     transporter: nodemailer.Transporter;
 
-    async storeBatchEmail(mail: BatchEmail) {
-        await this.sqlite().sqlUpdate({
+    private dbStoreBatchEmail(mail: BatchEmail) {
+        this.sqlite().sqlUpdate({
             params: [JSON.stringify(mail.destinations), mail.subject, mail.textContent, mail.htmlContent, mail.retryCounter],
-            update: "INSERT INTO batch(destinations,subject,textContent,htmlContent,retryCounter) VALUES (?, ?, ?, ?, ?);"
+            update: "INSERT INTO batch(destinations,subject,textContent,htmlContent,retryCounter) VALUES (?, ?, ?, ?, ?)"
         });
     }
 
-    // !!!!! DELETE AFTER SUCCESSFULL SEND !!!!
-    async readFirstBatchEmail(): Promise<BatchEmail> {
-        let mailEntry = await this.sqlite().sqlFetchFirst("SELECT ID,destinations,subject,textContent,htmlContent,retryCounter FROM batch ORDER BY ID desc LIMIT 1", []);
+    private dbAcquireFirstBatchEmail(): BatchEmail | undefined {
+        let mailEntry = this.sqlite().sqlFetchFirst(
+            "UPDATE batch SET isProcessing = 1 \
+            WHERE ID IN (\
+                SELECT ID FROM batch \
+                WHERE isProcessing = 0 \
+                ORDER BY ID ASC \
+                LIMIT 1\
+            ) \
+            RETURNING *",
+        []);
+
+        if (!mailEntry) {
+            return undefined;
+        }
+        
         let mail: BatchEmail = {
             id: mailEntry["ID"],
             destinations: JSON.parse(mailEntry["destinations"]) as string[],
@@ -40,28 +64,24 @@ export class ApiModuleMailer extends ApiModule {
         return mail;
     }
 
-    async updateBatchEmailDestinations(emailID: number, destinationAddresses: string[]) {
-        await this.sqlite().sqlUpdate({
-            params: [destinationAddresses, emailID],
-            update: "UPDATE batch SET destinations=? WHERE ID=?"
-        })
-    }
-
-    async deleteBatchEmail(emailID: number) {
-        await this.sqlite().sqlUpdate({
-            params: [emailID],
-            update: "DELETE FROM batch WHERE ID=?;"
-        });
-    }
-
-    async countBatchEmails(): Promise<number> {
-        let dat = await this.sqlite().sqlFetchFirst("SELECT count(*) from batch;", []);
-        return dat["count(*)"] as number;
+    private dbUpdateBatchEmailRecipientsOrDelete(emailID: number, destinationAddresses: string[]) {
+        if (destinationAddresses.length == 0) {
+            this.sqlite().sqlUpdate({
+                params: [emailID],
+                update: "DELETE FROM batch WHERE ID=?"
+            });
+        } else {
+            this.sqlite().sqlUpdate({
+                params: [JSON.stringify(destinationAddresses), emailID],
+                update: "UPDATE batch SET destinations=? WHERE ID=?"
+            });
+        }
     }
 
     modname(): string {
-        throw "mailer";
+        return "mailer";
     }
+
     initialize() {
         // Create a transporter using Ethereal test credentials.
         // For production, replace with your actual SMTP server details.
@@ -76,10 +96,14 @@ export class ApiModuleMailer extends ApiModule {
             // ,logger: true,
             // cdebug: true
         });
+
+        // if this app crashes we may have entries left in our database that have their isProcessing marker set.
+        // those would never be processed again. Therefore once this app restarts reset all isProcessing markers.
+        this.sqlite().sqlUpdate({update: "UPDATE batch SET isProcessing=0", params: []});
     }
 
-    protected sqliteTableCreate(): SqlUpdate | undefined {
-        return {
+    protected sqliteTableCreate(): SqlUpdate[] | undefined {
+        return [{
             params: [],
             update: "CREATE TABLE IF NOT EXISTS batch (\
                         ID INTEGER PRIMARY KEY AUTOINCREMENT,\
@@ -87,78 +111,72 @@ export class ApiModuleMailer extends ApiModule {
                         subject TEXT NOT NULL, \
                         textContent TEXT NOT NULL, \
                         htmlContent TEXT NOT NULL, \
-                        retryCounter INTEGER DEFAULT 0\
-                    \);"
-        };
+                        retryCounter INTEGER DEFAULT 0, \
+                        isProcessing BOOL DEFAULT 0\
+                    \)"
+        }];
     }
 
     registerEndpoints(): void {
 
     }
 
-    // Send an email using async/await
-    async queueBatchEmail(batchMail: BatchEmail) {
-        if (batchMail.retryCounter > 0) {
-            await this.queuedBatchEmailsMutex.runExclusive(async () => {
-                await this.storeBatchEmail(batchMail);
-                this.logger().warn("Queued batch mail!", { recipientCount: batchMail.destinations.length, subject: batchMail.subject, retryCount: batchMail.retryCounter })
+    // ID in batchMail does not matter, as we push a new batch of mails into the database (even though it might be a subset of the previous batch if reception failed for some addressed.)
+    public async queueBatchEmail(batchMail: BatchEmail) {
+        this.dbStoreBatchEmail(batchMail);
+        this.logger().info("Queued batch mail!", { recipientCount: batchMail.destinations.length, subject: batchMail.subject, retryCount: batchMail.retryCounter })
+    }
+
+    public async popBatchEmailChunk(maxContacts: number, callback: (batchMail) => Promise<string[]>): Promise<void> {
+        // pop the first batch email
+        let queuedBatchMail = this.dbAcquireFirstBatchEmail();
+        if (queuedBatchMail) {
+            // select the first 'maxContacts' email addresses as targets for this email send batch.
+            let contactSubset = queuedBatchMail.destinations.slice(0, Math.min(maxContacts, queuedBatchMail.destinations.length))
+
+            // prepare our batch email
+            let batchMail: BatchEmail = {
+                id: queuedBatchMail.id,
+                destinations: contactSubset,
+                htmlContent: queuedBatchMail.htmlContent,
+                textContent: queuedBatchMail.textContent,
+                subject: queuedBatchMail.subject,
+                retryCounter: queuedBatchMail.retryCounter
+            };
+
+            let rejectedAddresses = await callback(batchMail);
+
+            // we need to prevent data loss in case of a crash between 
+            // 'deletion of processed mails' && 'reinserting rejected emails'
+            this.sqlite().runTransaction(() => {
+                // if there are still contacts left we need to send the mail to go ahead and throw that email back into our batch buffer
+                // but only add those recipients that are not part of this batch's target email addresses.
+                let allReceipientsSet = new Set(batchMail.destinations); // Using set as performance optimization (hash lookup)
+                let remainingRecipients = queuedBatchMail.destinations.filter(email => !allReceipientsSet.has(email));
+                this.dbUpdateBatchEmailRecipientsOrDelete(queuedBatchMail.id, remainingRecipients);
+
+                if (rejectedAddresses.length > 0) {
+                    if (batchMail.retryCounter > 1) {
+                        let batchMailRetry = {
+                            destinations: rejectedAddresses,
+                            htmlContent: batchMail.htmlContent,
+                            textContent: batchMail.textContent,
+                            retryCounter: batchMail.retryCounter - 1,
+                            subject: batchMail.subject,
+                            id: -1,
+                        };
+                        this.dbStoreBatchEmail(batchMailRetry);
+                        this.logger().info("Queued retry of batch mail subset!", { recipientCount: batchMailRetry.destinations.length, subject: batchMailRetry.subject, retryCount: batchMailRetry.retryCounter })
+                    } else {
+                        this.logger().warn("Deleting batch mail after exceeding max retry count!", { recipients: batchMail.destinations, subject: batchMail.subject })
+                    }
+                }
             });
-        } else {
-            this.logger().warn("Deleting batch mail after exceeding max retry count!", { receipients: batchMail.destinations, subject: batchMail.subject })
         }
     }
 
-    async popBatchEmailChunk(maxContacts: number, callback: (batchMail) => Promise<string[]>) {
-        this.queuedBatchEmailsMutex.runExclusive<BatchEmail>(async () => {
-            if (await this.countBatchEmails() > 0) {
-                // pop the first batch email
-                let queuedBatchMail = await this.readFirstBatchEmail();
-                // select the first 'maxContacts' email addresses as targets for this email send batch.
-                let contactSubset = queuedBatchMail.destinations.slice(0, Math.min(maxContacts, queuedBatchMail.destinations.length))
-
-                // prepare our batch email
-                let batchMail: BatchEmail = {
-                    id: queuedBatchMail.id,
-                    destinations: contactSubset,
-                    htmlContent: queuedBatchMail.htmlContent,
-                    textContent: queuedBatchMail.textContent,
-                    subject: queuedBatchMail.subject,
-                    retryCounter: queuedBatchMail.retryCounter
-                };
-
-                let rejectedAddresses = await callback(batchMail);
-
-                // if there are still contacts left we need to send the mail to go ahead and throw that email back into our batch buffer.
-                // only add those accounts as destination addresses that are not part of this batch's target email addresses.
-                if (contactSubset.length < queuedBatchMail.destinations.length) {
-                    await this.updateBatchEmailDestinations(
-                        queuedBatchMail.id,
-                        queuedBatchMail.destinations.filter(email => !batchMail.destinations.includes(email))
-                    )
-                } else {
-                    await this.deleteBatchEmail(queuedBatchMail.id);
-                }
-
-                if (rejectedAddresses.length > 0) {
-                    await this.queueBatchEmail({
-                        destinations: rejectedAddresses,
-                        htmlContent: batchMail.htmlContent,
-                        textContent: batchMail.textContent,
-                        retryCounter: batchMail.retryCounter - 1,
-                        subject: batchMail.subject,
-                        id: -1,
-                    });
-                }
-
-                return batchMail;
-            } else {
-                return undefined;
-            }
-        });
-    }
-
     // promise return an array of email addresses that did NOT accept the email.
-    async sendEmail(mail: BatchEmail): Promise<string[]> {
+    async sendEmailImmediately(mail: BatchEmail): Promise<string[]> {
         this.logger().info("Trying to send mail!", { destinationCount: mail.destinations.length, subject: mail.subject })
 
         try {

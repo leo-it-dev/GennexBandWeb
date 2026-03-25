@@ -19,8 +19,10 @@ export abstract class ApiModule {
         this._sqlite.sqliteInit(this.modname());
 
         const sqliteCreateTable = this.sqliteTableCreate();
-        if (sqliteCreateTable != undefined) {
-            await this._sqlite.sqlUpdate(sqliteCreateTable);
+        if (sqliteCreateTable != undefined && sqliteCreateTable.length > 0) {
+            for (let update of sqliteCreateTable) {
+                await this._sqlite.sqlUpdate(update);
+            }
         }
     }
 
@@ -39,7 +41,7 @@ export abstract class ApiModule {
         return this._logger;
     }
 
-    protected sqliteTableCreate(): SqlUpdate | undefined {
+    protected sqliteTableCreate(): SqlUpdate[] | undefined {
         return undefined;
     };
 

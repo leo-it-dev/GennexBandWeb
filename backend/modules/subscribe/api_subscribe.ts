@@ -23,67 +23,42 @@ export class ApiModuleSubscribe extends ApiModule {
         return "subscribe";
     }
 
-    protected sqliteTableCreate(): SqlUpdate | undefined {
-        return {
+    protected sqliteTableCreate(): SqlUpdate[] | undefined {
+        return [{
             params: [],
             update: "CREATE TABLE IF NOT EXISTS subscriptions (\
                         mail varchar(100) NOT NULL UNIQUE \
                     \);"
-        };
+        }];
     }
 
-    async getAllSubscriptions(): Promise<string[]> {
-        return new Promise<string[]>((res, rej) => {
-            this.sqlite().sqlFetchAll("SELECT mail FROM subscriptions", []).then(mails => {
-                res(mails.map(m => m['mail']));
-            }).catch(err => {
-                rej(err);
-            });
+    getAllSubscriptions(): string[] {
+        return this.sqlite().sqlFetchAll("SELECT mail FROM subscriptions", []).map(m => m['mail']);
+    }
+
+    addSubscription(mail: string) {
+        this.sqlite().sqlUpdate({
+            update: "INSERT INTO subscriptions (mail) VALUES (?)",
+            params: [
+                mail
+            ]
         });
     }
 
-    async addSubscription(mail: string) {
-        return new Promise<void>((res, rej) => {
-            this.sqlite().sqlUpdate({
-                update: "INSERT INTO subscriptions (mail) VALUES (?);",
-                params: [
-                    mail
-                ]
-            }).then(() => {
-                res();
-            }).catch(e => {
-                rej(e);
-            })
-        });
+    isEmailRegistered(mail: string): boolean {
+        return this.sqlite().sqlFetchAll("SELECT mail FROM subscriptions WHERE mail=?", [mail]).length > 0;
     }
 
-    async isEmailRegistered(mail: string): Promise<boolean> {
-        return new Promise<boolean>((res, rej) => {
-            this.sqlite().sqlFetchAll("SELECT mail FROM subscriptions WHERE mail=?", [mail]).then(email => {
-                res(email.length > 0);
-            }).catch(e => {
-                rej(e);
-            });
-        });
-    }
+    removeSubscription(mail: string) {
+        if (!mail || mail.trim().length == 0) {
+            throw Error("Trying to delete subscription without specifying any mail address!");
+        }
 
-    async removeSubscription(mail: string) {
-        return new Promise<void>((res, rej) => {
-
-            if (!mail || mail.trim().length == 0) {
-                rej();
-            }
-
-            this.sqlite().sqlUpdate({
-                update: "DELETE FROM subscriptions WHERE mail=?;",
-                params: [
-                    mail
-                ]
-            }).then(() => {
-                res();
-            }).catch(e => {
-                rej(e);
-            })
+        this.sqlite().sqlUpdate({
+            update: "DELETE FROM subscriptions WHERE mail=?",
+            params: [
+                mail
+            ]
         });
     }
 
@@ -176,7 +151,7 @@ export class ApiModuleSubscribe extends ApiModule {
                         }
                     case CaptchaVerificationResult.SUCCESS:
                         try {
-                            if (await this.isEmailRegistered(req.body.email)) {
+                            if (this.isEmailRegistered(req.body.email)) {
                                 return {
                                     error: undefined,
                                     statusCode: 200,
@@ -199,13 +174,13 @@ export class ApiModuleSubscribe extends ApiModule {
             switch (finalAction) {
                 case ContinuationAction.FINAL_SEND_MESSAGE:
                     try {
-                        await this.addSubscription(req.body.email);
+                        this.addSubscription(req.body.email);
 
                         console.log("Successfully got subscription: ", req.body);
 
                         let unsubscribe = this.generateUnsubscribeUrl(req.body.email);
                         let mail = new MailNewsletterSubscriptionSuccess(unsubscribe);
-                        await this.mailer.sendEmail(mail.toBatchMail([req.body.email]));
+                        await this.mailer.sendEmailImmediately(mail.toBatchMail([req.body.email]));
                         return {
                             error: undefined,
                             statusCode: 200,
@@ -222,7 +197,7 @@ export class ApiModuleSubscribe extends ApiModule {
                 case ContinuationAction.SEND_EMAIL_VERIFICATION_MESSAGE:
                     let verificationCode = generateContactEmailVerifyCode(req.body.email);
                     let mail = new MailNewsletterVerifyCode(verificationCode);
-                    await this.mailer.sendEmail(mail.toBatchMail([req.body.email]));
+                    await this.mailer.sendEmailImmediately(mail.toBatchMail([req.body.email]));
 
                     return {
                         error: undefined,
@@ -256,12 +231,12 @@ export class ApiModuleSubscribe extends ApiModule {
             if (token) {
                 let email = this.tokenToEmail(token);
                 try {
-                    if (await this.isEmailRegistered(email)) {
-                        await this.removeSubscription(email)
+                    if (this.isEmailRegistered(email)) {
+                        this.removeSubscription(email)
                         let subscribeUrl = this.getSubscribeUrl();
 
                         let mail = new MailNewsletterEndSubscription(subscribeUrl);
-                        await this.mailer.sendEmail(mail.toBatchMail([email]));
+                        await this.mailer.sendEmailImmediately(mail.toBatchMail([email]));
 
                         return {
                             error: undefined,

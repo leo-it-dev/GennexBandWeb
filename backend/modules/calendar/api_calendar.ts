@@ -29,21 +29,24 @@ export class ApiModuleCalendar extends ApiModule {
         return "calendar";
     }
 
-    protected sqliteTableCreate(): SqlUpdate | undefined {
-        return {
+    protected sqliteTableCreate(): SqlUpdate[] | undefined {
+        return [{
             params: [],
             update: "CREATE TABLE IF NOT EXISTS watches (\
                         id VARCHAR(64),\
                         resourceId VARCHAR(64),\
                         expiration int,\
                         channelName VARCHAR(64) NOT NULL\
-                    \);\
-                    CREATE TABLE IF NOT EXISTS geocoding (\
+                    \)"
+        },
+        {
+            params: [],
+            update: "CREATE TABLE IF NOT EXISTS geocoding (\
                         locstr VARCHAR(512) NOT NULL UNIQUE,\
                         lon FLOAT,\
                         lat FLOAT\
-                    \);"
-        };
+                    \)"
+        }];
     }
 
     async initialize() {
@@ -132,7 +135,7 @@ export class ApiModuleCalendar extends ApiModule {
                         }
                     }
 
-                    let subscribers = await getApiModule(ApiModuleSubscribe).getAllSubscriptions();
+                    let subscribers = getApiModule(ApiModuleSubscribe).getAllSubscriptions();
                     let newEventMail = new MailNewEventMessage(entry, getApiModule(ApiModuleCalendar).generatePublishEventUrl(entry), false);
                     await this.mailer.queueBatchEmail(newEventMail.toBatchMail(subscribers));
 

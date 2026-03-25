@@ -30,7 +30,7 @@ export class AgentSendCalendarEntryNotification extends Agent {
             for (let entry of trigger.calendarEntries) {
                 let publishEventUrl = getApiModule(ApiModuleCalendar).generatePublishEventUrl(entry);
                 let newEventMail = new MailNewEventMessage(entry, publishEventUrl, true);
-                await mailer.sendEmail(newEventMail.toBatchMail([config.get('mail.SMTP_USERNAME')]));
+                await mailer.sendEmailImmediately(newEventMail.toBatchMail([config.get('mail.SMTP_USERNAME')]));
             }
         }
     }

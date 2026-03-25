@@ -32,12 +32,16 @@ export class CalendarAPIHelper {
         this.geocodingApiKey = config.get("calendar.GEOCODING_DATA_API_KEY") ?? "<unknown key>";
     }
 
-    // todo: implement sqlite based caching.
     async resolveLocationToLongLat(locationName: string): Promise<Location> {
         return new Promise<Location>(async (res, rej) => {
-            let cachedResult = await this.getCachedGeocodingResult(locationName);
-            if (cachedResult != undefined) {
-                res(cachedResult);
+            try {
+                let cachedResult = this.getCachedGeocodingResult(locationName);
+                if (cachedResult != undefined) {
+                    res(cachedResult);
+                    return;
+                }
+            } catch(err) {
+                rej(err);
                 return;
             }
 
@@ -47,7 +51,7 @@ export class CalendarAPIHelper {
                 let longitude = dat.results[0].geometry.location.lng;
 
                 if (latitude != 0 && longitude != 0) {
-                    await this.storeGeocodingResult(locationName, longitude, latitude);
+                    this.storeGeocodingResult(locationName, longitude, latitude);
                 }
 
                 CalendarAPIHelper.logger.info("Resolved location string using google api.", { locStr: locationName, lon: longitude, lat: latitude });
@@ -201,29 +205,22 @@ export class CalendarAPIHelper {
 
     // database -------------------------------------------
 
-    async storeGeocodingResult(locStr: string, lon: number, lat: number): Promise<void> {
+    storeGeocodingResult(locStr: string, lon: number, lat: number) {
         CalendarAPIHelper.logger.info("Caching geocoding result", { locStr: locStr, lon: lon, lat: lat });
-        return new Promise<void>((res, rej) => {
-            this.sqlite.sqlUpdate({
-                params: [locStr, lon, lat],
-                update: "INSERT OR REPLACE INTO geocoding(locStr, lon, lat) VALUES (?, ?, ?)"
-            }).then(() => res()).catch(err => rej(err));
+        this.sqlite.sqlUpdate({
+            params: [locStr, lon, lat],
+            update: "INSERT OR REPLACE INTO geocoding(locStr, lon, lat) VALUES (?, ?, ?)"
         });
     }
 
-    async getCachedGeocodingResult(locStr: string): Promise<Location> {
-        return new Promise<Location>((res, rej) => {
-            this.sqlite.sqlFetchAll("SELECT lon,lat from geocoding WHERE locStr=?", [locStr]).then(rows => {
-                if (rows.length > 0) {
-                    let lat = rows[0]["lat"];
-                    let lon = rows[0]["lon"];
-                    CalendarAPIHelper.logger.info("Fetched geocoding cache", { locStr: locStr, lon: lon, lat: lat });
-                    res({ lat: lat, lon: lon });
-                }
-                res(undefined);
-            }).catch(err => {
-                rej(err);
-            });
-        });
+    getCachedGeocodingResult(locStr: string): Location {
+        let rows = this.sqlite.sqlFetchAll("SELECT lon,lat from geocoding WHERE locStr=?", [locStr]);
+        if (rows.length > 0) {
+            let lat = rows[0]["lat"];
+            let lon = rows[0]["lon"];
+            CalendarAPIHelper.logger.info("Fetched geocoding cache", { locStr: locStr, lon: lon, lat: lat });
+            return { lat: lat, lon: lon };
+        }
+        return undefined;
     }
 }

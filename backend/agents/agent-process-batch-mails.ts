@@ -25,7 +25,7 @@ export class AgentProcessBatchMails extends Agent {
     async triggeredBy(trigger: AgentTrigger) {
         let mailer = getApiModule(ApiModuleMailer);
         await mailer.popBatchEmailChunk(this.MAX_CONTACTS_PER_MAIL, async (batchMail) => {
-            let rejectedMails = await mailer.sendEmail(batchMail);
+            let rejectedMails = await mailer.sendEmailImmediately(batchMail);
             return rejectedMails;
         });
     }

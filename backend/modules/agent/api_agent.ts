@@ -1,4 +1,5 @@
 import { getRepeatedScheduler } from "../..";
+import { AgentProcessBatchMails } from "../../agents/agent-process-batch-mails";
 import { AgentSendCalendarEntryNotification } from "../../agents/agent-send-event-notification";
 import { ApiModule } from "../../api_module";
 import { Agent } from "./agent";
@@ -23,7 +24,8 @@ export class ApiModuleAgentHandler extends ApiModule {
         getRepeatedScheduler().scheduleRepeatedEvent(this, "agent-trigger-1M",  60      , (finished) => { this.runTrigger(new AgentTrigger1M()).then(() => finished()) }, true);
 
         let agentClasses: (new (...args: any[]) => Agent)[] = [
-            AgentSendCalendarEntryNotification
+            AgentSendCalendarEntryNotification,
+            AgentProcessBatchMails
         ];
 
         for (let agent of agentClasses) {

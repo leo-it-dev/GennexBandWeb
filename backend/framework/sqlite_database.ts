@@ -1,6 +1,5 @@
-import * as fs from 'fs';
-import * as sqlite from 'sqlite3';
 import { getLogger } from '../logger';
+import Database = require('better-sqlite3');
 
 export type SqlUpdate = {
 	update: string,
@@ -11,75 +10,55 @@ export class SQLiteDB {
 
 	logger = getLogger("sqlite");
 
-	database: sqlite.Database = undefined;
+	database: Database.Database = undefined;
 	moduleName: string = "";
-	
+
 	sqliteInit(moduleName: string) {
 		const databasePath = __dirname + "/databases/" + moduleName + ".db";
-
 		this.moduleName = moduleName;
-		this.logger.info("Opening sqlite database", {dbname: moduleName, db: databasePath});
-		this.database = new sqlite.Database(databasePath, sqlite.OPEN_CREATE | sqlite.OPEN_READWRITE);
+		this.logger.info("Opening sqlite database", { dbname: moduleName, db: databasePath });
+		this.database = new Database(databasePath, { fileMustExist: false, readonly: false });
 	}
-	
-	sqlUpdate(update: SqlUpdate): Promise<void> {
+
+	runTransaction(callback: () => void) {
+		this.database.transaction(() => {
+			callback();
+		})();
+	}
+
+	// throws Error on failure
+	sqlUpdate(update: SqlUpdate): void {
 		if (this.database == undefined) {
 			this.logger.error("Can't perform operation on sqlite database as it is not initialized!", { dbname: this.moduleName, op: "update", parameters: update.params });
-			return;
+			throw Error("Can't perform operation on sqlite database as it is not initialized!");
 		}
-		
-		return new Promise<void>((resolve, reject) => {
-			try {
-				if (update.params.length == 0) {
-					this.database.exec(update.update, (err) => {
-						if (err) reject(err);
-						resolve();
-					});
-				} else {
-					this.database.run(update.update, update.params, (err) => {
-						if (err) reject(err);
-						resolve();
-					});
-				}
-			} catch(e) {
-				reject("error: " + e);
-			}
-		});
+
+		this.database
+			.prepare(update.update)
+			.run(update.params);
 	}
-	
-	sqlFetchAll(query, params): Promise<unknown[]> {
+
+	// throws Error on failure
+	sqlFetchAll(query, params): unknown[] {
 		if (this.database == undefined) {
 			this.logger.error("Can't perform operation on sqlite database as it is not initialized!", { dbname: this.moduleName, op: "query-all", query: query, params: params });
-			return Promise.reject();
+			throw Error("Can't perform operation on sqlite database as it is not initialized!");
 		}
-		
-		return new Promise<unknown[]>((resolve, reject) => {
-			try {
-				this.database.all(query, params, (err, rows) => {
-					if (err) reject(err);
-					resolve(rows);
-				});
-			} catch(e) {
-				reject("error: " + e);
-			}
-		});
+
+		return this.database
+			.prepare(query)
+			.all(params);
 	};
-	
-	sqlFetchFirst(query, params): Promise<unknown> {
+
+	// throws Error on failure
+	sqlFetchFirst(query, params): unknown {
 		if (this.database == undefined) {
 			this.logger.error("Can't perform operation on sqlite database as it is not initialized!", { dbname: this.moduleName, op: "query-first", query: query, params: params });
-			return Promise.reject();
+			throw Error("Can't perform operation on sqlite database as it is not initialized!");
 		}
-		
-		return new Promise<unknown>((resolve, reject) => {
-			try {
-				this.database.get(query, params, (err, row) => {
-					if (err) reject(err);
-					resolve(row);
-				});
-			} catch(e) {
-				reject("error: " + e);
-			}
-		});
+
+		return this.database
+			.prepare(query)
+			.get(params);
 	};
 }

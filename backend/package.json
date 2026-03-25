@@ -13,12 +13,14 @@
   },
   "dependencies": {
     "@immich/sdk": "^2.6.1",
+    "@types/better-sqlite3": "^7.6.13",
     "@types/config": "^3.3.5",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/lru-cache": "^7.10.9",
     "@types/nodemailer": "^7.0.11",
     "@types/unzipper": "^0.10.11",
     "async-mutex": "^0.5.0",
+    "better-sqlite3": "^12.8.0",
     "chalk": "^4",
     "compression": "^1.8.1",
     "config": "^4.1.1",
@@ -28,8 +30,6 @@
     "nodemailer": "^7.0.12",
     "pdf2pic": "^3.2.0",
     "sharp": "^0.34.5",
-    "sqlite": "^5.1.1",
-    "sqlite3": "^5.1.7",
     "unzipper": "^0.12.3",
     "winston": "^3.19.0"
   },

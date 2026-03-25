@@ -55,21 +55,20 @@ export class GoogleCalendarWatchHandler {
     }
 
     private async deleteOldWatcherRegistrations() {
-        return new Promise<void>((res, rej) => {
-            this.getAllGoogleCalendarWatchersDB().then(async watchers => {
-                try {
-                    let serviceAccount = await getAuthenticatedServiceAccount();
-                    for (let w of watchers) {
-                        this.logger.info("Unregistering old calendar watcher entry from google: ", { entry: w });
-                        await this.helper.deleteCalendarWatcher(serviceAccount, w);
-                        this.logger.info("Deleting old calendar watcher entry from local DB: ", { entry: w });
-                        await this.deleteGoogleCalendarWatcherDB(w);
-                    }
-                    res();
-                } catch(err) {
-                    rej("Error deleting old google calendar watch registration: " + err);
+        return new Promise<void>(async (res, rej) => {
+            try {
+                let watchers = this.getAllGoogleCalendarWatchersDB();
+                let serviceAccount = await getAuthenticatedServiceAccount();
+                for (let w of watchers) {
+                    this.logger.info("Unregistering old calendar watcher entry from google: ", { entry: w });
+                    await this.helper.deleteCalendarWatcher(serviceAccount, w);
+                    this.logger.info("Deleting old calendar watcher entry from local DB: ", { entry: w });
+                    this.deleteGoogleCalendarWatcherDB(w);
                 }
-            });
+                res();
+            } catch(err) {
+                rej("Error deleting old google calendar watch registration: " + err);
+            }
         });
     }
 
@@ -86,40 +85,31 @@ export class GoogleCalendarWatchHandler {
 
     // Database handling ----------------------------------------------------------------------
 
-    async deleteGoogleCalendarWatcherDB(watcher: CalendarWatcherWebHook): Promise<void> {
-        return new Promise<void>((res, rej) => {
-            this.sqlite.sqlUpdate({
-                params: [watcher.id, watcher.resourceId],
-                update: "DELETE FROM watches WHERE id=? AND resourceId=?"
-            }).then(() => res()).catch(err => rej(err));
+    deleteGoogleCalendarWatcherDB(watcher: CalendarWatcherWebHook) {
+        this.sqlite.sqlUpdate({
+            params: [watcher.id, watcher.resourceId],
+            update: "DELETE FROM watches WHERE id=? AND resourceId=?"
         });
     }
 
-    async storeGoogleCalendarWatcherDB(watcher: CalendarWatcherWebHook): Promise<void> {
-        return new Promise<void>((res, rej) => {
-            this.sqlite.sqlUpdate({
-                params: [watcher.id, watcher.resourceId, watcher.channelName, watcher.expiration],
-                update: "INSERT INTO watches(id, resourceId, channelName, expiration) VALUES (?, ?, ?, ?)"
-            }).then(() => res()).catch(err => rej(err));
+    storeGoogleCalendarWatcherDB(watcher: CalendarWatcherWebHook) {
+        this.sqlite.sqlUpdate({
+            params: [watcher.id, watcher.resourceId, watcher.channelName, watcher.expiration],
+            update: "INSERT INTO watches(id, resourceId, channelName, expiration) VALUES (?, ?, ?, ?)"
         });
     }
 
-    async getAllGoogleCalendarWatchersDB(): Promise<CalendarWatcherWebHook[]> {
-        return new Promise<CalendarWatcherWebHook[]>((res, rej) => {
-            this.sqlite.sqlFetchAll("SELECT id,resourceId from watches", []).then(rows => {
-                let watchers: CalendarWatcherWebHook[] = [];
-                for (let row of rows) {
-                    watchers.push({
-                        id: row['id'],
-                        resourceId: row['resourceId'],
-                        channelName: row['channelName'],
-                        expiration: row['expiration'],
-                    });
-                }
-                res(watchers);
-            }).catch(err => {
-                rej(err);
+    getAllGoogleCalendarWatchersDB(): CalendarWatcherWebHook[] {
+        let rows = this.sqlite.sqlFetchAll("SELECT id,resourceId from watches", []);
+        let watchers: CalendarWatcherWebHook[] = [];
+        for (let row of rows) {
+            watchers.push({
+                id: row['id'],
+                resourceId: row['resourceId'],
+                channelName: row['channelName'],
+                expiration: row['expiration'],
             });
-        });
+        }
+        return watchers;
     }
 }
