@@ -17,6 +17,8 @@ export class VideoListComponent {
 
 	@ViewChildren("mediaVideo")
 	videoElementsDOM!: QueryList<ElementRef<HTMLElement>>;
+	@ViewChildren('ytPlayer')
+	youtubePlayersDOM!: QueryList<YouTubePlayer>;
 
 	constructor(private videoService: VideosBackendService) {
 		console.log("Video list initialized!");
@@ -25,8 +27,6 @@ export class VideoListComponent {
 			if (this.videoService.getVideoList()().length > 0) {
 				let videoCount = this.videoService.getVideoList()().map(p => p.videos.length).reduce((p, n) => p + n);
 				this.scrollCommunication.stickyHeight = computed(() => videoCount * this.vhToPixels(parseInt(this.heightPerElement)) + "px");
-
-				console.log("Updated sticky height based on new element count: ", videoCount);
 			}
 		});
 
@@ -43,9 +43,14 @@ export class VideoListComponent {
 				if (this.videoElementsDOM) {
 					for (let i = 0; i < this.videoElementsDOM.length; i++) {
 						if (nthElement == i) {
-							this.videoElementsDOM.get(i)?.nativeElement.classList.add("visible")
+							this.videoElementsDOM.get(i)?.nativeElement.classList.add("visible");
 						} else {
-							this.videoElementsDOM.get(i)?.nativeElement.classList.remove("visible")
+							this.videoElementsDOM.get(i)?.nativeElement.classList.remove("visible");
+							let player = this.youtubePlayersDOM.get(i);
+							let playerState = player?.getPlayerState();
+							if (player && (!playerState || [YT.PlayerState.BUFFERING, YT.PlayerState.CUED, YT.PlayerState.PLAYING].includes(playerState))) {
+								player.stopVideo();
+							}
 						}
 					}
 				}

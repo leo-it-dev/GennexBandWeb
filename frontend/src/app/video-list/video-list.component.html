@@ -4,7 +4,7 @@
     @for(video of playlist.videos; track video.videoID) {
     <div #mediaVideo class="media-video" [style.--elementHeight]="this.heightPerElement">
       <h2 class="video-name">{{video.videoName}}</h2>
-      <youtube-player [videoId]="video.videoID" width="100%"></youtube-player>
+      <youtube-player [videoId]="video.videoID" width="100%" #ytPlayer></youtube-player>
     </div>
     }
   </div>

@@ -8,6 +8,7 @@ import { MailContactNewMessage } from '../../email/contact-new-message';
 import { MailContactVerificationCode } from '../../email/contact-verification-code-message';
 import { ApiModuleMailer } from '../mailer/api_mailer';
 import { getApiModule } from '../..';
+import { MailContactNewMessageAcknowledge } from '../../email/event-new-message-acknowledge';
 
 export class ApiModuleContact extends ApiModule {
 
@@ -99,7 +100,9 @@ export class ApiModuleContact extends ApiModule {
             switch (finalAction) {
                 case ContinuationAction.FINAL_SEND_MESSAGE:
                     let mail = new MailContactNewMessage(req.body.firstName, req.body.surName, req.body.email, req.body.message);
+                    let mailAck = new MailContactNewMessageAcknowledge(req.body.message);
                     await this.mailer.sendEmailImmediately(mail.toBatchMail([config.get('mail.SMTP_USERNAME')]));
+                    await this.mailer.sendEmailImmediately(mailAck.toBatchMail([req.body.email]));
 
                     return {
                         error: undefined,

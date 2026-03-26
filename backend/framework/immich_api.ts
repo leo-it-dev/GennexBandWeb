@@ -123,6 +123,9 @@ export async function syncGalleryWithImmich(): Promise<SyncGalleryResult> {
         }
 
         // generate a fresh overview over all existing images in our local gallery.
+        if (!fs.existsSync(pathImages)) {
+            fs.mkdirSync(pathImages);
+        }
         let imageFiles = fs.readdirSync(pathImages).filter(f => 
             fs.lstatSync( path.resolve(pathImages, f) ).isFile()
         );
