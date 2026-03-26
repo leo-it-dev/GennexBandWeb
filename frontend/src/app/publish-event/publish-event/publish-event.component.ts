@@ -20,7 +20,7 @@ export class PublishEventComponent implements AfterViewInit {
 	}
 
 	ngAfterViewInit(): void {
-		this.loadingser.showLoadingOverlay(["Möchtest du ALLE Abonnenten per Mail auf das Event aufmerksam machen?"], "/images/rocket.webm", true, false, "bla", 0, (bla: string) => { }, [
+		this.loadingser.showLoadingOverlay(["Möchtest du ALLE Abonnenten per Mail auf das Event aufmerksam machen?"], "/images/rocket.json", true, false, "bla", 0, (bla: string) => { }, [
 			{ text: "Abbrechen", color: "#aaaaaa" },
 			{ text: "Publish", color: "#ff643d" },
 		], (btn: string) => {
@@ -37,7 +37,7 @@ export class PublishEventComponent implements AfterViewInit {
 	}
 
 	async sendPublishForm(): Promise<PublishFormularResponse> {
-		this.loadingser.showLoadingOverlay(["Bitte warten"], "/images/paperplane.webm", true, false, "", 0, (nt: string) => { });
+		this.loadingser.showLoadingOverlay(["Bitte warten"], "/images/paperplane.json", true, false, "", 0, (nt: string) => { });
 
 		return new Promise((res, _) => {
 			this.backend.anonymousBackendCall<ApiInterfaceCalendarPublishIn, ApiInterfaceCalendarPublishOut>(CalendarBackendService.API_URL_PUBLISH, {
@@ -67,16 +67,16 @@ export class PublishEventComponent implements AfterViewInit {
 	handleServerResponse(response: PublishFormularResponse) {
 		switch (response) {
 			case PublishFormularResponse.SUCCESS:
-				this.loadingser.showLoadingOverlay(["Neues Event erfolgreich in Newsletter-Warteschlange hinterlegt!"], "/images/success.webm", false, false, "", 0, (nt: string) => { });
+				this.loadingser.showLoadingOverlay(["Neues Event erfolgreich in Newsletter-Warteschlange hinterlegt!"], "/images/success.json", false, false, "", 0, (nt: string) => { });
 				break;
 			case PublishFormularResponse.INTERNAL_ERROR:
-				this.loadingser.showLoadingOverlay(["Fehler beim Absenden des Newsletter!", "Server log beachten!"], "/images/error.webm", true, false, "", 0, (nt: string) => { });
+				this.loadingser.showLoadingOverlay(["Fehler beim Absenden des Newsletter!", "Server log beachten!"], "/images/error.json", true, false, "", 0, (nt: string) => { });
 				break;
 			case PublishFormularResponse.TOKEN_INVALID:
-				this.loadingser.showLoadingOverlay(["Dein Link ist ungültig.", "Versuche falls vorhanden einen Link aus einer neueren E-Mail zu öffnen."], "/images/error.webm", true, false, "", 0, (nt: string) => { });
+				this.loadingser.showLoadingOverlay(["Dein Link ist ungültig.", "Versuche falls vorhanden einen Link aus einer neueren E-Mail zu öffnen."], "/images/error.json", true, false, "", 0, (nt: string) => { });
 				break;
 			case PublishFormularResponse.UNKNOWN_EVENT:
-				this.loadingser.showLoadingOverlay(["Das angegebene Event ist nicht mehr verfügbar!", "Wurde das Event im Kalender gelöscht?"], "/images/error.webm", true, false, "", 0, (nt: string) => { });
+				this.loadingser.showLoadingOverlay(["Das angegebene Event ist nicht mehr verfügbar!", "Wurde das Event im Kalender gelöscht?"], "/images/error.json", true, false, "", 0, (nt: string) => { });
 				break;
 		}
 		this.removePathFromURL();

@@ -43,31 +43,31 @@ export class ContactChannelsComponent {
 	handleContactFormularResponse(response: SubscribeFormularResponse) {
 		switch (response) {
 			case SubscribeFormularResponse.SUCCESS:
-				this.loadingser.showLoadingOverlay(["Vielen Dank.", "Wir haben Deine Newsletter-Anmeldung registriert!", "Solltest du zukünftig keine Mails mehr von uns erhalten wollen, kannst Du den Newsletter über den Link in unseren Mails wieder abbestellen."], "/images/success.webm", false, false, "", 0, (nt: string) => { });
+				this.loadingser.showLoadingOverlay(["Vielen Dank.", "Wir haben Deine Newsletter-Anmeldung registriert!", "Solltest du zukünftig keine Mails mehr von uns erhalten wollen, kannst Du den Newsletter über den Link in unseren Mails wieder abbestellen."], "/images/success.json", false, false, "", 0, (nt: string) => { });
 				this.subscribeFormGroup.reset();
 				break;
 			case SubscribeFormularResponse.ALREADY_REGISTERED:
-				this.loadingser.showLoadingOverlay(["Vielen Dank.", "Diese E-Mail-Adresse ist bereits in unserem System registriert.", "Du erhältst von uns weiterhin E-Mails über Neuigkeiten und Events."], "/images/success.webm", false, false, "", 0, (nt: string) => { });
+				this.loadingser.showLoadingOverlay(["Vielen Dank.", "Diese E-Mail-Adresse ist bereits in unserem System registriert.", "Du erhältst von uns weiterhin E-Mails über Neuigkeiten und Events."], "/images/success.json", false, false, "", 0, (nt: string) => { });
 				this.subscribeFormGroup.reset();
 				break;
 			case SubscribeFormularResponse.EMAIL_VERIFICATION_REQUIRED:
 				this.showEmailVerificationRequiredOverlay();
 				break;
 			case SubscribeFormularResponse.CAPTCHA_INVALID:
-				this.loadingser.showLoadingOverlay(["Captcha ist ungültig.", "Bitte erneut lösen und absenden."], "/images/error.webm", true, false, "", 0, (nt: string) => { });
+				this.loadingser.showLoadingOverlay(["Captcha ist ungültig.", "Bitte erneut lösen und absenden."], "/images/error.json", true, false, "", 0, (nt: string) => { });
 				break;
 			case SubscribeFormularResponse.EMAIL_VERIFICATION_CODE_INVALID:
 				this.showEmailVerificationRequiredOverlay();
 				this.loadingser.markInputErronous();
 				break;
 			case SubscribeFormularResponse.UNKNOWN_ERROR:
-				this.loadingser.showLoadingOverlay(["Oh nein. Es ist ein Fehler aufgetreten.", "Es liegt an uns... nicht an dir.", "Bitte versuche es später nochmal oder nimm Kontakt mit uns über Instagram auf @gennex_official."], "/images/error.webm", true, false, "", 0, (nt: string) => { });
+				this.loadingser.showLoadingOverlay(["Oh nein. Es ist ein Fehler aufgetreten.", "Es liegt an uns... nicht an dir.", "Bitte versuche es später nochmal oder nimm Kontakt mit uns über Instagram auf @gennex_official."], "/images/error.json", true, false, "", 0, (nt: string) => { });
 				break;
 		}
 	}
 
 	showEmailVerificationRequiredOverlay() {
-		this.loadingser.showLoadingOverlay(["Deine Newsletter-Anmeldung ist fast fertig.", "Bitte prüfe noch dein Mailfach und gib den Code ein, den wir Dir geschickt haben."], "/images/mailbox.webm", true, true, "Email Code", VERIFICATION_CODE_LENGTH, (verificationCode: string) => {
+		this.loadingser.showLoadingOverlay(["Deine Newsletter-Anmeldung ist fast fertig.", "Bitte prüfe noch dein Mailfach und gib den Code ein, den wir Dir geschickt haben."], "/images/mailbox.json", true, true, "Email Code", VERIFICATION_CODE_LENGTH, (verificationCode: string) => {
 			if (verificationCode.length == VERIFICATION_CODE_LENGTH) {
 				verificationCode = verificationCode.toUpperCase()
 
@@ -84,7 +84,7 @@ export class ContactChannelsComponent {
 	}
 
 	async sendSubscribeFormular(request: ApiInterfaceSubscribeIn): Promise<SubscribeFormularResponse> {
-		this.loadingser.showLoadingOverlay(["Bitte warten"], "/images/loading.webm", true, false, "", 0, (nt: string) => { });
+		this.loadingser.showLoadingOverlay(["Bitte warten"], "/images/loading.json", true, false, "", 0, (nt: string) => { });
 
 		return new Promise((res, _) => {
 			this.backendService.anonymousBackendCall<ApiInterfaceSubscribeIn, ApiInterfaceSubscribeOut>(SubscribeBackendService.API_URL_SUBSCRIBE, request).then(async (dat) => {

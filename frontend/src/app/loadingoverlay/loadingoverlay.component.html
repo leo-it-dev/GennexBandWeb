@@ -1,8 +1,10 @@
 <div id="overlayFullSize" [class.fadeIn]="this.fadeIn">
 	<div class="overlayContainer">
-		<video #video autoplay [loop]="this.videoShouldRepeat()">
+		<!--<video #video autoplay muted playsinline [loop]="this.videoShouldRepeat()">
 			<source [src]="this.videoURL()" type="video/webm" />
-		</video>
+		</video>!-->
+		<ng-lottie [options]="this.animationOptions()"></ng-lottie>
+
 		@for (msg of this.message(); track msg) {
 			<div>{{msg}}</div>
 		}

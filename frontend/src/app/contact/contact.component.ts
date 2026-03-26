@@ -30,7 +30,7 @@ export class ContactComponent {
 	contactFormGroup = formBuilderGroupFromInputVerifierTemplate(this.formBuilder, contactFormularRequestVerification);
 
 	async sendContactFormular(request: ApiInterfaceContactIn): Promise<ContactFormularResponse> {
-		this.loadingser.showLoadingOverlay(["Bitte warten"], "/images/loading.webm", true, false, "", 0, (nt: string) => { });
+		this.loadingser.showLoadingOverlay(["Bitte warten"], "/images/loading.json", true, false, "", 0, (nt: string) => { });
 
 		return new Promise((res, _) => {
 			this.backendService.anonymousBackendCall<ApiInterfaceContactIn, ApiInterfaceContactOut>(ContactBackendService.API_URL_CONTACT, request).then(async (dat) => {
@@ -61,7 +61,7 @@ export class ContactComponent {
 	}
 
 	showEmailVerificationRequiredOverlay() {
-		this.loadingser.showLoadingOverlay(["Deine Nachricht ist schon fast bei uns. ", "Bitte prüfe noch dein Mailfach und gib den Code ein, den wir Dir geschickt haben."], "/images/mailbox.webm", true, true, "Email Code", VERIFICATION_CODE_LENGTH, (verificationCode: string) => {
+		this.loadingser.showLoadingOverlay(["Deine Nachricht ist schon fast bei uns. ", "Bitte prüfe noch dein Mailfach und gib den Code ein, den wir Dir geschickt haben."], "/images/mailbox.json", true, true, "Email Code", VERIFICATION_CODE_LENGTH, (verificationCode: string) => {
 			if (verificationCode.length == VERIFICATION_CODE_LENGTH) {
 				verificationCode = verificationCode.toUpperCase()
 
@@ -83,21 +83,21 @@ export class ContactComponent {
 	handleContactFormularResponse(response: ContactFormularResponse) {
 		switch (response) {
 			case ContactFormularResponse.SUCCESS:
-				this.loadingser.showLoadingOverlay(["Vielen Dank.", "Deine Nachricht ist soeben bei uns eingegangen.", "Wir werden uns schnellstmöglich bei Dir melden."], "/images/success.webm", false, false, "", 0, (nt: string) => { });
+				this.loadingser.showLoadingOverlay(["Vielen Dank.", "Deine Nachricht ist soeben bei uns eingegangen.", "Wir werden uns schnellstmöglich bei Dir melden."], "/images/success.json", false, false, "", 0, (nt: string) => { });
 				this.contactFormGroup.reset();
 				break;
 			case ContactFormularResponse.EMAIL_VERIFICATION_REQUIRED:
 				this.showEmailVerificationRequiredOverlay();
 				break;
 			case ContactFormularResponse.CAPTCHA_INVALID:
-				this.loadingser.showLoadingOverlay(["Captcha ist ungültig.", "Bitte erneut lösen und absenden."], "/images/error.webm", true, false, "", 0, (nt: string) => { });
+				this.loadingser.showLoadingOverlay(["Captcha ist ungültig.", "Bitte erneut lösen und absenden."], "/images/error.json", true, false, "", 0, (nt: string) => { });
 				break;
 			case ContactFormularResponse.EMAIL_VERIFICATION_CODE_INVALID:
 				this.showEmailVerificationRequiredOverlay();
 				this.loadingser.markInputErronous();
 				break;
 			case ContactFormularResponse.UNKNOWN_ERROR:
-				this.loadingser.showLoadingOverlay(["Oh nein. Es ist ein Fehler aufgetreten.", "Es liegt an uns... nicht an dir.", "Bitte versuche es später nochmal oder nimm Kontakt mit uns über Instagram auf @gennex_official."], "/images/error.webm", true, false, "", 0, (nt: string) => { });
+				this.loadingser.showLoadingOverlay(["Oh nein. Es ist ein Fehler aufgetreten.", "Es liegt an uns... nicht an dir.", "Bitte versuche es später nochmal oder nimm Kontakt mit uns über Instagram auf @gennex_official."], "/images/error.json", true, false, "", 0, (nt: string) => { });
 				break;
 		}
 	}
