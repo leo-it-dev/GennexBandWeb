@@ -4,8 +4,8 @@
     @for(item of galleryPreviewItems(); track item) {
     <div #diamondImage class="diamondWrapper">
         <div class="diamond">
-            <app-smooth-load-img [imageURLs]="this.images"
-                (imageClicked)="imageClicked.emit($event)"></app-smooth-load-img>
+            <app-smooth-load-img-canvas [imageURLs]="this.images"
+                (imageClicked)="imageClicked.emit($event)"></app-smooth-load-img-canvas>
         </div>
     </div>
     }
@@ -14,8 +14,8 @@
     @for(item of this.images(); track item) {
     <div #diamondImage class="diamondWrapper">
         <div class="diamond">
-            <app-smooth-load-img [attr.test]="item" [src]="item"
-                (imageClicked)="imageClicked.emit($event)"></app-smooth-load-img>
+            <app-smooth-load-img-canvas [attr.test]="item" [src]="item"
+                (imageClicked)="imageClicked.emit($event)"></app-smooth-load-img-canvas>
         </div>
     </div>
     }

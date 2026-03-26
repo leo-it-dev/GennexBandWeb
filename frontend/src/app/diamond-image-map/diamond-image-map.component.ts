@@ -1,9 +1,9 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, Input, Output, QueryList, Signal, signal, ViewChild, ViewChildren, WritableSignal } from '@angular/core';
-import { SmoothLoadImgComponent } from '../smooth-load-img/smooth-load-img.component';
+import { SmoothLoadImgCanvasComponent } from '../smooth-load-img-canvas/smooth-load-img-canvas.component';
 
 @Component({
 	selector: 'app-diamond-image-map',
-	imports: [SmoothLoadImgComponent],
+	imports: [SmoothLoadImgCanvasComponent],
 	templateUrl: './diamond-image-map.component.html',
 	styleUrl: './diamond-image-map.component.scss'
 })
