@@ -1,13 +1,16 @@
 import { CalendarEntry } from "../../api_common/calendar";
-import { MailFeaturePosition, MailFeaturePublishEventToSubscribers, MailTemplate } from "./mail-template";
+import { MailFeaturePosition, MailFeaturePublishEventToSubscribers, MailFeatureUnsubscribeButton, MailTemplate } from "./mail-template";
 
 export class MailNewEventMessage extends MailTemplate {
     
-    constructor(private entry: CalendarEntry, private publicationLink: string|undefined, private includePublishButton) {
+    constructor(private entry: CalendarEntry, private publicationLink: string|undefined, private includePublishButton, private unsubscribeLink) {
         super({
-            mailFeatures: includePublishButton ? [
-                new MailFeaturePublishEventToSubscribers(publicationLink, MailFeaturePosition.BELOW_MAIL),
-            ] : [],
+            mailFeatures: [
+                includePublishButton ?
+                    new MailFeaturePublishEventToSubscribers(publicationLink, MailFeaturePosition.BELOW_MAIL) 
+                : 
+                    new MailFeatureUnsubscribeButton(unsubscribeLink, MailFeaturePosition.FOOTER)
+            ],
             subject: "Gennex Eventankündigung",
             subjectTitle: "Gennex Eventankündigung",
         });

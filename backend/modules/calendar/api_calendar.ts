@@ -135,9 +135,15 @@ export class ApiModuleCalendar extends ApiModule {
                         }
                     }
 
-                    let subscribers = getApiModule(ApiModuleSubscribe).getAllSubscriptions();
-                    let newEventMail = new MailNewEventMessage(entry, getApiModule(ApiModuleCalendar).generatePublishEventUrl(entry), false);
-                    await this.mailer.queueBatchEmail(newEventMail.toBatchMail(subscribers));
+                    let apiSubscribers = getApiModule(ApiModuleSubscribe);
+                    let subscribers = apiSubscribers.getAllSubscriptions();
+                    for (let subscriber of subscribers) {
+                        // Prepare personalized emails, each as it's own batch mail.
+                        let unsubLink = apiSubscribers.generateUnsubscribeUrl(subscriber);
+                        let publishLink = getApiModule(ApiModuleCalendar).generatePublishEventUrl(entry);
+                        let newEventMail = new MailNewEventMessage(entry, publishLink, false, unsubLink);
+                        await this.mailer.queueBatchEmail(newEventMail.toBatchMail([subscriber]));
+                    }
 
                     return {
                         error: undefined,

@@ -16,6 +16,7 @@ import * as config from 'config';
 import * as nodemailer from 'nodemailer';
 import { ApiModule } from "../../api_module";
 import { SqlUpdate } from "../../framework/sqlite_database";
+import { timeout } from '../../framework/timeout';
 
 export type BatchEmail = {
     destinations: string[],
@@ -29,6 +30,7 @@ export type BatchEmail = {
 export class ApiModuleMailer extends ApiModule {
 
     transporter: nodemailer.Transporter;
+    BATCH_MAIL_DELAY_BETWEEN_SMTP_SENDS_SECONDS = config.get('mail.BATCH_MAIL_DELAY_BETWEEN_SMTP_SENDS_SECONDS') as number;
 
     private dbStoreBatchEmail(mail: BatchEmail) {
         this.sqlite().sqlUpdate({
@@ -47,12 +49,12 @@ export class ApiModuleMailer extends ApiModule {
                 LIMIT 1\
             ) \
             RETURNING *",
-        []);
+            []);
 
         if (!mailEntry) {
             return undefined;
         }
-        
+
         let mail: BatchEmail = {
             id: mailEntry["ID"],
             destinations: JSON.parse(mailEntry["destinations"]) as string[],
@@ -99,7 +101,7 @@ export class ApiModuleMailer extends ApiModule {
 
         // if this app crashes we may have entries left in our database that have their isProcessing marker set.
         // those would never be processed again. Therefore once this app restarts reset all isProcessing markers.
-        this.sqlite().sqlUpdate({update: "UPDATE batch SET isProcessing=0", params: []});
+        this.sqlite().sqlUpdate({ update: "UPDATE batch SET isProcessing=0", params: [] });
     }
 
     protected sqliteTableCreate(): SqlUpdate[] | undefined {
@@ -128,9 +130,15 @@ export class ApiModuleMailer extends ApiModule {
     }
 
     public async popBatchEmailChunk(maxContacts: number, callback: (batchMail) => Promise<string[]>): Promise<void> {
+        let sentContacts = 0;
+        let queuedBatchMail: BatchEmail = undefined;
+
         // pop the first batch email
-        let queuedBatchMail = this.dbAcquireFirstBatchEmail();
-        if (queuedBatchMail) {
+        while (sentContacts < maxContacts && (queuedBatchMail = this.dbAcquireFirstBatchEmail()) != undefined) {
+            if (sentContacts > 0) {
+                await timeout(this.BATCH_MAIL_DELAY_BETWEEN_SMTP_SENDS_SECONDS * 1000);
+            }
+
             // select the first 'maxContacts' email addresses as targets for this email send batch.
             let contactSubset = queuedBatchMail.destinations.slice(0, Math.min(maxContacts, queuedBatchMail.destinations.length))
 
@@ -172,6 +180,7 @@ export class ApiModuleMailer extends ApiModule {
                     }
                 }
             });
+            sentContacts += contactSubset.length;
         }
     }
 
