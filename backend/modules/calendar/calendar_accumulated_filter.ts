@@ -10,7 +10,7 @@ export class AccumulatedCalendarFilter {
     async accumulateCalendarData(newCalendarChunk: CalendarSync) {
         let entriesDeleted: CalendarEntry[] = [];
         let entriesCreated: CalendarEntry[] = [];
-        let entriesModified: CalendarEntry[] = [];
+        let entriesModified: {old: CalendarEntry, new: CalendarEntry}[] = [];
 
         for (let newEntry of newCalendarChunk.calendarList.entries) {
             // at this point we know if the event is deleted or not.
@@ -25,7 +25,7 @@ export class AccumulatedCalendarFilter {
                 if (alreadyStoredEntry) {
                     newEntry.state = CalendarEntryState.MODIFIED;
                     this.calendar.entries = this.calendar.entries.map(oldEntry => oldEntry.id == newEntry.id ? newEntry : oldEntry)
-                    entriesModified.push(newEntry);
+                    entriesModified.push({ old: alreadyStoredEntry, new: newEntry });
                 } else {
                     newEntry.state = CalendarEntryState.CREATED;
                     this.calendar.entries.push(newEntry);

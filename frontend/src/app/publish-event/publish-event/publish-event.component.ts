@@ -4,6 +4,10 @@ import { PublishFormularResponse, PublishFormularStatusCode } from '../../../../
 import { CalendarBackendService } from '../../modules/calendar/calendar-backend.service';
 import { LoadingoverlayService } from '../../services/loadingoverlay.service';
 
+enum EventPublishType {
+	NEW, MODIFY
+}
+
 @Component({
 	selector: 'app-publish-event',
 	imports: [],
@@ -20,20 +24,46 @@ export class PublishEventComponent implements AfterViewInit {
 	}
 
 	ngAfterViewInit(): void {
-		this.loadingser.showLoadingOverlay(["Möchtest du ALLE Abonnenten per Mail auf das Event aufmerksam machen?"], "/images/rocket.json", true, false, "bla", 0, (bla: string) => { }, [
-			{ text: "Abbrechen", color: "#aaaaaa" },
-			{ text: "Publish", color: "#ff643d" },
-		], (btn: string) => {
-			if (btn == "Abbrechen") {
-				this.loadingser.hideLoadingOverlay();
-				this.removePathFromURL();
-			}
-			if (btn == "Publish") {
-				this.sendPublishForm().then(response => {
-					this.handleServerResponse(response)
-				});
-			}
-		})
+		let eventPublishType = undefined;
+		if (window.location.pathname.startsWith("/publishEventNew")) {
+			eventPublishType = EventPublishType.NEW;
+		} else if (window.location.pathname.startsWith("/publishEventMod")) {
+			eventPublishType = EventPublishType.MODIFY;
+		} else {
+			return;
+		}
+
+		if (eventPublishType == EventPublishType.NEW) {
+			this.loadingser.showLoadingOverlay(["Möchtest du ALLE Abonnenten per Mail auf das Event aufmerksam machen?"], "/images/rocket.json", true, false, "bla", 0, (bla: string) => { }, [
+				{ text: "Abbrechen", color: "#aaaaaa" },
+				{ text: "Publish", color: "#ff643d" },
+			], (btn: string) => {
+				if (btn == "Abbrechen") {
+					this.loadingser.hideLoadingOverlay();
+					this.removePathFromURL();
+				}
+				if (btn == "Publish") {
+					this.sendPublishForm().then(response => {
+						this.handleServerResponse(response, eventPublishType)
+					});
+				}
+			})
+		} else if (eventPublishType == EventPublishType.MODIFY) {
+			this.loadingser.showLoadingOverlay(["Möchtest du ALLE Abonnenten per Mail auf die Event-Änderung aufmerksam machen?"], "/images/rocket.json", true, false, "bla", 0, (bla: string) => { }, [
+				{ text: "Abbrechen", color: "#aaaaaa" },
+				{ text: "Publish Change", color: "#ff643d" },
+			], (btn: string) => {
+				if (btn == "Abbrechen") {
+					this.loadingser.hideLoadingOverlay();
+					this.removePathFromURL();
+				}
+				if (btn == "Publish Change") {
+					this.sendPublishForm().then(response => {
+						this.handleServerResponse(response, eventPublishType)
+					});
+				}
+			})
+		}
 	}
 
 	async sendPublishForm(): Promise<PublishFormularResponse> {
@@ -64,10 +94,15 @@ export class PublishEventComponent implements AfterViewInit {
 		});
 	}
 
-	handleServerResponse(response: PublishFormularResponse) {
+	handleServerResponse(response: PublishFormularResponse, eventPublishType: EventPublishType) {
 		switch (response) {
 			case PublishFormularResponse.SUCCESS:
-				this.loadingser.showLoadingOverlay(["Neues Event erfolgreich in Newsletter-Warteschlange hinterlegt!"], "/images/success.json", false, false, "", 0, (nt: string) => { });
+				if (eventPublishType == EventPublishType.NEW) {
+					this.loadingser.showLoadingOverlay(["Neues Event erfolgreich in Newsletter-Warteschlange hinterlegt!"], "/images/success.json", false, false, "", 0, (nt: string) => { });
+				}
+				else if (eventPublishType == EventPublishType.MODIFY) {
+					this.loadingser.showLoadingOverlay(["Modifiziertes Event erfolgreich in Newsletter-Warteschlange hinterlegt!"], "/images/success.json", false, false, "", 0, (nt: string) => { });
+				}
 				break;
 			case PublishFormularResponse.INTERNAL_ERROR:
 				this.loadingser.showLoadingOverlay(["Fehler beim Absenden des Newsletter!", "Server log beachten!"], "/images/error.json", true, false, "", 0, (nt: string) => { });

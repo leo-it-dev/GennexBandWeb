@@ -17,18 +17,29 @@ export class MailNewEventMessage extends MailTemplate {
     }
 
     getHtmlContent(): string {
-        let content = this.getTemplate("content-newsletter-new-message")
+        let dateString = new Intl.DateTimeFormat("de-DE", {
+            dateStyle: "full",
+            timeStyle: "short",
+            timeZone: "Europe/Berlin",
+        }).format(this.entry.date);
+
+        let content = this.getTemplate("content-newsletter-message")
             .replace("{title}", this.entry.title)
-            .replace("{date}", this.entry.date.toLocaleString("de-DE"))
+            .replace("{date}", dateString)
             .replace("{description}", this.entry.description)
-            .replace("{location}", this.entry.locationString);
+            .replace("{location}", this.entry.locationString)
+            
+            .replace("{old_title}", "")
+            .replace("{old_date}", "")
+            .replace("{old_description}", "")
+            .replace("{old_location}", "");
 
         return content;
     }
 
     getTextContent(): string {
         return "" + this.entry.title
-                + " " + this.entry.description 
+                + " " + this.entry.description
                 + " Wann? " + this.entry.date.toLocaleString("de-DE")
                 + " Wo? " + this.entry.locationString
     }

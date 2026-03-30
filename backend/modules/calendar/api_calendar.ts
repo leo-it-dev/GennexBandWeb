@@ -14,6 +14,14 @@ import { publishEventFormularVerificationTemplate, PublishFormularStatusCode } f
 import { ApiModuleSubscribe } from '../subscribe/api_subscribe';
 import { MailNewEventMessage } from '../../email/event-new-message';
 import { ApiModuleMailer } from '../mailer/api_mailer';
+import { MailModifiedEventMessage } from '../../email/event-modified-message';
+
+export type CalendarEntryChangeToken = {
+    oldDate?: number,
+    oldTitle?: string,
+    oldDescription?: string,
+    oldLocation?: string
+};
 
 export class ApiModuleCalendar extends ApiModule {
 
@@ -64,11 +72,21 @@ export class ApiModuleCalendar extends ApiModule {
         return generateJWTtoken({ entryID: entry.id });
     }
     tokenToEntry(token: object) {
-        return token['entryID'];
+        return {
+            entryID: token['entryID'],
+            changes: token['change']
+        };
+    }
+    entryChangeToToken(entry: CalendarEntry, entryChange: CalendarEntryChangeToken) {
+        return generateJWTtoken({ entryID: entry.id, change: entryChange });
     }
 
-    generatePublishEventUrl(entry: CalendarEntry) {
-        return getBaseURL() + "publishEvent?t=" + this.entryToToken(entry);
+    generatePublishNewEventUrl(entry: CalendarEntry) {
+        return getBaseURL() + "publishEventNew?t=" + this.entryToToken(entry);
+    }
+
+    generatePublishModifyEvent(entryChange: CalendarEntryChangeToken, entryNew: CalendarEntry) {
+        return getBaseURL() + "publishEventMod?t=" + this.entryChangeToToken(entryNew, entryChange);
     }
 
     registerEndpoints(): void {
@@ -124,9 +142,11 @@ export class ApiModuleCalendar extends ApiModule {
 
             let token = validateJWTtokenExtractPayload(req.body.token);
             if (token) {
-                let entryId = this.tokenToEntry(token);
+                // check if we need to publish a new event or publish a change in an event
+                let tokenBody = this.tokenToEntry(token);
+
                 try {
-                    let entry = this.calendarFilter.getCurrentCalendarState().entries.find(e => e.id == entryId);
+                    let entry = this.calendarFilter.getCurrentCalendarState().entries.find(e => e.id == tokenBody.entryID);
                     if (!entry) {
                         return {
                             error: 'The requested event does not exist anymore!',
@@ -138,11 +158,22 @@ export class ApiModuleCalendar extends ApiModule {
                     let apiSubscribers = getApiModule(ApiModuleSubscribe);
                     let subscribers = apiSubscribers.getAllSubscriptions();
                     for (let subscriber of subscribers) {
+
+
                         // Prepare personalized emails, each as it's own batch mail.
                         let unsubLink = apiSubscribers.generateUnsubscribeUrl(subscriber);
-                        let publishLink = getApiModule(ApiModuleCalendar).generatePublishEventUrl(entry);
-                        let newEventMail = new MailNewEventMessage(entry, publishLink, false, unsubLink);
-                        await this.mailer.queueBatchEmail(newEventMail.toBatchMail([subscriber]));
+                        let publishLink = getApiModule(ApiModuleCalendar).generatePublishNewEventUrl(entry);
+                        if (tokenBody.changes) {
+                            let changes = tokenBody.changes as CalendarEntryChangeToken;
+
+                            // we publish an event CHANGE no new event
+                            let newEventMail = new MailModifiedEventMessage(entry, changes, publishLink, false, unsubLink);
+                            await this.mailer.queueBatchEmail(newEventMail.toBatchMail([subscriber]));
+                        } else {
+                            // we publish a NEW event
+                            let newEventMail = new MailNewEventMessage(entry, publishLink, false, unsubLink);
+                            await this.mailer.queueBatchEmail(newEventMail.toBatchMail([subscriber]));
+                        }
                     }
 
                     return {

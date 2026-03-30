@@ -19,9 +19,9 @@ export class AgentTriggerCalendarCreate extends AgentTrigger {
 }
 
 export class AgentTriggerCalendarModify extends AgentTrigger {
-    calendarEntries: CalendarEntry[];
+    calendarEntries: {old: CalendarEntry, new: CalendarEntry}[];
 
-    constructor(calendarEntries: CalendarEntry[]) {
+    constructor(calendarEntries: {old: CalendarEntry, new: CalendarEntry}[]) {
         super();
         this.calendarEntries = calendarEntries;
     }

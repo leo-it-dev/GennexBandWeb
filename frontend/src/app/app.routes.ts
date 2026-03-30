@@ -4,5 +4,6 @@ import { PublishEventComponent } from './publish-event/publish-event/publish-eve
 
 export const routes: Routes = [
     { path: 'unsubscribe', component: UnsubscribeComponent },
-    { path: 'publishEvent', component: PublishEventComponent }
+    { path: 'publishEventNew', component: PublishEventComponent },
+    { path: 'publishEventMod', component: PublishEventComponent }
 ];

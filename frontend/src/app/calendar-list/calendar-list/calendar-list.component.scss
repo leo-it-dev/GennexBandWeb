@@ -215,6 +215,21 @@ app-section-header {
     -webkit-text-fill-color: transparent;
 }
 
+#section-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+}
+
+#bassImg {
+    display: block;
+    margin: 0;
+    position: sticky;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 70vh;
+}
+
 @media screen and (max-width: 700px) {
     .calendar-entry {
         width: 100vw;
