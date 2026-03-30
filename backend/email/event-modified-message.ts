@@ -4,7 +4,7 @@ import { MailFeaturePosition, MailFeaturePublishEventToSubscribers, MailFeatureU
 
 export class MailModifiedEventMessage extends MailTemplate {
     
-    constructor(private entryNew: CalendarEntry, private changesToNew: CalendarEntryChangeToken, private publicationLink: string|undefined, private includePublishButton, private unsubscribeLink) {
+    constructor(private entryNew: CalendarEntry, private changesToNew: CalendarEntryChangeToken, private publicationLink: string|undefined, private includePublishButton, private unsubscribeLink, private publicEventURL) {
         super({
             mailFeatures: [
                 includePublishButton ?
@@ -34,7 +34,8 @@ export class MailModifiedEventMessage extends MailTemplate {
             .replace("{date}", dateStringNew)
             .replace("{description}", this.entryNew.description)
             .replace("{location}", this.entryNew.locationString)
-            
+            .replace("{event_online_link}", this.publicEventURL)
+
             .replace("{old_title}", this.changesToNew.oldTitle ? this.changesToNew.oldTitle : "")
             .replace("{old_date}", this.changesToNew.oldDate ? dateStringOld : "")
             .replace("{old_description}", this.changesToNew.oldDescription ? this.changesToNew.oldDescription : "")

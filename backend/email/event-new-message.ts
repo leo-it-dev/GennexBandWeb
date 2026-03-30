@@ -3,7 +3,7 @@ import { MailFeaturePosition, MailFeaturePublishEventToSubscribers, MailFeatureU
 
 export class MailNewEventMessage extends MailTemplate {
     
-    constructor(private entry: CalendarEntry, private publicationLink: string|undefined, private includePublishButton, private unsubscribeLink) {
+    constructor(private entry: CalendarEntry, private publicationLink: string|undefined, private includePublishButton, private unsubscribeLink, private eventOnlineLink) {
         super({
             mailFeatures: [
                 includePublishButton ?
@@ -28,7 +28,8 @@ export class MailNewEventMessage extends MailTemplate {
             .replace("{date}", dateString)
             .replace("{description}", this.entry.description)
             .replace("{location}", this.entry.locationString)
-            
+            .replace("{event_online_link}", this.eventOnlineLink)
+
             .replace("{old_title}", "")
             .replace("{old_date}", "")
             .replace("{old_description}", "")

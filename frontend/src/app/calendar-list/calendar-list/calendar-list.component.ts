@@ -25,19 +25,31 @@ export type CalendarEntryWithUrl = {
 })
 export class CalendarListComponent {
 
-	elements: CalendarEntryWithUrl[] = [];
-	bigImageEntry: WritableSignal<CalendarEntryWithUrl | undefined> = signal(undefined);
+	elements: CalendarEntry[] = [];
 
-	constructor(private calendar: CalendarBackendService,
+	resolvedBigImage: WritableSignal<CalendarEntryWithUrl | undefined> = signal(undefined);
+
+	constructor(public calendar: CalendarBackendService,
 		private domSan: DomSanitizer,
 		private pageControl: PageControlService,
 		private pdfRender: PdfRenderService) {
 
 		effect(async () => {
-			this.elements = [];
-			for (let el of this.calendar.getCalendarData()().entries) {
+			let elements = this.calendar.getCalendarData()().entries;
+			if (elements) {
+				this.elements = elements;
+			} else {
+				this.elements = [];
+			}
+		});
+
+		effect(async () => {
+			this.pageControl.preventBodyScrolling.set(this.calendar.bigImageEntry() != undefined);
+
+			let bigImageEntry = this.calendar.bigImageEntry();
+			if (bigImageEntry) {
 				let mappedAttachments: AttachmentMapped[] = [];
-				for(let attachment of el.attachments) {
+				for (let attachment of bigImageEntry.attachments) {
 					let resolvedImageURLs = await this.resolveAttachment(attachment);
 					for (let renderedPng of resolvedImageURLs) {
 						mappedAttachments.push({
@@ -46,21 +58,19 @@ export class CalendarListComponent {
 						});
 					}
 				}
-				this.elements.push({
-					entry: el,
-					url: this.domSan.bypassSecurityTrustResourceUrl("https://www.google.com/maps?q=" + el.location?.lat + "," + el.location?.lon + "&z=15&output=embed"),
+				this.resolvedBigImage.set({
+					entry: bigImageEntry,
+					url: this.domSan.bypassSecurityTrustResourceUrl("https://www.google.com/maps?q=" + bigImageEntry.location?.lat + "," + bigImageEntry.location?.lon + "&z=15&output=embed"),
 					attachmentURLs: mappedAttachments
 				});
+			} else {
+				this.resolvedBigImage.set(undefined);
 			}
-		});
-
-		effect(() => {
-			this.pageControl.preventBodyScrolling.set(this.bigImageEntry() != undefined);
 		});
 	}
 
 	formatDate(date: Date) {
-		return (date.getDate() < 10 ? "0" : "") + date.getDate() + "." + ((date.getMonth()+1) < 10 ? "0" : "") + (date.getMonth()+1) + "." + date.getFullYear() + " "
+		return (date.getDate() < 10 ? "0" : "") + date.getDate() + "." + ((date.getMonth() + 1) < 10 ? "0" : "") + (date.getMonth() + 1) + "." + date.getFullYear() + " "
 			+ (date.getHours() < 10 ? "0" : "") + date.getHours() + ":" + (date.getMinutes() < 10 ? "0" : "") + date.getMinutes();
 	}
 

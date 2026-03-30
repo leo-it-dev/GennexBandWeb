@@ -9,19 +9,14 @@
         </h1>
         }
 
-        @for(entry of this.elements; track entry.entry.id) {
-        <div class="calendar-entry" (click)="this.bigImageEntry.set(entry);">
+        @for(entry of this.elements; track entry.id) {
+        <div class="calendar-entry" (click)="this.calendar.bigImageEntry.set(entry);">
             <div id="section-left">
-                @if (entry.entry.location !== undefined) {
-                <iframe [src]="entry.url" style="border:0;" allowfullscreen="" loading="lazy"
-                    referrerpolicy="no-referrer-when-downgrade"></iframe>
-                }
-
+                <h3 class="calendar-click-to-show">Details anzeigen »</h3>
             </div>
             <div id="section-right">
-                <h2 class="calendar-entry-title">{{entry.entry.title}}</h2>
-                <h3 class="calendar-entry-date">{{formatDate(entry.entry.date)}}</h3>
-                <h3 class="calendar-click-to-show">Details anzeigen »</h3>
+                <h2 class="calendar-entry-title">{{entry.title}}</h2>
+                <h3 class="calendar-entry-date">{{formatDate(entry.date)}}</h3>
             </div>
         </div>
         }
@@ -29,12 +24,12 @@
 </div>
 
 
-@if(this.bigImageEntry() != undefined) {
+@if(this.resolvedBigImage() != undefined) {
 <div id="calendar-entry-big-view">
     <div id="calendar-entry-big-blur">
         <div id="calendar-entry-big-view-content">
-            @if (this.bigImageEntry()!.entry.location !== undefined) {
-            <iframe id="calendar-entry-big-map" [src]="this.bigImageEntry()!.url" style="border:0;" allowfullscreen=""
+            @if (this.resolvedBigImage()!.entry.location !== undefined) {
+            <iframe id="calendar-entry-big-map" [src]="this.resolvedBigImage()!.url" style="border:0;" allowfullscreen=""
                 loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
             }
 
@@ -43,35 +38,35 @@
                     <table>
                         <tr>
                             <td>Was?</td>
-                            <td>{{this.bigImageEntry()!.entry.title}}</td>
+                            <td>{{this.resolvedBigImage()!.entry.title}}</td>
                         </tr>
                         <tr>
                             <td>Wo?</td>
-                            <td>{{this.bigImageEntry()!.entry.locationString}}</td>
+                            <td>{{this.resolvedBigImage()!.entry.locationString}}</td>
                         </tr>
                         <tr>
                             <td>Wann?</td>
-                            <td>{{formatDate(this.bigImageEntry()!.entry.date)}}</td>
+                            <td>{{formatDate(this.resolvedBigImage()!.entry.date)}}</td>
                         </tr>
                         <tr>
                             <td>Details:</td>
-                            <td>{{this.bigImageEntry()!.entry.description}}</td>
+                            <td>{{this.resolvedBigImage()!.entry.description}}</td>
                         </tr>
                     </table>
                 </div>
                 <div>
-                    @for(attachment of this.bigImageEntry()!.attachmentURLs; track attachment) {
+                    @for(attachment of this.resolvedBigImage()!.attachmentURLs; track attachment) {
                     <img [src]="attachment.renderedPng" (click)="open(attachment.sourceURL)" />
                     }
 
-                    @if (this.bigImageEntry()!.attachmentURLs.length == 0) {
+                    @if (this.resolvedBigImage()!.attachmentURLs.length == 0) {
                     <h2>Für dieses Event sind keine Anhänge hinterlegt.</h2>
                     }
 
                 </div>
             </div>
 
-            <h1 id="calendarBigImageClose" (click)="this.bigImageEntry.set(undefined);">✕</h1>
+            <h1 id="calendarBigImageClose" (click)="this.calendar.bigImageEntry.set(undefined);">✕</h1>
         </div>
     </div>
 </div>

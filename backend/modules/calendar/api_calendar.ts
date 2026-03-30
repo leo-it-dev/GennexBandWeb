@@ -85,6 +85,10 @@ export class ApiModuleCalendar extends ApiModule {
         return getBaseURL() + "publishEventNew?t=" + this.entryToToken(entry);
     }
 
+    getEventURL(entry: CalendarEntry) {
+        return getBaseURL() + "event?eid=" + entry.id;
+    }
+
     generatePublishModifyEvent(entryChange: CalendarEntryChangeToken, entryNew: CalendarEntry) {
         return getBaseURL() + "publishEventMod?t=" + this.entryChangeToToken(entryNew, entryChange);
     }
@@ -159,19 +163,19 @@ export class ApiModuleCalendar extends ApiModule {
                     let subscribers = apiSubscribers.getAllSubscriptions();
                     for (let subscriber of subscribers) {
 
-
                         // Prepare personalized emails, each as it's own batch mail.
                         let unsubLink = apiSubscribers.generateUnsubscribeUrl(subscriber);
                         let publishLink = getApiModule(ApiModuleCalendar).generatePublishNewEventUrl(entry);
+                        let eventURL = this.getEventURL(entry);
                         if (tokenBody.changes) {
                             let changes = tokenBody.changes as CalendarEntryChangeToken;
 
                             // we publish an event CHANGE no new event
-                            let newEventMail = new MailModifiedEventMessage(entry, changes, publishLink, false, unsubLink);
+                            let newEventMail = new MailModifiedEventMessage(entry, changes, publishLink, false, unsubLink, eventURL);
                             await this.mailer.queueBatchEmail(newEventMail.toBatchMail([subscriber]));
                         } else {
                             // we publish a NEW event
-                            let newEventMail = new MailNewEventMessage(entry, publishLink, false, unsubLink);
+                            let newEventMail = new MailNewEventMessage(entry, publishLink, false, unsubLink, eventURL);
                             await this.mailer.queueBatchEmail(newEventMail.toBatchMail([subscriber]));
                         }
                     }

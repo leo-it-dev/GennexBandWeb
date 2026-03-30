@@ -3,6 +3,7 @@ import { ApiInterfaceCalendarPublishIn, ApiInterfaceCalendarPublishOut } from '.
 import { PublishFormularResponse, PublishFormularStatusCode } from '../../../../../api_common/verification';
 import { CalendarBackendService } from '../../modules/calendar/calendar-backend.service';
 import { LoadingoverlayService } from '../../services/loadingoverlay.service';
+import { removePathFromURL } from '../../utilities';
 
 enum EventPublishType {
 	NEW, MODIFY
@@ -17,11 +18,6 @@ enum EventPublishType {
 export class PublishEventComponent implements AfterViewInit {
 
 	constructor(private loadingser: LoadingoverlayService, private backend: CalendarBackendService) { }
-
-	removePathFromURL() {
-		const url = window.location.origin;
-		window.history.replaceState({}, document.title, url);
-	}
 
 	ngAfterViewInit(): void {
 		let eventPublishType = undefined;
@@ -40,7 +36,7 @@ export class PublishEventComponent implements AfterViewInit {
 			], (btn: string) => {
 				if (btn == "Abbrechen") {
 					this.loadingser.hideLoadingOverlay();
-					this.removePathFromURL();
+					removePathFromURL();
 				}
 				if (btn == "Publish") {
 					this.sendPublishForm().then(response => {
@@ -55,7 +51,7 @@ export class PublishEventComponent implements AfterViewInit {
 			], (btn: string) => {
 				if (btn == "Abbrechen") {
 					this.loadingser.hideLoadingOverlay();
-					this.removePathFromURL();
+					removePathFromURL();
 				}
 				if (btn == "Publish Change") {
 					this.sendPublishForm().then(response => {
@@ -114,6 +110,6 @@ export class PublishEventComponent implements AfterViewInit {
 				this.loadingser.showLoadingOverlay(["Das angegebene Event ist nicht mehr verfügbar!", "Wurde das Event im Kalender gelöscht?"], "/images/error.json", true, false, "", 0, (nt: string) => { });
 				break;
 		}
-		this.removePathFromURL();
+		removePathFromURL();
 	}
 }

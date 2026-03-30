@@ -1,6 +1,7 @@
 import { Injectable, Injector, Signal, signal, WritableSignal } from '@angular/core';
 import { ApiInterfaceCalendarIn, ApiInterfaceCalendarOut, Calendar, CalendarEntry } from '../../../../../api_common/calendar';
 import { BackendService } from '../../api/backend.service';
+import { removePathFromURL } from '../../utilities';
 
 @Injectable({
 	providedIn: 'root',
@@ -11,6 +12,8 @@ export class CalendarBackendService extends BackendService {
 	public static API_URL_PUBLISH  = "/module/calendar/publish-event-to-newsletter"
 
 	private calendarData: WritableSignal<Calendar> = signal({entries: []});
+
+	public bigImageEntry: WritableSignal<CalendarEntry | undefined> = signal(undefined);
 
 	name(): string {
 		return "Calendar";
@@ -27,6 +30,12 @@ export class CalendarBackendService extends BackendService {
 			}
 
 			this.calendarData.set(dat.calendar);
+
+			let eventID = location.search.split("?eid=")[1];
+			if (eventID) {
+				this.bigImageEntry.set(dat.calendar.entries.find(e => e.id == eventID));
+			}
+
 		}).catch(err => {
 			console.error("Error retrieving calendar list: ", err);
 		});
