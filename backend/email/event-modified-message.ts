@@ -1,12 +1,13 @@
 import { CalendarEntry } from "../../api_common/calendar";
 import { CalendarEntryChangeToken } from "../modules/calendar/api_calendar";
-import { MailFeaturePosition, MailFeaturePublishEventToSubscribers, MailFeatureUnsubscribeButton, MailTemplate } from "./mail-template";
+import { MailFeaturePosition, MailFeaturePublishEventToSubscribers, MailFeatureShowOnlineEvent, MailFeatureUnsubscribeButton, MailTemplate } from "./mail-template";
 
 export class MailModifiedEventMessage extends MailTemplate {
     
     constructor(private entryNew: CalendarEntry, private changesToNew: CalendarEntryChangeToken, private publicationLink: string|undefined, private includePublishButton, private unsubscribeLink, private publicEventURL) {
         super({
             mailFeatures: [
+                new MailFeatureShowOnlineEvent(publicEventURL, MailFeaturePosition.CONTENT),
                 includePublishButton ?
                     new MailFeaturePublishEventToSubscribers(publicationLink, MailFeaturePosition.BELOW_MAIL) 
                 : 
@@ -45,9 +46,18 @@ export class MailModifiedEventMessage extends MailTemplate {
     }
 
     getTextContent(): string {
-        return "" + this.entryNew.title
-                + " " + this.entryNew.description 
-                + " Wann? " + this.entryNew.date.toLocaleString("de-DE")
-                + " Wo? " + this.entryNew.locationString
+        return "Eventänderung: \n\
+Bisherige Eventdetails: \n\
+" + (this.changesToNew.oldTitle ? ("Was? " + this.changesToNew.oldTitle) : "") + "\n\
+" + (this.changesToNew.oldLocation ? ("Wo? " + this.changesToNew.oldLocation) : "") + "\n\
+" + (this.changesToNew.oldDate ? ("Wann? " + this.changesToNew.oldDate) : "") + "\n\
+" + (this.changesToNew.oldDescription ? ("Infos: " + this.changesToNew.oldDescription) : "") + "\n\
+\
+Aktualisierte Eventdetails: \n\
+\n\
+Was?" + this.entryNew.title + "\n\
+Wo? " + this.entryNew.locationString + "\n\
+Wann? " + this.entryNew.date.toLocaleString("de-DE") + "\n\
+Infos:" + this.entryNew.description;
     }
 }

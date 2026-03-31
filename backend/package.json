@@ -30,6 +30,7 @@
     "nodemailer": "^7.0.12",
     "pdf2pic": "^3.2.0",
     "sharp": "^0.34.5",
+    "ts-pattern": "^5.9.0",
     "unzipper": "^0.12.3",
     "winston": "^3.19.0"
   },

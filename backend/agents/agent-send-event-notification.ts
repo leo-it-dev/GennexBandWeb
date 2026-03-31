@@ -6,6 +6,7 @@ import { AgentTrigger, AgentTriggerCalendarCreate, AgentTriggerCalendarDelete, A
 import { ApiModuleCalendar, CalendarEntryChangeToken } from "../modules/calendar/api_calendar";
 import { ApiModuleMailer } from '../modules/mailer/api_mailer';
 import { MailModifiedEventMessage } from '../email/event-modified-message';
+import { MailDeletedEventMessage } from '../email/event-deleted-message';
 
 export class AgentSendCalendarEntryNotification extends Agent {
 
@@ -54,6 +55,13 @@ export class AgentSendCalendarEntryNotification extends Agent {
                 }
 
                 // entry.new.attachments
+            }
+        }
+        if (trigger instanceof AgentTriggerCalendarDelete) {
+            for (let entry of trigger.calendarEntries) {
+                let publishEventUrl = getApiModule(ApiModuleCalendar).generatePublishDeleteEventUrl(entry);
+                let delEventMail = new MailDeletedEventMessage(entry, publishEventUrl, true, undefined);
+                await mailer.sendEmailImmediately(delEventMail.toBatchMail([this.SMTP_USERNAME]));
             }
         }
     }

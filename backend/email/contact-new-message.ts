@@ -20,11 +20,12 @@ export class MailContactNewMessage extends MailTemplate {
 
     getTextContent(): string {
         return "\
-            Neue Anfrage über Kontaktformular: " + this.firstName + " " + this.lastName + "\
-            Email Addresse: " + this.email + "\
-            Anfrage: --------\
-            " + this.message + "\
-            --------------------";
+Neue Anfrage über Kontaktformular: \n" + 
+this.firstName + " " + this.lastName + "\n\
+Email Addresse: " + this.email + "\n\
+Anfrage: --------\n\
+" + this.message + "\n\
+--------------------";
     }
 
     getSubject(): string {

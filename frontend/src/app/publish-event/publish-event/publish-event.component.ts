@@ -6,7 +6,7 @@ import { LoadingoverlayService } from '../../services/loadingoverlay.service';
 import { removePathFromURL } from '../../utilities';
 
 enum EventPublishType {
-	NEW, MODIFY
+	NEW, MODIFY, DELETE
 }
 
 @Component({
@@ -25,6 +25,8 @@ export class PublishEventComponent implements AfterViewInit {
 			eventPublishType = EventPublishType.NEW;
 		} else if (window.location.pathname.startsWith("/publishEventMod")) {
 			eventPublishType = EventPublishType.MODIFY;
+		} else if (window.location.pathname.startsWith("/publishEventDel")) {
+			eventPublishType = EventPublishType.DELETE;
 		} else {
 			return;
 		}
@@ -54,6 +56,21 @@ export class PublishEventComponent implements AfterViewInit {
 					removePathFromURL();
 				}
 				if (btn == "Publish Change") {
+					this.sendPublishForm().then(response => {
+						this.handleServerResponse(response, eventPublishType)
+					});
+				}
+			})
+		} else if (eventPublishType == EventPublishType.DELETE) {
+			this.loadingser.showLoadingOverlay(["Möchtest du ALLE Abonnenten per Mail auf die Eventabsage aufmerksam machen?"], "/images/rocket.json", true, false, "bla", 0, (bla: string) => { }, [
+				{ text: "Abbrechen", color: "#aaaaaa" },
+				{ text: "Publish Deletion", color: "#ff643d" },
+			], (btn: string) => {
+				if (btn == "Abbrechen") {
+					this.loadingser.hideLoadingOverlay();
+					removePathFromURL();
+				}
+				if (btn == "Publish Deletion") {
 					this.sendPublishForm().then(response => {
 						this.handleServerResponse(response, eventPublishType)
 					});
@@ -98,6 +115,8 @@ export class PublishEventComponent implements AfterViewInit {
 				}
 				else if (eventPublishType == EventPublishType.MODIFY) {
 					this.loadingser.showLoadingOverlay(["Modifiziertes Event erfolgreich in Newsletter-Warteschlange hinterlegt!"], "/images/success.json", false, false, "", 0, (nt: string) => { });
+				} else if (eventPublishType == EventPublishType.DELETE) {
+					this.loadingser.showLoadingOverlay(["Abgesagtes Event erfolgreich in Newsletter-Warteschlange hinterlegt!"], "/images/success.json", false, false, "", 0, (nt: string) => { });
 				}
 				break;
 			case PublishFormularResponse.INTERNAL_ERROR:

@@ -7,5 +7,6 @@ export const routes: Routes = [
     { path: 'unsubscribe', component: UnsubscribeComponent },
     { path: 'publishEventNew', component: PublishEventComponent },
     { path: 'publishEventMod', component: PublishEventComponent },
-    { path: 'event', component: ShowEventURLComponent }
+    { path: 'publishEventDel', component: PublishEventComponent},
+    { path: 'event', component: ShowEventURLComponent },
 ];

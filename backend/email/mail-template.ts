@@ -32,6 +32,15 @@ export class MailFeaturePublishEventToSubscribers extends MailFeature {
     }
 }
 
+export class MailFeatureShowOnlineEvent extends MailFeature {
+    constructor(private eventOnlineLink: string, positionInMail: MailFeaturePosition) { super(positionInMail) }
+
+    getContent(): string {
+        return fs.readFileSync(__dirname + "/templates/action-show-online-event.html", { encoding: 'utf-8' })
+            .replace("{event_online_link}", this.eventOnlineLink)
+    }
+}
+
 export type BaseMail = {
     subject: string,
     subjectTitle: string,

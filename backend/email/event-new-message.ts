@@ -1,11 +1,12 @@
 import { CalendarEntry } from "../../api_common/calendar";
-import { MailFeaturePosition, MailFeaturePublishEventToSubscribers, MailFeatureUnsubscribeButton, MailTemplate } from "./mail-template";
+import { MailFeaturePosition, MailFeaturePublishEventToSubscribers, MailFeatureShowOnlineEvent, MailFeatureUnsubscribeButton, MailTemplate } from "./mail-template";
 
 export class MailNewEventMessage extends MailTemplate {
     
     constructor(private entry: CalendarEntry, private publicationLink: string|undefined, private includePublishButton, private unsubscribeLink, private eventOnlineLink) {
         super({
             mailFeatures: [
+                new MailFeatureShowOnlineEvent(eventOnlineLink, MailFeaturePosition.CONTENT),
                 includePublishButton ?
                     new MailFeaturePublishEventToSubscribers(publicationLink, MailFeaturePosition.BELOW_MAIL) 
                 : 
@@ -39,9 +40,10 @@ export class MailNewEventMessage extends MailTemplate {
     }
 
     getTextContent(): string {
-        return "" + this.entry.title
-                + " " + this.entry.description
-                + " Wann? " + this.entry.date.toLocaleString("de-DE")
-                + " Wo? " + this.entry.locationString
+        return "Ein neues Event wurde angekündigt: \n\
+Was? " + this.entry.title + "\n\
+Wann? " + this.entry.date.toLocaleString("de-DE") + "\n\
+Wo? " + this.entry.locationString + "\n\
+Infos: " + this.entry.description;
     }
 }

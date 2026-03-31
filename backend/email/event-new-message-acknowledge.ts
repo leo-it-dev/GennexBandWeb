@@ -16,7 +16,7 @@ export class MailContactNewMessageAcknowledge extends MailTemplate {
     }
 
     getTextContent(): string {
-        return "Wir haben deine Kontaktanfrage erhalten: " + this.message;
+        return "Vielen Dank für Deine Kontaktanfrage: \n" + this.message + "\n. Wir werden uns schnellstmöglich bei Dir melden!";
     }
 
     getSubject(): string {
