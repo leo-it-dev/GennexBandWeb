@@ -11,9 +11,9 @@ import { PrivacypolicyComponent } from './privacypolicy/privacypolicy.component'
 import { SectionHeaderComponent } from './section-header/section-header.component';
 import { LoadingoverlayService } from './services/loadingoverlay.service';
 import { MP4FrameExtractionService } from './services/mp4frame/mp4-frame-extraction.service';
+import { PageControlService } from './services/page-control.service';
 import { SlotComponent } from './slot/slot.component';
 import { VideoListComponent } from './video-list/video-list.component';
-import { PageControlService } from './services/page-control.service';
 
 @Component({
 	selector: 'app-root',
@@ -22,8 +22,6 @@ import { PageControlService } from './services/page-control.service';
 	styleUrl: './app.component.scss'
 })
 export class AppComponent implements AfterViewInit {
-	title = 'gennex-web-fe';
-
 	constructor(private renderer: Renderer2,
 		private mp4Extract: MP4FrameExtractionService,
 		public loadingOverlay: LoadingoverlayService,
@@ -43,27 +41,6 @@ export class AppComponent implements AfterViewInit {
 			this.pageControl.preventBodyScrolling.set(this.loadingOverlay.loadingOverlayVisible());
 		});
 	}
-
-	// @ViewChild('canv')
-	// private canvas: ElementRef | undefined = undefined;
-
-	// @ViewChild('absLogoContainer')
-	// private scrollTrigger: ElementRef | undefined = undefined;
-
-	contactInfo = [
-		"El1",
-		"El2",
-		"El3",
-		"El4",
-		"El5",
-		"El6",
-		"El7",
-		"El8",
-		"El9",
-		"El10",
-	];
-
-	frames: VideoFrame[] = [];
 
 	@ViewChildren('fadeScrollItemContainer')
 	private fadeScrollItemContainers: ElementRef[] | undefined = undefined;
@@ -127,58 +104,6 @@ export class AppComponent implements AfterViewInit {
 				}
 			}
 		});
-
-		// this.mp4Extract.extractFramesFromMp4Video("images/particles_hres.mp4").then(async (frames) => {
-		// 	let canvas = (this.canvas?.nativeElement as HTMLCanvasElement);
-		// 	canvas.width = frames[0].codedWidth;
-		// 	canvas.height = frames[0].codedHeight;
-
-		// 	this.frames = frames;
-
-		// 	console.log("Successfully extracted " + this.frames.length + " frames from video!");
-		// }).catch(error => {
-		// 	console.log(error);
-		// });
-
-
-		// if (this.canvas) {
-		// 	let canvas = (this.canvas.nativeElement as HTMLCanvasElement);
-		// 	let videoContext = canvas.getContext('2d');
-			
-		// 	if (videoContext) {
-		// 		videoContext.imageSmoothingEnabled = false;
-		// 		let framePending = false;
-		// 		document.addEventListener("scroll", e => {
-		// 			e.preventDefault();
-		// 			if (this.scrollTrigger !== undefined) {
-		// 				let height = parseFloat(getComputedStyle(this.scrollTrigger.nativeElement).height);
-		// 				let lastScrollPercent = (height - (parseFloat(this.scrollTrigger.nativeElement.getBoundingClientRect().y)) - height/2) / (height*1.5);
-						
-		// 				if (!framePending) {
-		// 					//framePending = true;
-		// 					requestAnimationFrame(() => {
-		// 						if (this.frames.length > 0) {
-		// 							let frameIdx = Math.max(0, Math.min(this.frames.length - 1, Math.floor(this.frames.length * lastScrollPercent)));
-		// 							let prevFrameIdx = frameIdx > 0 ? frameIdx - 1 : 0;
-		// 							let percentPerFrame = 1.0 / this.frames.length;
-		// 							let interp = (lastScrollPercent - (percentPerFrame * frameIdx)) / percentPerFrame;
-									
-		// 							videoContext.globalAlpha = 1.0;
-		// 							videoContext.drawImage(this.frames[prevFrameIdx], 0, 0, canvas.width, canvas.height);
-		// 							videoContext.globalAlpha = interp;
-		// 							videoContext.drawImage(this.frames[frameIdx], 0, 0, canvas.width, canvas.height);
-		// 						}
-		// 						//framePending = false;
-		// 					});
-		// 				}
-		// 			};
-		// 		});
-		// 	} else {
-		// 		throw Error("Error receiving 2d drawing context from canvas!");
-		// 	}
-		// } else {
-		// 	console.log("can't find canvas!");
-		// }
 	}
 
 	showImpressum() {
