@@ -69,7 +69,7 @@ export class SlotComponent implements AfterViewInit {
 	}
 
 	ngAfterViewInit(): void {
-		document.addEventListener("scroll", e => {
+		document.addEventListener("body-scroll", e => {
 			e.preventDefault();
 			(this.scrollContainerElement?.nativeElement as HTMLElement).style.setProperty("--stickyHeight", this.scrollCommunication.stickyHeight());
 

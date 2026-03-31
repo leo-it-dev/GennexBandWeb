@@ -8,6 +8,12 @@
 	src: url(/fonts/AGENCYB.TTF);
 }
 
+#bodyScroll {
+	max-height: 100%;
+	height: 100%;
+	overflow-y: scroll;
+}
+
 * {
 	--primary1: #4538FF77;
 	--primary2: #FF383877;
@@ -280,6 +286,12 @@ app-contact-form {
 	box-sizing: border-box;
 }
 
+#about-us-text-wrapper {
+	height: calc(100% - 100px);
+	max-height: calc(100% - 100px);
+
+}
+
 p.fade-scroll-item {
 	color: white;
 }
@@ -292,7 +304,7 @@ p.fade-scroll-item {
 }
 
 .fade-scroll-item-spacer {
-	height: 800px;
+	height: 400px;
 	margin: 0;
 }
 

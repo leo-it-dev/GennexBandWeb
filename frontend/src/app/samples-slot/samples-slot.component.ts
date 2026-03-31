@@ -32,7 +32,7 @@ export class SamplesSlotComponent implements AfterViewInit {
 	}
 
 	ngAfterViewInit(): void {
-		document.addEventListener("scroll", e => {
+		document.addEventListener("body-scroll", e => {
 			e.preventDefault();
 			let heightPerElement = this.scrollCommunication.scrollBlockHeight() / (this.samplesList().length + 1);
 			let nthElement = Math.round(this.scrollCommunication.scrollTop() / heightPerElement);

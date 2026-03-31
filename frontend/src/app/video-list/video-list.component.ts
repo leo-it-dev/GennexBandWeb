@@ -1,4 +1,4 @@
-import { Component, computed, effect, ElementRef, QueryList, ViewChildren } from '@angular/core';
+import { ApplicationRef, Component, computed, effect, ElementRef, Injector, QueryList, ViewChildren } from '@angular/core';
 import { YouTubePlayer } from '@angular/youtube-player';
 import { VideosBackendService } from '../modules/videos/videos-backend.service';
 import { SlotComponent, SlotScrollCommunication } from '../slot/slot.component';
@@ -20,7 +20,10 @@ export class VideoListComponent {
 	@ViewChildren('ytPlayer')
 	youtubePlayersDOM!: QueryList<YouTubePlayer>;
 
-	constructor(private videoService: VideosBackendService) {
+	constructor(private videoService: VideosBackendService,
+			private appRef: ApplicationRef,
+			private injector: Injector
+	) {
 		console.log("Video list initialized!");
 
 		effect(() => {
@@ -30,7 +33,7 @@ export class VideoListComponent {
 			}
 		});
 
-		document.addEventListener("scroll", e => {
+		document.addEventListener("body-scroll", e => {
 			e.preventDefault();
 			let videoList = this.videoService.getVideoList()();
 			if (videoList.length > 0) {

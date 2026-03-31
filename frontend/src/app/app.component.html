@@ -1,165 +1,132 @@
-<script src="/scripts/scrollAnim.js"></script>
-<div id="scratchBack"></div>
-<div id="page1">
-	<div id="bannerImage">
-		<app-dynamic-background-image [triggers]="this.backgroundTriggers"></app-dynamic-background-image>
-		<div #backgroundTrigger class="background-trigger" img="/images/back_live1.jpg"></div>
-	</div>
-	<div id="bannerText">
-		<h1 id="bandname">GENNEX</h1>
-		<nav id="bannerNav">
-			<ul>
-				<a href="#about-us">
-					<li>About us</li>
-				</a>
-				<a href="#live">
-					<li>Videos</li>
-				</a>
-				<a href="#gallery">
-					<li>Gallery</li>
-				</a>
-				<a href="#gigs">
-					<li>Nächste Events</li>
-				</a>
-				<a href="#contact">
-					<li>Contact</li>
-				</a>
-				<a href="#channels">
-					<li>Unsere Kanäle</li>
-				</a>
-			</ul>
-		</nav>
-	</div>
-	<div class="spacer"></div>
-	<div #backgroundTrigger class="background-trigger" img="/images/back_live2.jpg"></div>
-	<div id="about-us" class="fade-scroll-items-container" #fadeScrollItemContainer>
-		<div id="about-us-content">
-			<app-section-header id="about-us-header" title="Über uns"></app-section-header>
-			<img id="about-us-logo" src="/images/logo0014.png" />
-			<div id="about-us-text" #aboutUsText>
-
-				<p class="fade-scroll-item"> </p>
-				<p class="fade-scroll-item-spacer"></p>
-				<p class="fade-scroll-item">
-					Wir sind GENNEX, eine junge Partyband aus der Region Mühldorf -
-					laut gestartet als Schülerband und heute fester Bestandteil der lokalen Musikszene.
-				</p>
-				<p class="fade-scroll-item-spacer"></p>
-				<p class="fade-scroll-item">
-					Seit sechs Jahren liefern wir, was zählt: maximale Stimmung, volle Bühnenenergie und ein
-					Programm,
-					das keine Wünsche offenlässt. Von Punkrock über aktuelle Hits bis zu Partyklassikern - wir
-					bringen
-					den Soundtrack für unvergessliche Abende.
-				</p>
-				<p class="fade-scroll-item-spacer"></p>
-				<p class="fade-scroll-item">
-					Ob Geburtstag, Stadtfest oder große Bühne - wir spielen nicht einfach Songs. Wir liefern Abriss
-					mit
-					Leidenschaft.
-				</p>
-				<p class="fade-scroll-item-spacer"></p>
-				<p class="fade-scroll-item">
-					Du willst feiern?
-					Dann hör rein, check unsere Bilder und lass uns deine Bühne zum Beben bringen.
-				</p>
-				<p class="fade-scroll-item-spacer"></p>
-				<p class="fade-scroll-item"> </p>
-			</div>
+<div id="bodyScroll" (scroll)="handleScroll($event)">
+	<script src="/scripts/scrollAnim.js"></script>
+	<div id="page1">
+		<div id="bannerImage">
+			<app-dynamic-background-image [triggers]="this.backgroundTriggers"></app-dynamic-background-image>
+			<div #backgroundTrigger class="background-trigger" img="/images/back_live1.jpg"></div>
 		</div>
-	</div>
-	<div class="spacer"></div>
-
-	<!--<app-samples-slot id="samples"></app-samples-slot>
-<div class="spacer"></div>!-->
-
-	<app-video-list id="live"></app-video-list>
-
-	<div class="spacer"></div>
-	<div #backgroundTrigger class="background-trigger" img="/images/logo_room0014.png"></div>
-	<app-gallery id="gallery">
-		<div class="overlayGradient"></div>
-	</app-gallery>
-
-	<!-- 
-<div id="logoAnim">
-	<div class="overlayGradient"></div>
-	<div id="back">
-		<div id="backAnim"></div>
-		<div #absLogoContainer id="absLogoContainer">
-			<div id="logoContainer">
-				<canvas #canv></canvas>
-				<div id="logo">
-					<img src="images/logo0014.png"/>
-				</div>
-				<div class="overlayGradient"></div>
-			</div>
-		</div>
-		<div id="absContactContainer">
-			<h1>
-				Interesse? Unsere nächsten Events:
-				<ul id="listNextEvents">
-					<li>Work</li>
-					<li>in</li>
-					<li>Progress</li>
+		<div id="bannerText">
+			<h1 id="bandname">GENNEX</h1>
+			<nav id="bannerNav">
+				<ul>
+					<a href="#about-us">
+						<li>About us</li>
+					</a>
+					<a href="#live">
+						<li>Videos</li>
+					</a>
+					<a href="#gallery">
+						<li>Gallery</li>
+					</a>
+					<a href="#gigs">
+						<li>Nächste Events</li>
+					</a>
+					<a href="#contact">
+						<li>Contact</li>
+					</a>
+					<a href="#channels">
+						<li>Unsere Kanäle</li>
+					</a>
 				</ul>
-			</h1>
+			</nav>
 		</div>
+		<div class="spacer"></div>
+		<div #backgroundTrigger class="background-trigger" img="/images/back_live2.jpg"></div>
+		<div id="about-us" class="fade-scroll-items-container" #fadeScrollItemContainer>
+			<div id="about-us-content">
+				<app-section-header id="about-us-header" title="Über uns"></app-section-header>
+				<img id="about-us-logo" src="/images/logo0014.png" />
+				<div id="about-us-text-wrapper">
+					<div id="about-us-text" #aboutUsText>
+	
+						<p class="fade-scroll-item"> </p>
+						<p class="fade-scroll-item-spacer"></p>
+						<p class="fade-scroll-item">
+							Wir sind GENNEX, eine junge Partyband aus der Region Mühldorf -
+							laut gestartet als Schülerband und heute fester Bestandteil der lokalen Musikszene.
+						</p>
+						<p class="fade-scroll-item-spacer"></p>
+						<p class="fade-scroll-item">
+							Seit sechs Jahren liefern wir, was zählt: maximale Stimmung, volle Bühnenenergie und ein
+							Programm,
+							das keine Wünsche offenlässt. Von Punkrock über aktuelle Hits bis zu Partyklassikern - wir
+							bringen
+							den Soundtrack für unvergessliche Abende.
+						</p>
+						<p class="fade-scroll-item-spacer"></p>
+						<p class="fade-scroll-item">
+							Ob Geburtstag, Stadtfest oder große Bühne - wir spielen nicht einfach Songs. Wir liefern Abriss
+							mit
+							Leidenschaft.
+						</p>
+						<p class="fade-scroll-item-spacer"></p>
+						<p class="fade-scroll-item">
+							Du willst feiern?
+							Dann hör rein, check unsere Bilder und lass uns deine Bühne zum Beben bringen.
+						</p>
+						<p class="fade-scroll-item-spacer"></p>
+						<p class="fade-scroll-item"> </p>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="spacer"></div>
+
+		<app-video-list id="live"></app-video-list>
+
+		<div class="spacer"></div>
+		<div #backgroundTrigger class="background-trigger" img="/images/logo_room0014.png"></div>
+		<app-gallery id="gallery">
+			<div class="overlayGradient"></div>
+		</app-gallery>
+
+		<div class="spacer"></div>
+		<app-calendar-list id="gigs"></app-calendar-list>
+
+		<div class="halfSpacer"></div>
+		<div #backgroundTrigger class="background-trigger" img="/images/crowd.jpeg"></div>
+		<div class="halfSpacer"></div>
+
+		<app-contact id="contact"></app-contact>
+		<div class="halfSpacer"></div>
+		<app-contact-channels id="channels"></app-contact-channels>
+		<div class="halfSpacer"></div>
+
 	</div>
 
-	<div class="spacer"></div>
+	@if (this.loadingOverlay.loadingOverlayVisible()) {
+	<app-loadingoverlay [videoURL]="this.loadingOverlay.getVideoURL()" [message]="this.loadingOverlay.getMessage()"
+		[hasInputText]="this.loadingOverlay.hasInputText" [inputPlaceholder]="this.loadingOverlay.inputPlaceholder"
+		[maxInputLength]="this.loadingOverlay.inputMaxLength"
+		(inputTextChange)="this.loadingOverlay.inputTextChange($event)"
+		[inputMarkedErronous]="this.loadingOverlay.inputInvalid"
+		[videoShouldRepeat]="this.loadingOverlay.videoShouldRepeat" [buttons]="this.loadingOverlay.buttons"
+		(buttonClicked)="this.loadingOverlay.buttonClicked($event)"></app-loadingoverlay>
+	}
 
-</div>!-->
+	<footer>
+		<ul>
+			<li (click)="this.doShowImpressum=true">Impressum</li>
+			<li (click)="this.doShowPrivacyPolicy=true">Datenschutzerklärung</li>
+		</ul>
+	</footer>
 
-	<!-- <div class="spacer"></div> -->
+	@if(this.doShowPrivacyPolicy) {
+	<div class="overlay">
+		<app-slot title="Datenschutzerklärung" [defaultScroll]="true" [hasCloseButton]="true"
+			(closeEvent)="this.doShowPrivacyPolicy=false">
+			<app-privacypolicy></app-privacypolicy>
+		</app-slot>
+	</div>
+	}
+	@if(this.doShowImpressum) {
+	<div class="overlay">
+		<app-slot title="Impressum" [defaultScroll]="true" [hasCloseButton]="true"
+			(closeEvent)="this.doShowImpressum=false">
+			<app-impressum></app-impressum>
+		</app-slot>
+	</div>
+	}
 
-	<div class="spacer"></div>
-	<app-calendar-list id="gigs"></app-calendar-list>
-
-	<div class="halfSpacer"></div>
-	<div #backgroundTrigger class="background-trigger" img="/images/crowd.jpeg"></div>
-	<div class="halfSpacer"></div>
-
-	<!-- <app-newsletter id="newsletter"></app-newsletter> -->
-	<app-contact id="contact"></app-contact>
-	<div class="halfSpacer"></div>
-	<app-contact-channels id="channels"></app-contact-channels>
-	<div class="halfSpacer"></div>
-
+	<router-outlet></router-outlet>
 </div>
-
-@if (this.loadingOverlay.loadingOverlayVisible()) {
-<app-loadingoverlay [videoURL]="this.loadingOverlay.getVideoURL()" [message]="this.loadingOverlay.getMessage()"
-	[hasInputText]="this.loadingOverlay.hasInputText" [inputPlaceholder]="this.loadingOverlay.inputPlaceholder"
-	[maxInputLength]="this.loadingOverlay.inputMaxLength"
-	(inputTextChange)="this.loadingOverlay.inputTextChange($event)"
-	[inputMarkedErronous]="this.loadingOverlay.inputInvalid"
-	[videoShouldRepeat]="this.loadingOverlay.videoShouldRepeat" [buttons]="this.loadingOverlay.buttons"
-	(buttonClicked)="this.loadingOverlay.buttonClicked($event)"></app-loadingoverlay>
-}
-
-<footer>
-	<ul>
-		<li (click)="this.doShowImpressum=true">Impressum</li>
-		<li (click)="this.doShowPrivacyPolicy=true">Datenschutzerklärung</li>
-	</ul>
-</footer>
-
-@if(this.doShowPrivacyPolicy) {
-<div class="overlay">
-	<app-slot title="Datenschutzerklärung" [defaultScroll]="true" [hasCloseButton]="true"
-		(closeEvent)="this.doShowPrivacyPolicy=false">
-		<app-privacypolicy></app-privacypolicy>
-	</app-slot>
-</div>
-}
-@if(this.doShowImpressum) {
-<div class="overlay">
-	<app-slot title="Impressum" [defaultScroll]="true" [hasCloseButton]="true"
-		(closeEvent)="this.doShowImpressum=false">
-		<app-impressum></app-impressum>
-	</app-slot>
-</div>
-}
-
-<router-outlet></router-outlet>

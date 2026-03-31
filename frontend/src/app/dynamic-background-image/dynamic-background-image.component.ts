@@ -72,7 +72,7 @@ export class DynamicBackgroundImageComponent implements AfterViewInit {
 		this.backgroundImageBack.nativeElement.onload = () => this.handleImageSwap();
 		this.backgroundImageFront.nativeElement.onload = () => this.handleImageSwap();
 
-		document.addEventListener("scroll", e => {
+		document.addEventListener("body-scroll", e => {
 			e.preventDefault();
 			this.updateOnScroll();
 		});

@@ -60,9 +60,10 @@ export class AppComponent implements AfterViewInit {
 		// scroll animation items
 		let pageHeight = document.body.getBoundingClientRect().height;
 		for (let container of this.fadeScrollItemContainers ?? []) {
-			let accumTopOffset = parseInt(getComputedStyle(container.nativeElement).paddingTop ?? "0");
+			// let accumTopOffset = parseInt(getComputedStyle(container.nativeElement).paddingTop ?? "0");
+			let accumTopOffset = 0;
 			let scrollFadeItems = container.nativeElement.getElementsByClassName("fade-scroll-item");
-	
+
 			let sumItemHeight = 0;
 			for (let item of scrollFadeItems) {
 				sumItemHeight += (item as HTMLElement).getBoundingClientRect().height;
@@ -85,11 +86,9 @@ export class AppComponent implements AfterViewInit {
 			this.backgroundTriggers.set(list.toArray());
 		})
 
-		document.addEventListener("scroll", e => {
+		document.addEventListener("body-scroll", e => {
 			e.preventDefault();
-			// if (e.target )
 			for(let cont of this.fadeScrollItemContainers ?? []) {
-				let scrollOff = cont.nativeElement.getBoundingClientRect().top;
 				let els = cont.nativeElement.getElementsByClassName("fade-scroll-item");
 				for (let el of els) {
 					let elRect = (el as HTMLElement).getBoundingClientRect();
@@ -106,7 +105,7 @@ export class AppComponent implements AfterViewInit {
 		});
 	}
 
-	showImpressum() {
-
+	handleScroll(event: Event) {
+		document.dispatchEvent(new CustomEvent('body-scroll'));
 	}
 }
