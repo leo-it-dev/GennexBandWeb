@@ -58,17 +58,19 @@ export class AppComponent implements AfterViewInit {
 	@HostListener('window:resize')
 	onResize() {
 		// scroll animation items
-		let pageHeight = document.body.getBoundingClientRect().height;
+		let offsetTop = 100;
+
+		let pageHeight = document.body.getBoundingClientRect().height - offsetTop;
 		for (let container of this.fadeScrollItemContainers ?? []) {
-			// let accumTopOffset = parseInt(getComputedStyle(container.nativeElement).paddingTop ?? "0");
-			let accumTopOffset = 0;
 			let scrollFadeItems = container.nativeElement.getElementsByClassName("fade-scroll-item");
+			let parentContainer = (scrollFadeItems[0] as HTMLElement)?.parentElement!;
+			let accumTopOffset = parseInt(getComputedStyle(parentContainer).paddingTop ?? "0");
 
 			let sumItemHeight = 0;
 			for (let item of scrollFadeItems) {
 				sumItemHeight += (item as HTMLElement).getBoundingClientRect().height;
 			}
-			let offsetForCenterPositionTop = (pageHeight / 2) - (sumItemHeight / 2);
+			let offsetForCenterPositionTop = Math.max((pageHeight / 2) - (sumItemHeight / 2), 0);
 			accumTopOffset += offsetForCenterPositionTop;
 
 			for (let item of scrollFadeItems) {
@@ -84,12 +86,24 @@ export class AppComponent implements AfterViewInit {
 		this.backgroundTriggers.set(this.backgroundTriggerList.toArray());
 		this.backgroundTriggerList.changes.subscribe(list => {
 			this.backgroundTriggers.set(list.toArray());
-		})
+		});
 
 		document.addEventListener("body-scroll", e => {
 			e.preventDefault();
+			let topOffset = 100;
 			for(let cont of this.fadeScrollItemContainers ?? []) {
 				let els = cont.nativeElement.getElementsByClassName("fade-scroll-item");
+				let parentContainer = (els[0] as HTMLElement).parentElement!;
+				let sumItemHeight = 0;
+				for (let el of (els as HTMLElement[])) {
+					sumItemHeight += el.getBoundingClientRect().height;
+				}
+				let parentHeight = parentContainer.getBoundingClientRect().height;
+				let parentTop = parentContainer.getBoundingClientRect().top;
+				let screenHeight = window.innerHeight - topOffset;
+				let oversizeHeight = Math.max(0, sumItemHeight - screenHeight);
+				let parentContainerScrollPercent = -(parentTop / (parentHeight - screenHeight));
+
 				for (let el of els) {
 					let elRect = (el as HTMLElement).getBoundingClientRect();
 					let scrollPercentTop = Math.min(1.0, Math.max(0.0, 1.0 - (elRect.top - parseInt(getComputedStyle(el).top)) / 200));
@@ -101,6 +115,8 @@ export class AppComponent implements AfterViewInit {
 						this.renderer.setStyle(this.aboutUsText?.nativeElement, 'backdrop-filter', 'blur(' + (scrollPercentTop * 10).toString() + 'px)');
 					}
 				}
+
+				this.renderer.setStyle(parentContainer, 'transform', 'translateY(-' + (parentContainerScrollPercent * oversizeHeight) + 'px)');
 			}
 		});
 	}
