@@ -1,7 +1,6 @@
-import { getFilePathFrontend } from "../..";
+import * as config from 'config';
 import { ApiInterfaceConfigIn, ApiInterfaceConfigOut } from "../../../api_common/config";
 import { ApiModule } from "../../api_module";
-import * as config from 'config';
 
 export class ApiModuleConfig extends ApiModule {
 

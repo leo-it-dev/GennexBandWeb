@@ -5,8 +5,8 @@ import * as config from 'config';
 
 export let CA_CERT: string = "";
 export let ADFS_CERT: string = "";
-export let intranetCertificate: string = "";
-export let intranetPrivateKey: string = "";
+export let sslCertificate: string = "";
+export let sslPrivateKey: string = "";
 
 export const SSL_OPTIONS = {
     key: '<uninitialized>',
@@ -18,11 +18,11 @@ export const SSL_FOLDER_PATH = __dirname + '/../ssl/';
 
 export function initSSL() {
     if (config.has("generic.SSL_CERTIFICATE_FILENAME") && config.has("generic.SSL_PRIVKEY_FILENAME")) {
-        this.intranetCertificate = fs.readFileSync(SSL_FOLDER_PATH + config.get('generic.SSL_CERTIFICATE_FILENAME'));
-        this.intranetPrivateKey = fs.readFileSync(SSL_FOLDER_PATH + config.get('generic.SSL_PRIVKEY_FILENAME'));
+        sslCertificate = String(fs.readFileSync(SSL_FOLDER_PATH + config.get('generic.SSL_CERTIFICATE_FILENAME')).buffer);
+        sslPrivateKey = String(fs.readFileSync(SSL_FOLDER_PATH + config.get('generic.SSL_PRIVKEY_FILENAME')).buffer);
 
-        SSL_OPTIONS.key = intranetPrivateKey;
-        SSL_OPTIONS.cert = intranetCertificate;
+        SSL_OPTIONS.key = sslPrivateKey;
+        SSL_OPTIONS.cert = sslCertificate;
     }
 }
 
@@ -64,7 +64,7 @@ export function httpsRequest(hostname: string, path: string, method: string, bod
                 rej(err);
             });
             response.on('end', () => {
-                res({ 'statusCode': response.statusCode, 'data': data });
+                res({ 'statusCode': response.statusCode!, 'data': data });
             });
         });
         requ.write(body);

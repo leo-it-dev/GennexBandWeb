@@ -13,10 +13,17 @@ import { ApiModuleMailer } from '../mailer/api_mailer';
 
 export class ApiModuleSubscribe extends ApiModule {
 
-    mailer: ApiModuleMailer;
+    mailer?: ApiModuleMailer;
 
     initialize() {
         this.mailer = getApiModule(ApiModuleMailer);
+    }
+
+    getMailerModule(): ApiModuleMailer {
+        if (this.mailer) {
+            return this.mailer;
+        }
+        throw new Error("Error reading in mailer module as it is not yet initialized!");
     }
 
     modname(): string {
@@ -66,7 +73,7 @@ export class ApiModuleSubscribe extends ApiModule {
         return generateJWTtoken({ email: email });
     }
 
-    tokenToEmail(token: object) {
+    tokenToEmail(token: any) {
         return token['email'];
     }
 
@@ -180,7 +187,7 @@ export class ApiModuleSubscribe extends ApiModule {
 
                         let unsubscribe = this.generateUnsubscribeUrl(req.body.email);
                         let mail = new MailNewsletterSubscriptionSuccess(unsubscribe);
-                        await this.mailer.sendEmailImmediately(mail.toBatchMail([req.body.email]));
+                        await this.getMailerModule().sendEmailImmediately(mail.toBatchMail([req.body.email]));
                         return {
                             error: undefined,
                             statusCode: 200,
@@ -197,7 +204,7 @@ export class ApiModuleSubscribe extends ApiModule {
                 case ContinuationAction.SEND_EMAIL_VERIFICATION_MESSAGE:
                     let verificationCode = generateContactEmailVerifyCode(req.body.email);
                     let mail = new MailNewsletterVerifyCode(verificationCode);
-                    await this.mailer.sendEmailImmediately(mail.toBatchMail([req.body.email]));
+                    await this.getMailerModule().sendEmailImmediately(mail.toBatchMail([req.body.email]));
 
                     return {
                         error: undefined,
@@ -236,7 +243,7 @@ export class ApiModuleSubscribe extends ApiModule {
                         let subscribeUrl = this.getSubscribeUrl();
 
                         let mail = new MailNewsletterEndSubscription(subscribeUrl);
-                        await this.mailer.sendEmailImmediately(mail.toBatchMail([email]));
+                        await this.getMailerModule().sendEmailImmediately(mail.toBatchMail([email]));
 
                         return {
                             error: undefined,

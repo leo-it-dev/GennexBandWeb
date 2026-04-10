@@ -7,7 +7,7 @@ import { getLogger } from "../logger";
 
 const logger = getLogger("file-downloader");
 
-export async function downloadFile(url, fileName, outputDir): Promise<void> {
+export async function downloadFile(url: string, fileName: string, outputDir: string): Promise<void> {
     return new Promise(async (res, rej) => {
         const destination = path.resolve(outputDir, fileName);
         if (fs.existsSync(destination)) {

@@ -2,7 +2,7 @@ import * as config from 'config';
 import * as jwt from 'jsonwebtoken';
 import { getLogger } from '../logger';
 
-let currentServiceAccount: ServiceAccountAccess = undefined;
+let currentServiceAccount: ServiceAccountAccess | undefined = undefined;
 let SERVICE_ACCOUNT_TIMEOUT_SECONDS_BEFORE_EXPIRATION = 60;
 let logger = getLogger("google-service-account-manager");
 

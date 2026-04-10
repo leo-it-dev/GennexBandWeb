@@ -4,7 +4,8 @@
         "sourceMap": true,
         "outDir": "js",
         "rootDir": "../",
-        "target": "es2015"
+        "target": "es2015",
+        "esModuleInterop": true
     },
     "include": ["../api_common", "../backend"]
 }

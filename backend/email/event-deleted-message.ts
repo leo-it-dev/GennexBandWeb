@@ -4,13 +4,13 @@ import { MailFeaturePosition, MailFeaturePublishEventToSubscribers, MailFeatureU
 
 export class MailDeletedEventMessage extends MailTemplate {
     
-    constructor(private entry: CalendarEntry, private publicationLink: string|undefined, private includePublishButton, private unsubscribeLink) {
+    constructor(private entry: CalendarEntry, private publicationLink: string|undefined, private unsubscribeLink: string|undefined) {
         super({
             mailFeatures: [
-                includePublishButton ?
+                publicationLink ?
                     new MailFeaturePublishEventToSubscribers(publicationLink, MailFeaturePosition.BELOW_MAIL) 
                 : 
-                    new MailFeatureUnsubscribeButton(unsubscribeLink, MailFeaturePosition.FOOTER)
+                    new MailFeatureUnsubscribeButton(unsubscribeLink!, MailFeaturePosition.FOOTER)
             ],
             subject: "Gennex Eventabsage",
             subjectTitle: "Gennex Eventabsage",

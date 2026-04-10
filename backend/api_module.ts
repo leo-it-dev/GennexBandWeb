@@ -7,8 +7,8 @@ import { SQLiteDB, SqlUpdate } from "./framework/sqlite_database";
 
 export abstract class ApiModule {
     private _app: Express;
-    private _logger: Logger;
-    private _sqlite: SQLiteDB;
+    private _logger?: Logger;
+    private _sqlite?: SQLiteDB;
 
     constructor(app: Express) {
         this._app = app;
@@ -45,8 +45,11 @@ export abstract class ApiModule {
         return undefined;
     };
 
-    protected sqlite() {
-        return this._sqlite;
+    protected sqlite(): SQLiteDB {
+        if (this._sqlite) {
+            return this._sqlite;
+        }
+        throw Error("SQLite Database is not yet initialized!");
     }
 
     postJson<REQ extends ApiModuleInterfaceF2B, RES extends ApiModuleInterfaceB2F>(route: string, handler: (req: RequestTyped<REQ>) => Promise<ApiModuleResponse<RES>>) {

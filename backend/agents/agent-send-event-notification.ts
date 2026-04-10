@@ -30,11 +30,12 @@ export class AgentSendCalendarEntryNotification extends Agent {
 
     async triggeredBy(trigger: AgentTrigger) {
         let mailer = getApiModule(ApiModuleMailer);
+        let calendar = getApiModule(ApiModuleCalendar);
         if (trigger instanceof AgentTriggerCalendarCreate) {
             for (let entry of trigger.calendarEntries) {
-                let publishEventUrl = getApiModule(ApiModuleCalendar).generatePublishNewEventUrl(entry);
-                let publicEventURL = getApiModule(ApiModuleCalendar).getEventURL(entry);
-                let newEventMail = new MailNewEventMessage(entry, publishEventUrl, true, undefined, publicEventURL);
+                let publishEventUrl = calendar.generatePublishNewEventUrl(entry);
+                let publicEventURL = calendar.getEventURL(entry);
+                let newEventMail = new MailNewEventMessage(entry, publishEventUrl, undefined, publicEventURL);
                 await mailer.sendEmailImmediately(newEventMail.toBatchMail([this.SMTP_USERNAME]));
             }
         }
@@ -48,9 +49,9 @@ export class AgentSendCalendarEntryNotification extends Agent {
                 };
 
                 if (Object.values(change).find(o => o != undefined)) {
-                    let publishEventUrl = getApiModule(ApiModuleCalendar).generatePublishModifyEvent(change, entry.new);
-                    let publicEventURL = getApiModule(ApiModuleCalendar).getEventURL(entry.new);
-                    let modifiedEventMail = new MailModifiedEventMessage(entry.new, change, publishEventUrl, true, undefined, publicEventURL);
+                    let publishEventUrl = calendar.generatePublishModifyEvent(change, entry.new);
+                    let publicEventURL = calendar.getEventURL(entry.new);
+                    let modifiedEventMail = new MailModifiedEventMessage(entry.new, change, publishEventUrl, undefined, publicEventURL);
                     await mailer.sendEmailImmediately(modifiedEventMail.toBatchMail([this.SMTP_USERNAME]))
                 }
 
@@ -59,8 +60,8 @@ export class AgentSendCalendarEntryNotification extends Agent {
         }
         if (trigger instanceof AgentTriggerCalendarDelete) {
             for (let entry of trigger.calendarEntries) {
-                let publishEventUrl = getApiModule(ApiModuleCalendar).generatePublishDeleteEventUrl(entry);
-                let delEventMail = new MailDeletedEventMessage(entry, publishEventUrl, true, undefined);
+                let publishEventUrl = calendar.generatePublishDeleteEventUrl(entry);
+                let delEventMail = new MailDeletedEventMessage(entry, publishEventUrl, undefined);
                 await mailer.sendEmailImmediately(delEventMail.toBatchMail([this.SMTP_USERNAME]));
             }
         }

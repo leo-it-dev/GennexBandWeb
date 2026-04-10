@@ -8,7 +8,7 @@ let logger = getLogger("scheduler");
 export class ScheduledRepeatedEvent {
 
     lastTriggerTime: number = -1;
-    repeatedTriggerBlocked: boolean;
+    repeatedTriggerBlocked: boolean = false;
 
     constructor(
         public module: ApiModule,
@@ -21,12 +21,11 @@ export class ScheduledRepeatedEvent {
     toLogInfo() {
         return { module: this.module ? this.module.modname() : "<no-module>", name: this.name, intervalSeconds: this.intervalSeconds };
     }
-
 }
 
 export class RepeatedTaskScheduler {
     scheduledRepeatedEvents: ScheduledRepeatedEvent[] = [];
-    interval: NodeJS.Timeout = undefined;
+    interval?: NodeJS.Timeout = undefined;
 
     schedulerInit() {
         if (this.interval == undefined) {

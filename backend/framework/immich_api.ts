@@ -60,24 +60,34 @@ function readLocalGalleryAssets(): CachedPictureInfo[] {
     return cachedPictureInfo;
 }
 
-async function getGalleryAlbum(): Promise<immich.AlbumResponseDto> {
-    const albums = await immich.getAllAlbums({});
-    const galleries = albums.find(a => a.albumName.toLowerCase() == IMMICH_GALLERY_NAME.toLowerCase())
-
-    if (!galleries) {
-        logger.error("Can't find specified album for gallery!", { albumName: IMMICH_GALLERY_NAME });
-    }
-
-    const gallery = await immich.getAlbumInfo({
-        id: galleries.id
-    })
-
-    return gallery ? gallery : undefined;
+async function getGalleryAlbum(): Promise<immich.AlbumResponseDto|undefined> {
+    return new Promise<immich.AlbumResponseDto|undefined>(async (res, rej) => {
+        const albums = await immich.getAllAlbums({});
+        const galleries = albums.find(a => a.albumName.toLowerCase() == IMMICH_GALLERY_NAME.toLowerCase())
+    
+        if (!galleries) {
+            logger.error("Can't find specified album for gallery!", { albumName: IMMICH_GALLERY_NAME });
+            res(undefined);
+            return;
+        }
+    
+        const gallery = await immich.getAlbumInfo({
+            id: galleries.id
+        })
+    
+        res(gallery ? gallery : undefined);
+    });
 }
 
 export async function syncGalleryWithImmich(): Promise<SyncGalleryResult> {
     // load gallery information with metadata about all entries.
     let gallery = await getGalleryAlbum();
+
+    if (!gallery) {
+        logger.error("Error reading in images from immich gallery, as no gallery album can be found!", { error: "" });
+        return { deleteAssetsIDs: [], updateAssetsIDs: [] };
+    }
+
     let localGallery = readLocalGalleryAssets();
 
     // filter for assets that we need to redownload (either new or modified newer than our copy).
@@ -103,15 +113,19 @@ export async function syncGalleryWithImmich(): Promise<SyncGalleryResult> {
                 let content = await fetch(assetURL);
                 let correspondingAsset = gallery.assets.find(a => a.id == assetId);
                 
-                let fileExtension = correspondingAsset.originalFileName.substring(correspondingAsset.originalFileName.lastIndexOf(".") + 1)
-                const imageOutFile = path.resolve(pathImages, assetId + "." + fileExtension);
-
-                const writeStream = fs.createWriteStream(imageOutFile, { flags: 'wx' })
-                await pipeline(Readable.fromWeb(content.body as any), writeStream);
-
-                let dateModified = new Date(correspondingAsset.fileModifiedAt);
-                fs.utimesSync(imageOutFile, dateModified, dateModified)
-                logger.info("Writing gallery image.", { image: assetId });
+                if (correspondingAsset) {
+                    let fileExtension = correspondingAsset.originalFileName.substring(correspondingAsset.originalFileName.lastIndexOf(".") + 1)
+                    const imageOutFile = path.resolve(pathImages, assetId + "." + fileExtension);
+    
+                    const writeStream = fs.createWriteStream(imageOutFile, { flags: 'wx' })
+                    await pipeline(Readable.fromWeb(content.body as any), writeStream);
+    
+                    let dateModified = new Date(correspondingAsset.fileModifiedAt);
+                    fs.utimesSync(imageOutFile, dateModified, dateModified)
+                    logger.info("Writing gallery image.", { image: assetId });
+                } else {
+                    logger.error("Error finding immich asset based on asset id from album!");
+                }
             }));
         }
 

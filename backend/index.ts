@@ -1,4 +1,4 @@
-import * as express from 'express';
+import express from 'express';
 const https = require('https')
 const path = require('path');
 const compression = require('compression');
@@ -62,7 +62,7 @@ if (fs.existsSync(filePathFrontendDev)) {
 }
 
 const filePathFrontend = deploymentType == DeploymentType.PRODUCTION ? filePathFrontendDepl : filePathFrontendDev;
-let apiModulesInstances = [];
+let apiModulesInstances: ApiModule[] = [];
 
 ssl.initSSL();
 jwt.initJwtBackend();
@@ -77,7 +77,7 @@ app.use(express.json())
 // serve static files in frontend dist folder.
 app.use(express.static(path.join(__dirname, filePathFrontend)));
 
-function shouldCompress(req, res) {
+function shouldCompress(req: Request, res: Response) {
     if (req.headers['x-no-compression']) {
         // don't compress responses with this request header
         return false
@@ -184,13 +184,13 @@ app.get(/^(?!\/module).*/, (req: Request, res: Response) => {
     res.sendFile(path.join(__dirname, path.join(filePathFrontend, 'index.html')));
 });
 
-export function getApiModule<T = ApiModule>(apiModuleClass: { new(...args: any[]): T }): T | undefined {
+export function getApiModule<T = ApiModule>(apiModuleClass: { new(...args: any[]): T }): T {
     for (let apiModule of apiModulesInstances) {
         if (apiModule instanceof apiModuleClass) {
             return apiModule;
         }
     }
-    return undefined;
+    throw Error("GetApiModule called but module class is not instantiated: " + apiModuleClass);
 }
 
 export function getFilePathFrontend() {
@@ -202,7 +202,7 @@ export function getRepeatedScheduler(): RepeatedTaskScheduler {
 }
 
 export function runAgentTrigger(trigger: AgentTrigger) {
-    getApiModule(ApiModuleAgentHandler).runTrigger(trigger);
+    getApiModule(ApiModuleAgentHandler)!.runTrigger(trigger);
 }
 
 export function getBaseURL() {

@@ -29,7 +29,7 @@ export type BatchEmail = {
 
 export class ApiModuleMailer extends ApiModule {
 
-    transporter: nodemailer.Transporter;
+    transporter?: nodemailer.Transporter;
     BATCH_MAIL_DELAY_BETWEEN_SMTP_SENDS_SECONDS = config.get('mail.BATCH_MAIL_DELAY_BETWEEN_SMTP_SENDS_SECONDS') as number;
 
     private dbStoreBatchEmail(mail: BatchEmail) {
@@ -37,6 +37,13 @@ export class ApiModuleMailer extends ApiModule {
             params: [JSON.stringify(mail.destinations), mail.subject, mail.textContent, mail.htmlContent, mail.retryCounter],
             update: "INSERT INTO batch(destinations,subject,textContent,htmlContent,retryCounter) VALUES (?, ?, ?, ?, ?)"
         });
+    }
+
+    getTransporter(): nodemailer.Transporter {
+        if (this.transporter) {
+            return this.transporter;
+        }
+        throw new Error("Error reading mailer transporter as it is not initialized yet!");
     }
 
     private dbAcquireFirstBatchEmail(): BatchEmail | undefined {
@@ -129,12 +136,14 @@ export class ApiModuleMailer extends ApiModule {
         this.logger().info("Queued batch mail!", { recipientCount: batchMail.destinations.length, subject: batchMail.subject, retryCount: batchMail.retryCounter })
     }
 
-    public async popBatchEmailChunk(maxContacts: number, callback: (batchMail) => Promise<string[]>): Promise<void> {
+    public async popBatchEmailChunk(maxContacts: number, callback: (batchMail: BatchEmail) => Promise<string[]>): Promise<void> {
         let sentContacts = 0;
-        let queuedBatchMail: BatchEmail = undefined;
+        let queuedBatchMail: BatchEmail | undefined = undefined;
 
         // pop the first batch email
         while (sentContacts < maxContacts && (queuedBatchMail = this.dbAcquireFirstBatchEmail()) != undefined) {
+            let queuedBatchMailLoc = queuedBatchMail;
+
             if (sentContacts > 0) {
                 await timeout(this.BATCH_MAIL_DELAY_BETWEEN_SMTP_SENDS_SECONDS * 1000);
             }
@@ -160,8 +169,8 @@ export class ApiModuleMailer extends ApiModule {
                 // if there are still contacts left we need to send the mail to go ahead and throw that email back into our batch buffer
                 // but only add those recipients that are not part of this batch's target email addresses.
                 let allReceipientsSet = new Set(batchMail.destinations); // Using set as performance optimization (hash lookup)
-                let remainingRecipients = queuedBatchMail.destinations.filter(email => !allReceipientsSet.has(email));
-                this.dbUpdateBatchEmailRecipientsOrDelete(queuedBatchMail.id, remainingRecipients);
+                let remainingRecipients = queuedBatchMailLoc.destinations.filter(email => !allReceipientsSet.has(email));
+                this.dbUpdateBatchEmailRecipientsOrDelete(queuedBatchMailLoc.id, remainingRecipients);
 
                 if (rejectedAddresses.length > 0) {
                     if (batchMail.retryCounter > 1) {
@@ -189,7 +198,7 @@ export class ApiModuleMailer extends ApiModule {
         this.logger().info("Trying to send mail!", { destinationCount: mail.destinations.length, subject: mail.subject })
 
         try {
-            const info = await this.transporter.sendMail({
+            const info = await this.getTransporter().sendMail({
                 from: config.get('mail.MAIL_FROM_HEADER'),
                 to: mail.destinations.join(', '),
                 subject: mail.subject,

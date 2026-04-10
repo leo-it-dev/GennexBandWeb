@@ -1,23 +1,21 @@
 import * as config from 'config';
+import { match } from 'ts-pattern';
 import { getApiModule, getBaseURL } from "../..";
 import { ApiInterfaceEmptyIn, ApiInterfaceEmptyOut } from '../../../api_common/backend_call';
 import { ApiInterfaceCalendarIn, ApiInterfaceCalendarOut, ApiInterfaceCalendarPublishIn, ApiInterfaceCalendarPublishOut, CalendarEntry } from "../../../api_common/calendar";
+import { publishEventFormularVerificationTemplate, PublishFormularStatusCode } from '../../../api_common/verification';
 import { ApiModule } from "../../api_module";
+import { MailDeletedEventMessage } from '../../email/event-deleted-message';
+import { MailModifiedEventMessage } from '../../email/event-modified-message';
+import { MailNewEventMessage } from '../../email/event-new-message';
 import { generateJWTtoken, validateJWTtokenExtractPayload } from '../../framework/jwt';
-import { ScheduledRepeatedEvent } from "../../framework/scheduled_events";
 import { getAuthenticatedServiceAccount } from '../../framework/service-account';
 import { SqlUpdate } from '../../framework/sqlite_database';
+import { ApiModuleMailer } from '../mailer/api_mailer';
+import { ApiModuleSubscribe } from '../subscribe/api_subscribe';
 import { GoogleCalendarWatchHandler } from './calendar-webhook';
 import { AccumulatedCalendarFilter } from './calendar_accumulated_filter';
 import { CalendarAPIHelper } from './calendar_helper';
-import { publishEventFormularVerificationTemplate, PublishFormularStatusCode } from '../../../api_common/verification';
-import { ApiModuleSubscribe } from '../subscribe/api_subscribe';
-import { MailNewEventMessage } from '../../email/event-new-message';
-import { ApiModuleMailer, BatchEmail } from '../mailer/api_mailer';
-import { MailModifiedEventMessage } from '../../email/event-modified-message';
-import { MailDeletedEventMessage } from '../../email/event-deleted-message';
-import { MailTemplate } from '../../email/mail-template';
-import { match } from 'ts-pattern';
 
 enum CalendarTokenAction {
     NEW = 'new', DELETE = 'delete', MODIFY = 'modify'
@@ -32,13 +30,13 @@ export type CalendarEntryChangeToken = {
 
 export class ApiModuleCalendar extends ApiModule {
 
-    helper: CalendarAPIHelper;
-    calendarWatcher: GoogleCalendarWatchHandler;
+    helper?: CalendarAPIHelper;
+    calendarWatcher?: GoogleCalendarWatchHandler;
     calendarID: string = "";
     calendarFilter: AccumulatedCalendarFilter = new AccumulatedCalendarFilter();
 
-    updateCalInformationScheduler: ScheduledRepeatedEvent;
-    mailer: ApiModuleMailer;
+    mailer?: ApiModuleMailer;
+    subscriberModule?: ApiModuleSubscribe
 
     modname(): string {
         return "calendar";
@@ -64,6 +62,34 @@ export class ApiModuleCalendar extends ApiModule {
         }];
     }
 
+    getCalendarHelper() {
+        if (this.helper) {
+            return this.helper;
+        }
+        throw Error("Calendar helper has not been instantiated yet!");
+    }
+
+    getCalendarWatcher() {
+        if (this.calendarWatcher) {
+            return this.calendarWatcher;
+        }
+        throw Error("Calendar watcher has not been instantiated yet!");
+    }
+
+    getMailerModule() {
+        if (this.mailer) {
+            return this.mailer;
+        }
+        throw Error("Mailer module has not been instantiated yet!");
+    }
+
+    getSubscriberModule() {
+        if (this.subscriberModule) {
+            return this.subscriberModule;
+        }
+        throw Error("Subscribe module has not been instantiated yet!");
+    }
+
     async initialize() {
         this.calendarID = config.get('calendar.CALENDAR_ID');
         this.helper = new CalendarAPIHelper(this.sqlite());
@@ -80,10 +106,10 @@ export class ApiModuleCalendar extends ApiModule {
         return generateJWTtoken({ entryID: entry.id, action: 'new' });
     }
 
-    newEventTokenToEntry(token: object) {
+    newEventTokenToEntry(token: any): {action: string, entryID: string, changes: CalendarEntryChangeToken} {
         return {
-            action: token['action'],
-            entryID: token['entryID'],
+            action: token['action'] as string,
+            entryID: token['entryID'] as string,
             changes: token['change'] as CalendarEntryChangeToken
         };
     }
@@ -99,12 +125,12 @@ export class ApiModuleCalendar extends ApiModule {
         });
     }
 
-    deleteEventEntryFromToken(token: object) {
+    deleteEventEntryFromToken(token: any): CalendarEntry {
         return {
             date: new Date(token["date"]),
-            title: token["title"],
-            description: token["description"],
-            locationString: token["location"],
+            title: token["title"] as string,
+            description: token["description"] as string,
+            locationString: token["location"] as string,
         } as CalendarEntry;
     }
     modifyEventEntryToToken(entry: CalendarEntry, entryChange: CalendarEntryChangeToken) {
@@ -141,9 +167,9 @@ export class ApiModuleCalendar extends ApiModule {
             };
         });
 
-        this.postJson<ApiInterfaceEmptyIn, ApiInterfaceEmptyOut>(this.calendarWatcher.getWebhookListenEndpoint(), async dat => {
+        this.postJson<ApiInterfaceEmptyIn, ApiInterfaceEmptyOut>(this.getCalendarWatcher().getWebhookListenEndpoint(), async dat => {
             if ('x-goog-channel-id' in dat.request.headers) {
-                if (dat.request.headers["x-goog-channel-id"] == this.calendarWatcher.getActiveChannelName()) {
+                if (dat.request.headers["x-goog-channel-id"] == this.getCalendarWatcher().getActiveChannelName()) {
                     if (dat.request.headers["x-goog-resource-state"] == "exists") {
                         this.logger().info("Received correct webhook call (incremental change):", dat.request.headers);
                         this.handleCalendarChangeWebhookCall();
@@ -156,14 +182,18 @@ export class ApiModuleCalendar extends ApiModule {
                 } else {
                     this.logger().warn("Received out of band webhook call! Propably old not yet stopped webhook. Trying to stop.", { channelId: dat.request.headers["x-goog-channel-id"] });
                     let serviceAccount = await getAuthenticatedServiceAccount();
-                    this.helper.deleteCalendarWatcher(serviceAccount, {
-                        id: dat.request.headers["x-goog-channel-id"] as string,
-                        resourceId: dat.request.headers["x-goog-resource-id"] as string,
-                        channelName: '',
-                        expiration: -1
-                    }).catch(err => {
-                        this.logger().error("Error deleting notification channel: ", { error: err })
-                    })
+                    if (serviceAccount) {
+                        this.getCalendarHelper().deleteCalendarWatcher(serviceAccount, {
+                            id: dat.request.headers["x-goog-channel-id"] as string,
+                            resourceId: dat.request.headers["x-goog-resource-id"] as string,
+                            channelName: '',
+                            expiration: -1
+                        }).catch(err => {
+                            this.logger().error("Error deleting notification channel: ", { error: err })
+                        })
+                    } else {
+                        this.logger().error("Error deleting notification channel: ", { error: "No service account access could be acquired!" });
+                    }
                 }
             } else {
                 this.logger().error("Received out of band webhook call without channel id! This should not happen.");
@@ -186,10 +216,9 @@ export class ApiModuleCalendar extends ApiModule {
                 let tokenAction: CalendarTokenAction = token['action'];
 
                 try {
-                    let entry = undefined;
+                    let entry: CalendarEntry | undefined = undefined;
                     let changes: CalendarEntryChangeToken | undefined = undefined;
-                    let apiSubscribers = getApiModule(ApiModuleSubscribe);
-                    let subscribers = apiSubscribers.getAllSubscriptions();
+                    let subscribers = this.getSubscriberModule().getAllSubscriptions();
 
                     if (tokenAction == CalendarTokenAction.NEW || tokenAction == CalendarTokenAction.MODIFY) {
                         let tokenBody = this.newEventTokenToEntry(token);
@@ -208,13 +237,13 @@ export class ApiModuleCalendar extends ApiModule {
 
                     for (let subscriber of subscribers) {
                         // Prepare personalized emails, each as it's own batch mail.
-                        let unsubLink = apiSubscribers.generateUnsubscribeUrl(subscriber);
+                        let unsubLink = this.getSubscriberModule().generateUnsubscribeUrl(subscriber);
                         let mail = match(tokenAction)
-                            .with(CalendarTokenAction.NEW, () => new MailNewEventMessage(entry, undefined, false, unsubLink, this.getEventURL(entry)))
-                            .with(CalendarTokenAction.MODIFY, () => new MailModifiedEventMessage(entry, changes, undefined, false, unsubLink, this.getEventURL(entry)))
-                            .with(CalendarTokenAction.DELETE, () => new MailDeletedEventMessage(entry, undefined, false, unsubLink))
+                            .with(CalendarTokenAction.NEW, () => new MailNewEventMessage(entry!, undefined, unsubLink, this.getEventURL(entry!)))
+                            .with(CalendarTokenAction.MODIFY, () => new MailModifiedEventMessage(entry!, changes!, undefined, unsubLink, this.getEventURL(entry!)))
+                            .with(CalendarTokenAction.DELETE, () => new MailDeletedEventMessage(entry!, undefined, unsubLink))
                             .exhaustive();
-                        await this.mailer.queueBatchEmail(mail.toBatchMail([subscriber]));
+                        await this.getMailerModule().queueBatchEmail(mail.toBatchMail([subscriber]));
                     }
 
                     return {
@@ -246,8 +275,12 @@ export class ApiModuleCalendar extends ApiModule {
 
     async updateCalendarData() {
         this.logger().info("Updating calendar information...");
-        let calendarDat = await this.helper.getAllPublicCalendarEntriesIncr(this.calendarID, this.calendarFilter.getCurrentSyncToken());
-        await this.calendarFilter.accumulateCalendarData(calendarDat)
-        this.logger().info("Updated calendar information! Found: " + this.calendarFilter.getCurrentCalendarState().entries.length + " public calendar entries!");
+        try {
+            let calendarDat = await this.getCalendarHelper().getAllPublicCalendarEntriesIncr(this.calendarID, this.calendarFilter.getCurrentSyncToken());
+            await this.calendarFilter.accumulateCalendarData(calendarDat)
+            this.logger().info("Updated calendar information! Found: " + this.calendarFilter.getCurrentCalendarState().entries.length + " public calendar entries!");
+        } catch(err) {
+            this.logger().info("Error updating calendar information!", {err: err});
+        }
     }
 }

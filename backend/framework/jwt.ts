@@ -66,7 +66,7 @@ export function generateJWTtoken(payload: object) {
     return jwt.sign(payload, JWT_KEYPAIR.privKey, {algorithm: 'RS256'});
 }
 
-export function validateJWTtokenExtractPayload(jwtToken: string): object {
+export function validateJWTtokenExtractPayload(jwtToken: string): any {
     try {
         const payload = jwt.verify(jwtToken, JWT_KEYPAIR.pubKey, {algorithms: ['RS256']},);
         return payload as object;

@@ -26,7 +26,6 @@
         "UPDATE_INTERVAL_MINUTES": 86400
     },
     "calendar": {
-        "CALENDAR_DATA_API_KEY": "enter_your_key_here",
         "CALENDAR_ID": "your_calender_id@group.calendar.google.com",
         "GEOCODING_DATA_API_KEY": "enter_your_geocode_api_key_here"
     },

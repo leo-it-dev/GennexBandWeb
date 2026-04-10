@@ -11,7 +11,7 @@ export class ApiModuleVideos extends ApiModule {
     webPageEmbedMarker = "|-embed-to-page-|";
     channelID: string = "";
 
-    updateYtInformationScheduler: ScheduledRepeatedEvent;
+    updateYtInformationScheduler?: ScheduledRepeatedEvent;
 
     videoList: VideoList = [];
 

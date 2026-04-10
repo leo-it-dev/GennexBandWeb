@@ -10,7 +10,7 @@ export class SQLiteDB {
 
 	logger = getLogger("sqlite");
 
-	database: Database.Database = undefined;
+	database?: Database.Database = undefined;
 	moduleName: string = "";
 
 	sqliteInit(moduleName: string) {
@@ -21,6 +21,11 @@ export class SQLiteDB {
 	}
 
 	runTransaction(callback: () => void) {
+		if (this.database == undefined) {
+			this.logger.error("Can't perform operation on sqlite database as it is not initialized!", { dbname: this.moduleName, op: "transaction", parameters: [] });
+			throw Error("Can't perform operation on sqlite database as it is not initialized!");
+		}
+
 		this.database.transaction(() => {
 			callback();
 		})();
@@ -39,7 +44,7 @@ export class SQLiteDB {
 	}
 
 	// throws Error on failure
-	sqlFetchAll(query, params): unknown[] {
+	sqlFetchAll(query: string, params: any[]): any[] {
 		if (this.database == undefined) {
 			this.logger.error("Can't perform operation on sqlite database as it is not initialized!", { dbname: this.moduleName, op: "query-all", query: query, params: params });
 			throw Error("Can't perform operation on sqlite database as it is not initialized!");
@@ -51,7 +56,7 @@ export class SQLiteDB {
 	};
 
 	// throws Error on failure
-	sqlFetchFirst(query, params): unknown {
+	sqlFetchFirst(query: string, params: any[]): any {
 		if (this.database == undefined) {
 			this.logger.error("Can't perform operation on sqlite database as it is not initialized!", { dbname: this.moduleName, op: "query-first", query: query, params: params });
 			throw Error("Can't perform operation on sqlite database as it is not initialized!");

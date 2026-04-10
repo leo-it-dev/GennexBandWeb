@@ -20,7 +20,6 @@ export type CalendarSync = {
 
 export class CalendarAPIHelper {
 
-    private calendarApiKey = "";
     private baseLink = "https://www.googleapis.com/calendar/v3";
     private geocodingApiKey = "";
     private baseLinkGeocoding = "https://maps.googleapis.com/maps/api/geocode/json"
@@ -28,7 +27,6 @@ export class CalendarAPIHelper {
     private static logger = getLogger("calendar-helper");
 
     constructor(private sqlite: SQLiteDB) {
-        this.calendarApiKey = config.get("calendar.CALENDAR_DATA_API_KEY") ?? "<unknown key>";
         this.geocodingApiKey = config.get("calendar.GEOCODING_DATA_API_KEY") ?? "<unknown key>";
     }
 
@@ -67,8 +65,13 @@ export class CalendarAPIHelper {
     }
 
     async getAllPublicCalendarEntriesIncr(calendarID: string, syncToken: string): Promise<CalendarSync> {
-        return new Promise<CalendarSync>(async (res, _) => {
+        return new Promise<CalendarSync>(async (res, rej) => {
             let auth = await getAuthenticatedServiceAccount();
+            if (!auth) {
+                rej();
+                return;
+            }
+
             fetch(this.baseLink + '/calendars/' + calendarID + '/events?maxResults=200' + (syncToken !== undefined ? "&syncToken=" + syncToken : ""),
             {
                 headers: {
@@ -213,7 +216,7 @@ export class CalendarAPIHelper {
         });
     }
 
-    getCachedGeocodingResult(locStr: string): Location {
+    getCachedGeocodingResult(locStr: string): Location | undefined {
         let rows = this.sqlite.sqlFetchAll("SELECT lon,lat from geocoding WHERE locStr=?", [locStr]);
         if (rows.length > 0) {
             let lat = rows[0]["lat"];

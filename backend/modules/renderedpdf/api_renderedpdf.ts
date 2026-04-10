@@ -54,7 +54,7 @@ export class ApiModuleRenderedPDFs extends ApiModule {
                 let pdfRenderOutputFolder = path.resolve(this.pathPdfsOut, sourceUrlHash);
 
                 // download the pdf file locally for conversion.
-                await downloadFile(fixedUrl, pdfOutputName, this.pathPdfsIn);
+                await downloadFile(fixedUrl.toString(), pdfOutputName, this.pathPdfsIn);
 
                 const options: Options = {
                     density: 100,
@@ -98,7 +98,7 @@ export class ApiModuleRenderedPDFs extends ApiModule {
                 let sourceUrlHash = this.hashSourceUrl(urlStr);
 
                 // download the pdf file locally for conversion.
-                await downloadFile(fixedUrl, sourceUrlHash, this.pathPdfsIn);
+                await downloadFile(fixedUrl.toString(), sourceUrlHash, this.pathPdfsIn);
 
                 this.renderedPDFs = this.renderedPDFs.filter(pdf => pdf.sourceURL != urlStr)
                 this.renderedPDFs.push({

@@ -4,14 +4,14 @@ import { MailFeaturePosition, MailFeaturePublishEventToSubscribers, MailFeatureS
 
 export class MailModifiedEventMessage extends MailTemplate {
     
-    constructor(private entryNew: CalendarEntry, private changesToNew: CalendarEntryChangeToken, private publicationLink: string|undefined, private includePublishButton, private unsubscribeLink, private publicEventURL) {
+    constructor(private entryNew: CalendarEntry, private changesToNew: CalendarEntryChangeToken, private publicationLink: string|undefined, private unsubscribeLink: string|undefined, private publicEventURL: string) {
         super({
             mailFeatures: [
                 new MailFeatureShowOnlineEvent(publicEventURL, MailFeaturePosition.CONTENT),
-                includePublishButton ?
+                publicationLink ?
                     new MailFeaturePublishEventToSubscribers(publicationLink, MailFeaturePosition.BELOW_MAIL) 
                 : 
-                    new MailFeatureUnsubscribeButton(unsubscribeLink, MailFeaturePosition.FOOTER)
+                    new MailFeatureUnsubscribeButton(unsubscribeLink!, MailFeaturePosition.FOOTER)
             ],
             subject: "Gennex Event-Änderung",
             subjectTitle: "Gennex Event-Änderung",

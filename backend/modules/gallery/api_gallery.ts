@@ -24,7 +24,7 @@ export class ApiModuleGallery extends ApiModule {
         getRepeatedScheduler().scheduleRepeatedEvent(this, "gallery-sync", 60 * this.SYNCHRONIZE_INTERVAL_MINUTES, (finished) => {
             immich.syncGalleryWithImmich().then(syncResult => {
 
-                let updatedGalleryFiles = [];
+                let updatedGalleryFiles: string[] = [];
                 fs.readdirSync(this.filePathBandpics).forEach(file => {
                     if (fs.lstatSync(this.filePathBandpics + "/" + file).isFile()) {
                         updatedGalleryFiles.push(file);
@@ -66,7 +66,7 @@ export class ApiModuleGallery extends ApiModule {
         let thumbnailLogger = this.logger().child({ service: 'thumbnail-compressor' });
         thumbnailLogger.info("Starting image thumbnail generation...");
 
-        let filePaths = [];
+        let filePaths: string[] = [];
         fs.readdirSync(sourceImagesPath).forEach(assetIdfileName => {
             let assetId = assetIdfileName.split(".")[0];
             let assetIdThumbnailPath = path.resolve(sourceImagesPath, assetIdfileName);

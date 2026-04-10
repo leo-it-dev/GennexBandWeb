@@ -3,11 +3,11 @@ import { AgentTrigger } from "./agent_trigger";
 
 export abstract class Agent {
 
-    private triggers: (new (...args) => AgentTrigger)[];
+    private triggers: (new (...args: any[]) => AgentTrigger)[];
 
     private _logger = getLogger("agent-" + this.name());
 
-    constructor(triggers: (new (...args) => AgentTrigger)[]) {
+    constructor(triggers: (new (...args: any[]) => AgentTrigger)[]) {
         this.triggers = triggers;
         this.logger().info("Initialized new agent!", { agent: this.name(), triggers: this.triggers });
     }
@@ -25,7 +25,7 @@ export abstract class Agent {
         return this._logger;
     }
 
-    abstract name();
-    abstract initialize();
-    abstract triggeredBy(trigger: AgentTrigger);
+    abstract name(): string;
+    abstract initialize(): void;
+    abstract triggeredBy(trigger: AgentTrigger): void | Promise<any>;
 }

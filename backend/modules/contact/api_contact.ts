@@ -12,7 +12,7 @@ import { MailContactNewMessageAcknowledge } from '../../email/event-new-message-
 
 export class ApiModuleContact extends ApiModule {
 
-    mailer: ApiModuleMailer;
+    mailer!: ApiModuleMailer;
 
     initialize() {
         this.mailer = getApiModule(ApiModuleMailer);
