@@ -64,7 +64,7 @@ export abstract class MailTemplate {
         let email = fs.readFileSync(__dirname + "/templates/base-template.html", { encoding: 'utf-8' })
             .replace("{subject}", this.baseMail.subject)
             .replace("{subjectTitle}", this.baseMail.subjectTitle)
-            .replace("{serverBaseURL}", getBaseURL());
+            .replaceAll("{serverBaseURL}", getBaseURL());
 
         let content = this.getHtmlContent();
         let footer = "";
