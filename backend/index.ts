@@ -110,7 +110,7 @@ if (httpsPort && httpsPort != -1) {
     serv.listen(httpsPort, '0.0.0.0');
 } else {
     app.listen(httpPort, "0.0.0.0", () => {
-        mainLogger.info("Backend server up and running on Port " + httpsPort + ". Have a nice day!");
+        mainLogger.info("Backend server up and running on Port " + httpPort + ". Have a nice day!");
     });
 }
 
