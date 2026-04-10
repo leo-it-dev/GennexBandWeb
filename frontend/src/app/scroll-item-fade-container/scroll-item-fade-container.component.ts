@@ -71,7 +71,6 @@ export class ScrollItemFadeContainerComponent implements AfterViewInit {
 				}
 			}
 
-			console.log(parentContainerScrollPercent, oversizeHeight);
 			this.renderer.setStyle(parentContainer, 'transform', 'translateY(-' + (parentContainerScrollPercent * oversizeHeight) + 'px)');
 		});
 	}

@@ -150,7 +150,7 @@ export class CalendarAPIHelper {
         });
     }
 
-    async installCalendarWatcher(serviceAccount: ServiceAccountAccess, calendarId: string, webHookUrl: string, channelName: string, ttl = 604800): Promise<CalendarWatcherWebHook> {
+    async installCalendarWatcher(serviceAccount: ServiceAccountAccess, calendarId: string, webHookUrl: string, channelName: string, token: string, ttl = 604800): Promise<CalendarWatcherWebHook> {
         return new Promise<CalendarWatcherWebHook>((res, rej) => {
             fetch(this.baseLink + '/calendars/' + calendarId + '/events/watch', {
                 method: 'POST',
@@ -160,6 +160,7 @@ export class CalendarAPIHelper {
                 },
                 body: JSON.stringify({
                     id: channelName,
+                    token: token,
                     type: "web_hook",
                     address: webHookUrl,
                     params: {

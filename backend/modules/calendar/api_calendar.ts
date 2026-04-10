@@ -153,14 +153,19 @@ export class ApiModuleCalendar extends ApiModule {
         this.postJson<ApiInterfaceEmptyIn, ApiInterfaceEmptyOut>(this.getCalendarWatcher().getWebhookListenEndpoint(), async dat => {
             if ('x-goog-channel-id' in dat.request.headers) {
                 if (dat.request.headers["x-goog-channel-id"] == this.getCalendarWatcher().getActiveChannelName()) {
-                    if (dat.request.headers["x-goog-resource-state"] == "exists") {
-                        this.logger().info("Received correct webhook call (incremental change):", dat.request.headers);
-                        this.handleCalendarChangeWebhookCall();
-                    } else if (dat.request.headers["x-goog-resource-state"] == "sync") {
-                        this.logger().info("Received correct webhook call (initial sync):", dat.request.headers);
-                        this.handleCalendarChangeWebhookCall();
+
+                    if (dat.request.headers["x-goog-channel-token"] == this.getCalendarWatcher().getPrivateToken()) {
+                        if (dat.request.headers["x-goog-resource-state"] == "exists") {
+                            this.logger().info("Received correct webhook call (incremental change):", dat.request.headers);
+                            this.handleCalendarChangeWebhookCall();
+                        } else if (dat.request.headers["x-goog-resource-state"] == "sync") {
+                            this.logger().info("Received correct webhook call (initial sync):", dat.request.headers);
+                            this.handleCalendarChangeWebhookCall();
+                        } else {
+                            this.logger().warn("Received calendar webhook call with unhandled resource state:", { state: dat.request.headers["x-goog-resource-state"] });
+                        }
                     } else {
-                        this.logger().warn("Received calendar webhook call with unhandled resource state:", { state: dat.request.headers["x-goog-resource-state"] });
+                        this.logger().warn("Received calendar webhook call with wrong private token!", {receivedToken: dat.request.headers["x-goog-channel-token"]});
                     }
                 } else {
                     this.logger().warn("Received out of band webhook call! Propably old not yet stopped webhook. Trying to stop.", { channelId: dat.request.headers["x-goog-channel-id"] });

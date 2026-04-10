@@ -13,6 +13,7 @@ export class GoogleCalendarWatchHandler {
     private ACTIVE_CHANNEL_NAME?: string = undefined;
     private watcherRefreshTimeoutId?: NodeJS.Timeout;
     private SECONDS_TO_RENEW_WATCHER_BEFORE_TIMEOUT = 60;
+    private WEBHOOK_PRIVATE_TOKEN = config.get('calendar.WEB_HOOK_PRIVATE_TOKEN') as string;
 
     constructor(private helper: CalendarAPIHelper, private sqlite: SQLiteDB) {
 
@@ -86,7 +87,7 @@ export class GoogleCalendarWatchHandler {
             let serviceAccount = await getAuthenticatedServiceAccount();
             if (serviceAccount) {
                 let nextChannelName = "monitoring-" + Math.round(new Date().getTime() / 1000);
-                let watcher = await this.helper.installCalendarWatcher(serviceAccount, this.CALENDAR_ID, this.WEBHOOK_URL, nextChannelName);
+                let watcher = await this.helper.installCalendarWatcher(serviceAccount, this.CALENDAR_ID, this.WEBHOOK_URL, nextChannelName, this.WEBHOOK_PRIVATE_TOKEN);
                 this.logger.info("Registered new calendar update channel with google!", { id: watcher.id, resourceId: watcher.resourceId, expiration: watcher.expiration });
                 this.storeGoogleCalendarWatcherDB(watcher);
                 res(watcher);
@@ -97,6 +98,9 @@ export class GoogleCalendarWatchHandler {
         });
     }
 
+    public getPrivateToken() {
+        return this.WEBHOOK_PRIVATE_TOKEN;
+    }
 
     // Database handling ----------------------------------------------------------------------
 
