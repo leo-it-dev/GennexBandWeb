@@ -1,4 +1,4 @@
-import * as config from 'config';
+import config from 'config';
 import { ApiInterfaceConfigIn, ApiInterfaceConfigOut } from "../../../api_common/config";
 import { ApiModule } from "../../api_module";
 

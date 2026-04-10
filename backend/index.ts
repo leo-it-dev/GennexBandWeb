@@ -1,11 +1,11 @@
-import express from 'express';
+const express = require('express');
 const https = require('https')
 const path = require('path');
 const compression = require('compression');
 const app = express();
 
 import * as fs from 'fs';
-import * as config from 'config';
+import config from 'config';
 import { Request, Response } from 'express';
 import { exit } from 'process';
 import { ApiModule } from './api_module';

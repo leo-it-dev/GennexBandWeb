@@ -1,4 +1,4 @@
-import * as config from 'config';
+import config from 'config';
 import * as immich from "@immich/sdk";
 import * as fs from 'fs';
 import { getFilePathFrontend } from '..';

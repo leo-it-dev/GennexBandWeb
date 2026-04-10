@@ -1,5 +1,5 @@
-import * as config from 'config';
-import { getApiModule } from "..";
+import config from 'config';
+import { ApiModuleLazy } from '../api_module';
 import { Agent } from "../modules/agent/agent";
 import { AgentTrigger, AgentTrigger5M } from "../modules/agent/agent_trigger";
 import { ApiModuleMailer } from '../modules/mailer/api_mailer';
@@ -7,6 +7,7 @@ import { ApiModuleMailer } from '../modules/mailer/api_mailer';
 export class AgentProcessBatchMails extends Agent {
 
     MAX_CONTACTS_PER_MAIL = config.get('mail.BATCH_MAX_CONTACTS_PER_MAIL_EVERY_5_MINUTES') as number;
+    mailer = new ApiModuleLazy(ApiModuleMailer);
 
     constructor() {
         super([
@@ -23,9 +24,8 @@ export class AgentProcessBatchMails extends Agent {
     }
 
     async triggeredBy(trigger: AgentTrigger) {
-        let mailer = getApiModule(ApiModuleMailer);
-        await mailer.popBatchEmailChunk(this.MAX_CONTACTS_PER_MAIL, async (batchMail) => {
-            let rejectedMails = await mailer.sendEmailImmediately(batchMail);
+        await this.mailer.get().popBatchEmailChunk(this.MAX_CONTACTS_PER_MAIL, async (batchMail) => {
+            let rejectedMails = await this.mailer.get().sendEmailImmediately(batchMail);
             return rejectedMails;
         });
     }

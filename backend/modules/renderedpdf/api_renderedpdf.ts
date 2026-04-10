@@ -82,8 +82,11 @@ export class ApiModuleRenderedPDFs extends ApiModule {
                     pagePngURLs: Array.from(new Array(pages.length)).map((p, idx) => this.pathPdfsOutBase + "/" + sourceUrlHash + "/page." + (idx+1) + ".png")
                 });
 
+                this.logger().info("Rendered PDF to PNG pages!", {urlStr: urlStr, pageCount: pages.length});
+
                 res(outputPathBase);
             } catch (error) {
+                this.logger().error("Error rendering PDF to PNG pages!", {urlStr: urlStr, error: error});
                 rej(error);
             }
         });
@@ -106,8 +109,10 @@ export class ApiModuleRenderedPDFs extends ApiModule {
                     pagePngURLs: Array.from(new Array(1)).map((p) => this.pathPdfsInBase + "/" + sourceUrlHash)
                 });
 
+                this.logger().info("Published PNG as document!", {urlStr: urlStr});
                 res(outputPathBase);
             } catch (error) {
+                this.logger().error("Error publishing PNG as document!", {urlStr: urlStr, error: error});
                 rej(error);
             }
         });

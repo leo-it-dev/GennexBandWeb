@@ -12,7 +12,7 @@
  * May be refined in the future to represent a 'exactly-once' message queue.
  */
 
-import * as config from 'config';
+import config from 'config';
 import * as nodemailer from 'nodemailer';
 import { ApiModule } from "../../api_module";
 import { SqlUpdate } from "../../framework/sqlite_database";

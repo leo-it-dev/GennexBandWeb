@@ -3,7 +3,7 @@ import { getAuthenticatedServiceAccount, ServiceAccountAccess } from "../../fram
 import { SQLiteDB } from "../../framework/sqlite_database";
 import { getLogger } from "../../logger";
 import { CalendarAPIHelper, CalendarWatcherWebHook } from "./calendar_helper";
-import * as config from 'config';
+import config from 'config';
 
 export class GoogleCalendarWatchHandler {
 
@@ -89,7 +89,7 @@ export class GoogleCalendarWatchHandler {
                 let watcher = await this.helper.installCalendarWatcher(serviceAccount, this.CALENDAR_ID, this.WEBHOOK_URL, nextChannelName);
                 this.logger.info("Registered new calendar update channel with google!", { id: watcher.id, resourceId: watcher.resourceId, expiration: watcher.expiration });
                 this.storeGoogleCalendarWatcherDB(watcher);
-                return watcher;
+                res(watcher);
             } else {
                 this.logger.error("Error registering new calendar watcher with google!", { error: "Error acquiring service account!" });
                 rej("Error acquiring service account access!");

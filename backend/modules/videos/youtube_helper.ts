@@ -1,4 +1,4 @@
-import * as config from 'config';
+import config from 'config';
 import { PlaylistInfo, VideoInfo } from '../../../api_common/videos';
 
 export class YoutubeHelper {

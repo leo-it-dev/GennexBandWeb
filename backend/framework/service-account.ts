@@ -1,4 +1,4 @@
-import * as config from 'config';
+import config from 'config';
 import * as jwt from 'jsonwebtoken';
 import { getLogger } from '../logger';
 

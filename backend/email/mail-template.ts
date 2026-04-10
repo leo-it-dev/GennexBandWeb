@@ -1,5 +1,5 @@
 import * as fs from 'fs';
-import * as config from 'config';
+import config from 'config';
 import { getBaseURL } from '..';
 import { BatchEmail } from '../modules/mailer/api_mailer';
 

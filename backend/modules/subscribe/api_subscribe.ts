@@ -1,7 +1,7 @@
 import { getApiModule, getBaseURL } from '../..';
 import { ApiInterfaceSubscribeIn, ApiInterfaceSubscribeOut, ApiInterfaceUnsubscribeIn, ApiInterfaceUnsubscribeOut } from '../../../api_common/subscribe';
 import { subscribeFormularRequestVerification, SubscribeFormularStatusCodes, unsubscribeFormularRequestVerification, UnsubscribeFormularStatusCodes } from '../../../api_common/verification';
-import { ApiModule } from "../../api_module";
+import { ApiModule, ApiModuleLazy } from "../../api_module";
 import { generateContactEmailVerifyCode, validateContactEmailVerifyCode } from "../../contact_verification_token";
 import { MailNewsletterEndSubscription } from '../../email/newsletter-end-subscription-message';
 import { MailNewsletterSubscriptionSuccess } from '../../email/newsletter-subscription-success';
@@ -13,18 +13,9 @@ import { ApiModuleMailer } from '../mailer/api_mailer';
 
 export class ApiModuleSubscribe extends ApiModule {
 
-    mailer?: ApiModuleMailer;
+    mailer = new ApiModuleLazy(ApiModuleMailer);
 
-    initialize() {
-        this.mailer = getApiModule(ApiModuleMailer);
-    }
-
-    getMailerModule(): ApiModuleMailer {
-        if (this.mailer) {
-            return this.mailer;
-        }
-        throw new Error("Error reading in mailer module as it is not yet initialized!");
-    }
+    initialize() {}
 
     modname(): string {
         return "subscribe";
@@ -187,7 +178,7 @@ export class ApiModuleSubscribe extends ApiModule {
 
                         let unsubscribe = this.generateUnsubscribeUrl(req.body.email);
                         let mail = new MailNewsletterSubscriptionSuccess(unsubscribe);
-                        await this.getMailerModule().sendEmailImmediately(mail.toBatchMail([req.body.email]));
+                        await this.mailer.get().sendEmailImmediately(mail.toBatchMail([req.body.email]));
                         return {
                             error: undefined,
                             statusCode: 200,
@@ -204,7 +195,7 @@ export class ApiModuleSubscribe extends ApiModule {
                 case ContinuationAction.SEND_EMAIL_VERIFICATION_MESSAGE:
                     let verificationCode = generateContactEmailVerifyCode(req.body.email);
                     let mail = new MailNewsletterVerifyCode(verificationCode);
-                    await this.getMailerModule().sendEmailImmediately(mail.toBatchMail([req.body.email]));
+                    await this.mailer.get().sendEmailImmediately(mail.toBatchMail([req.body.email]));
 
                     return {
                         error: undefined,
@@ -243,7 +234,7 @@ export class ApiModuleSubscribe extends ApiModule {
                         let subscribeUrl = this.getSubscribeUrl();
 
                         let mail = new MailNewsletterEndSubscription(subscribeUrl);
-                        await this.getMailerModule().sendEmailImmediately(mail.toBatchMail([email]));
+                        await this.mailer.get().sendEmailImmediately(mail.toBatchMail([email]));
 
                         return {
                             error: undefined,

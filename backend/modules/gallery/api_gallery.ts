@@ -4,7 +4,7 @@ import { ApiModule } from "../../api_module";
 import sharp = require('sharp');
 import * as immich from '../../framework/immich_api';
 import * as fs from 'fs';
-import * as config from 'config';
+import config from 'config';
 import * as path from 'path';
 
 export class ApiModuleGallery extends ApiModule {

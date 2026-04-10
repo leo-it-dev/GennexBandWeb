@@ -1,7 +1,7 @@
 import fs = require('node:fs');
 import https = require('https');
 import { getLogger } from '../logger';
-import * as config from 'config';
+import config from 'config';
 
 export let CA_CERT: string = "";
 export let ADFS_CERT: string = "";
@@ -18,8 +18,8 @@ export const SSL_FOLDER_PATH = __dirname + '/../ssl/';
 
 export function initSSL() {
     if (config.has("generic.SSL_CERTIFICATE_FILENAME") && config.has("generic.SSL_PRIVKEY_FILENAME")) {
-        sslCertificate = String(fs.readFileSync(SSL_FOLDER_PATH + config.get('generic.SSL_CERTIFICATE_FILENAME')).buffer);
-        sslPrivateKey = String(fs.readFileSync(SSL_FOLDER_PATH + config.get('generic.SSL_PRIVKEY_FILENAME')).buffer);
+        sslCertificate = String(fs.readFileSync(SSL_FOLDER_PATH + config.get('generic.SSL_CERTIFICATE_FILENAME'), { encoding: 'utf-8' }));
+        sslPrivateKey = String(fs.readFileSync(SSL_FOLDER_PATH + config.get('generic.SSL_PRIVKEY_FILENAME'), { encoding: 'utf-8' }));
 
         SSL_OPTIONS.key = sslPrivateKey;
         SSL_OPTIONS.cert = sslCertificate;

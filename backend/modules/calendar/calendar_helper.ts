@@ -1,9 +1,9 @@
-import * as config from 'config';
-import { CalendarEntry, CalendarEntryState, Calendar, Location, Visibility, Attachment } from '../../../api_common/calendar';
-import { getLogger } from '../../logger';
+import config from 'config';
+import { Attachment, Calendar, CalendarEntry, CalendarEntryState, Location, Visibility } from '../../../api_common/calendar';
+import { ApiModuleLazy } from '../../api_module';
 import { getAuthenticatedServiceAccount, ServiceAccountAccess } from '../../framework/service-account';
 import { SQLiteDB } from '../../framework/sqlite_database';
-import { getApiModule } from '../..';
+import { getLogger } from '../../logger';
 import { ApiModuleRenderedPDFs } from '../renderedpdf/api_renderedpdf';
 
 export type CalendarWatcherWebHook = {
@@ -25,6 +25,8 @@ export class CalendarAPIHelper {
     private baseLinkGeocoding = "https://maps.googleapis.com/maps/api/geocode/json"
 
     private static logger = getLogger("calendar-helper");
+
+    private pdfRenderer = new ApiModuleLazy(ApiModuleRenderedPDFs);
 
     constructor(private sqlite: SQLiteDB) {
         this.geocodingApiKey = config.get("calendar.GEOCODING_DATA_API_KEY") ?? "<unknown key>";
@@ -101,14 +103,14 @@ export class CalendarAPIHelper {
                                 for(let attachment of attachments) {
                                     if (attachment.mimeType == "application/pdf") {
                                         try {
-                                            await getApiModule(ApiModuleRenderedPDFs).renderPdfToPngs(attachment.url, attachment.title);
+                                            await this.pdfRenderer.get().renderPdfToPngs(attachment.url, attachment.title);
                                         } catch(err) {
                                             CalendarAPIHelper.logger.error("Error downloading pdf attachment from calendar entry!", {error: err});
                                         }
                                     }
                                     if (attachment.mimeType.startsWith("image/")) {
                                         try {
-                                            await getApiModule(ApiModuleRenderedPDFs).publishImage(attachment.url, attachment.title);
+                                            await this.pdfRenderer.get().publishImage(attachment.url, attachment.title);
                                         } catch(err) {
                                             CalendarAPIHelper.logger.error("Error downloading pdf attachment from calendar entry!", {error: err});
                                         }

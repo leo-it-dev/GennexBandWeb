@@ -1,10 +1,10 @@
-import * as config from 'config';
+import config from 'config';
 import { match } from 'ts-pattern';
-import { getApiModule, getBaseURL } from "../..";
+import { getBaseURL } from "../..";
 import { ApiInterfaceEmptyIn, ApiInterfaceEmptyOut } from '../../../api_common/backend_call';
 import { ApiInterfaceCalendarIn, ApiInterfaceCalendarOut, ApiInterfaceCalendarPublishIn, ApiInterfaceCalendarPublishOut, CalendarEntry } from "../../../api_common/calendar";
 import { publishEventFormularVerificationTemplate, PublishFormularStatusCode } from '../../../api_common/verification';
-import { ApiModule } from "../../api_module";
+import { ApiModule, ApiModuleLazy } from "../../api_module";
 import { MailDeletedEventMessage } from '../../email/event-deleted-message';
 import { MailModifiedEventMessage } from '../../email/event-modified-message';
 import { MailNewEventMessage } from '../../email/event-new-message';
@@ -35,8 +35,8 @@ export class ApiModuleCalendar extends ApiModule {
     calendarID: string = "";
     calendarFilter: AccumulatedCalendarFilter = new AccumulatedCalendarFilter();
 
-    mailer?: ApiModuleMailer;
-    subscriberModule?: ApiModuleSubscribe
+    mailer = new ApiModuleLazy(ApiModuleMailer);
+    subscriberModule = new ApiModuleLazy(ApiModuleSubscribe);
 
     modname(): string {
         return "calendar";
@@ -76,26 +76,10 @@ export class ApiModuleCalendar extends ApiModule {
         throw Error("Calendar watcher has not been instantiated yet!");
     }
 
-    getMailerModule() {
-        if (this.mailer) {
-            return this.mailer;
-        }
-        throw Error("Mailer module has not been instantiated yet!");
-    }
-
-    getSubscriberModule() {
-        if (this.subscriberModule) {
-            return this.subscriberModule;
-        }
-        throw Error("Subscribe module has not been instantiated yet!");
-    }
-
     async initialize() {
         this.calendarID = config.get('calendar.CALENDAR_ID');
         this.helper = new CalendarAPIHelper(this.sqlite());
         this.calendarWatcher = new GoogleCalendarWatchHandler(this.helper, this.sqlite());
-
-        this.mailer = getApiModule(ApiModuleMailer);
 
         await this.calendarWatcher.init();
         await this.calendarWatcher.register();
@@ -113,7 +97,6 @@ export class ApiModuleCalendar extends ApiModule {
             changes: token['change'] as CalendarEntryChangeToken
         };
     }
-
 
     deleteEventEntryToToken(entry: CalendarEntry) {
         return generateJWTtoken({
@@ -218,7 +201,7 @@ export class ApiModuleCalendar extends ApiModule {
                 try {
                     let entry: CalendarEntry | undefined = undefined;
                     let changes: CalendarEntryChangeToken | undefined = undefined;
-                    let subscribers = this.getSubscriberModule().getAllSubscriptions();
+                    let subscribers = this.subscriberModule.get().getAllSubscriptions();
 
                     if (tokenAction == CalendarTokenAction.NEW || tokenAction == CalendarTokenAction.MODIFY) {
                         let tokenBody = this.newEventTokenToEntry(token);
@@ -237,13 +220,13 @@ export class ApiModuleCalendar extends ApiModule {
 
                     for (let subscriber of subscribers) {
                         // Prepare personalized emails, each as it's own batch mail.
-                        let unsubLink = this.getSubscriberModule().generateUnsubscribeUrl(subscriber);
+                        let unsubLink = this.subscriberModule.get().generateUnsubscribeUrl(subscriber);
                         let mail = match(tokenAction)
                             .with(CalendarTokenAction.NEW, () => new MailNewEventMessage(entry!, undefined, unsubLink, this.getEventURL(entry!)))
                             .with(CalendarTokenAction.MODIFY, () => new MailModifiedEventMessage(entry!, changes!, undefined, unsubLink, this.getEventURL(entry!)))
                             .with(CalendarTokenAction.DELETE, () => new MailDeletedEventMessage(entry!, undefined, unsubLink))
                             .exhaustive();
-                        await this.getMailerModule().queueBatchEmail(mail.toBatchMail([subscriber]));
+                        await this.mailer.get().queueBatchEmail(mail.toBatchMail([subscriber]));
                     }
 
                     return {

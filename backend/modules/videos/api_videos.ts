@@ -3,7 +3,7 @@ import { ApiInterfaceVideosIn, ApiInterfaceVideosOut, VideoInfo, VideoList } fro
 import { ApiModule } from "../../api_module";
 import { ScheduledRepeatedEvent } from "../../framework/scheduled_events";
 import { YoutubeHelper } from './youtube_helper'
-import * as config from 'config';
+import config from 'config';
 
 export class ApiModuleVideos extends ApiModule {
 
