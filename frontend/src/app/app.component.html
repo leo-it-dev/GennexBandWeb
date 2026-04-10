@@ -32,44 +32,9 @@
 		</div>
 		<div class="spacer"></div>
 		<div #backgroundTrigger class="background-trigger" img="/images/back_live2.jpg"></div>
-		<div id="about-us" class="fade-scroll-items-container" #fadeScrollItemContainer>
-			<div id="about-us-content">
-				<app-section-header id="about-us-header" title="Über uns"></app-section-header>
-				<img id="about-us-logo" src="/images/logo0014.png" />
-				<div id="about-us-text-wrapper">
-					<div id="about-us-text" #aboutUsText>
-	
-						<p class="fade-scroll-item"> </p>
-						<p class="fade-scroll-item-spacer"></p>
-						<p class="fade-scroll-item">
-							Wir sind GENNEX, eine junge Partyband aus der Region Mühldorf -
-							laut gestartet als Schülerband und heute fester Bestandteil der lokalen Musikszene.
-						</p>
-						<p class="fade-scroll-item-spacer"></p>
-						<p class="fade-scroll-item">
-							Seit sechs Jahren liefern wir, was zählt: maximale Stimmung, volle Bühnenenergie und ein
-							Programm,
-							das keine Wünsche offenlässt. Von Punkrock über aktuelle Hits bis zu Partyklassikern - wir
-							bringen
-							den Soundtrack für unvergessliche Abende.
-						</p>
-						<p class="fade-scroll-item-spacer"></p>
-						<p class="fade-scroll-item">
-							Ob Geburtstag, Stadtfest oder große Bühne - wir spielen nicht einfach Songs. Wir liefern Abriss
-							mit
-							Leidenschaft.
-						</p>
-						<p class="fade-scroll-item-spacer"></p>
-						<p class="fade-scroll-item">
-							Du willst feiern?
-							Dann hör rein, check unsere Bilder und lass uns deine Bühne zum Beben bringen.
-						</p>
-						<p class="fade-scroll-item-spacer"></p>
-						<p class="fade-scroll-item"> </p>
-					</div>
-				</div>
-			</div>
-		</div>
+
+		<app-scroll-item-fade-container [textList]="this.aboutUsTexts"></app-scroll-item-fade-container>
+
 		<div class="spacer"></div>
 
 		<app-video-list id="live"></app-video-list>

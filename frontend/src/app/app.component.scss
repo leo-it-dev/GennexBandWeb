@@ -146,20 +146,6 @@ app-gallery {
 	position: relative;
 }
 
-/*#imgRoom {
-	height: auto;
-	width: 100%;
-}
-
-#imgLogo {
-	height: auto;
-	width: 40%;
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-}*/
-
 /* -------------------------------------- */
 #logoAnim {
 	height: 600dvh;
@@ -195,14 +181,6 @@ video {
 	max-height: 100%;
 	object-fit: cover;
 	position: relative;
-}
-
-#logo {
-	position: absolute;
-	width: 40%;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
 }
 
 #logoContainer {
@@ -248,73 +226,6 @@ app-contact-form {
 	margin: 50px;
 }
 
-#about-us-content {
-	position: relative;
-}
-
-#about-us {
-	z-index: 100;
-}
-
-#about-us-logo {
-	padding: 3%;
-	min-width: 35%;
-	max-width: 35%;
-	box-sizing: border-box;
-	height: auto;
-	position: sticky;
-	top: 50%;
-	margin-left: 5%;
-	transform: translateY(-50%);
-	float: left;
-}
-
-#about-us-text {
-	min-width: 40%;
-	max-width: 40%;
-	padding-top: 20px;
-	font-size: min(16pt, 5vw);
-	padding-left: 50px;
-	padding-right: 50px;
-	border-left: 1px solid transparent;
-	border-image: linear-gradient(to bottom, transparent 0%, white 20%, white 97%, transparent 100%) 1;
-	background: linear-gradient(to bottom, transparent 0%, #0008 20%, #0008 97%, transparent 100%);
-	border-image-slice: 1;
-	font-weight: bold;
-	margin-left: auto;
-	margin-right: 10%;
-	box-sizing: border-box;
-}
-
-#about-us-text-wrapper {
-	height: calc(100% - 100px);
-	max-height: calc(100% - 100px);
-}
-
-p.fade-scroll-item {
-	color: white;
-}
-
-.fade-scroll-item {
-	top: 0px;
-	position: sticky;
-	padding-top: 10px;
-	padding-bottom: 10px;
-	margin: 0;
-}
-
-.fade-scroll-item-spacer {
-	height: 400px;
-	margin: 0;
-}
-
-#about-us-header {
-	position: sticky;
-	top: 10vh;
-	z-index: 1000;
-}
-
-
 footer {
 	padding: 10px;
 	background: linear-gradient(45deg, #000, #300);
@@ -349,30 +260,5 @@ footer {
 		width: 100%;
 		margin: 10px;
 		text-align: center;
-	}
-
-	#about-us-header {
-		top: 0px !important;
-	}
-
-	#about-us-text {
-		min-width: 100%;
-		max-width: 100%;
-		border: none;
-		padding-top: 100px;
-	}
-
-	#about-us-logo {
-		position: fixed;
-		top: 100%;
-		left: 50%;
-		margin: 0 !important;
-		padding: 10px !important;
-		height: 100px !important;
-		width: auto !important;
-		max-width: unset !important;
-		min-width: unset !important;
-		transform: translate(-50%, -100%);
-		float: none;
 	}
 }
