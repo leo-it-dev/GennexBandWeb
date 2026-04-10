@@ -1,11 +1,11 @@
-FROM debian:latest
+FROM node:24-bookworm
 WORKDIR /app
 VOLUME /app/package/backend/ssl
 VOLUME /app/package/backend/config
 
 COPY . /app/package
 
-RUN apt-get update && apt-get install -y unzip nodejs graphicsmagick ghostscript
+RUN apt-get update && apt-get install -y unzip graphicsmagick ghostscript
 
 # Fix timezone
 RUN rm /etc/localtime && ln -s /usr/share/zoneinfo/Europe/Berlin /etc/localtime
