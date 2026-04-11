@@ -1,17 +1,12 @@
 .media-video {
     height: var(--elementHeight);
     width: 100%;
-    opacity: 0;
     transition: opacity .5s ease-out;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
     flex-wrap: nowrap;
     position: relative;
-}
-
-.visible {
-    opacity: 1;
 }
 
 #selectPlaylistCont {
@@ -23,10 +18,12 @@
     height: 100%;
     display: block;
 }
-:host ::ng-deep youtube-player > div {
+
+:host ::ng-deep youtube-player>div {
     height: 100%;
     width: 100%;
 }
+
 :host ::ng-deep youtube-player youtube-player-placeholder {
     width: 100% !important;
     height: 100% !important;
@@ -42,4 +39,19 @@ youtube-player {
     background: #000a;
     color: white;
     flex: 0;
+}
+
+.youtube-player-placeholder {
+    flex: 1;
+    background-color: #0008;
+    color: white;
+    font-size: 15pt;
+    text-align: center;
+}
+
+.media-video-loaded {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
 }

@@ -9,7 +9,7 @@ import { AnimationOptions, LottieComponent } from 'ngx-lottie';
 	templateUrl: './loadingoverlay.component.html',
 	styleUrl: './loadingoverlay.component.scss'
 })
-export class LoadingoverlayComponent implements AfterViewInit, OnDestroy {
+export class LoadingoverlayComponent {
 
 	constructor(private elRef: ElementRef, private serv: LoadingoverlayService) {
 		// effect(() => {
@@ -19,8 +19,6 @@ export class LoadingoverlayComponent implements AfterViewInit, OnDestroy {
 		// }
 		// });
 	}
-
-	fadeIn: boolean = false;
 
 	close() {
 		this.serv.hideLoadingOverlay();
@@ -59,16 +57,6 @@ export class LoadingoverlayComponent implements AfterViewInit, OnDestroy {
 				autoplay: true
 		}
 	});
-
-	ngAfterViewInit() {
-		setTimeout(() => {
-			this.fadeIn = true;
-		});
-	}
-
-	ngOnDestroy() {
-		this.fadeIn = false;
-	}
 
 	inputTextChanges(event: Event) {
 		let text = (event.target as HTMLInputElement).value;

@@ -1,11 +1,21 @@
 :host {
-    background-color: rgba(0, 0, 0, 0.5);
     position: fixed;
     width: 100vw;
     height: 100dvh;
     top: 0;
     left: 0;
     z-index: 1000;
+}
+
+#backdrop-blur {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    content: '';
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(36px) !important;
 }
 
 #overlayFullSize {
@@ -15,11 +25,23 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    transition: backdrop-filter .5s ease-out;
 }
 
-.fadeIn {
-    backdrop-filter: blur(36px);
+.loverlayFadeIn {
+    animation: fadeInO .3s ease-out;
+}
+.loverlayFadeOut {
+    animation: fadeInO .3s ease-out;
+    animation-direction: reverse;
+}
+
+@keyframes fadeInO {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
 }
 
 .overlayContainer {

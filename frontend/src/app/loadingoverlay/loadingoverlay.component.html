@@ -1,5 +1,6 @@
-<div id="overlayFullSize" [class.fadeIn]="this.fadeIn">
-	<div class="overlayContainer">
+<div id="overlayFullSize">
+	<div id="backdrop-blur" animate.enter="loverlayFadeIn" animate.leave="loverlayFadeOut"></div>
+	<div class="overlayContainer" animate.enter="loverlayFadeIn" animate.leave="loverlayFadeOut">
 		<!--<video #video autoplay muted playsinline [loop]="this.videoShouldRepeat()">
 			<source [src]="this.videoURL()" type="video/webm" />
 		</video>!-->

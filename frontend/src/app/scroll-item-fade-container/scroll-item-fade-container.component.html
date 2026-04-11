@@ -1,5 +1,7 @@
-<div class="fade-scroll-items-container" #fadeScrollItemContainer [style.--sectionTitleHeight]="this.SECTION_TITLE_HEIGHT + 'px'"]>
-    <img id="logo" src="/images/logo0014.png" />
+<div class="fade-scroll-items-container" #fadeScrollItemContainer [style.--sectionTitleHeight]="this.SECTION_TITLE_HEIGHT + 'px'">
+    <div id="image-container">
+        <img id="logo" src="/images/webp/logo0014.webp" />
+    </div>
 
     <div id="content">
         <app-section-header id="header" title="Über uns"></app-section-header>
@@ -16,4 +18,5 @@
             </div>
         </div>
     </div>
+    <div class="sifAnchor" [id]='"sifAnchor-" + this.name'></div>
 </div>

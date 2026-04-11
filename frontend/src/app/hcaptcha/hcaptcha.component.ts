@@ -1,6 +1,8 @@
 import { AfterViewInit, Component, ElementRef, NgZone, ViewChild } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 import { ConfigService } from '../services/config.service';
+import { DynamicScriptLoaderService } from '../services/dynamic-script-loader.service';
+import { HcaptchaScriptLoaderService } from './hcaptcha-script-loader.service';
 
 declare const hcaptcha: any;
 
@@ -18,7 +20,7 @@ export class HcaptchaComponent implements AfterViewInit, ControlValueAccessor {
 	private captchaId!: number;
 	private onChange?: Function = undefined;
 
-	constructor(private zone: NgZone, private config: ConfigService, private controlDir: NgControl) {
+	constructor(private zone: NgZone, private config: ConfigService, private controlDir: NgControl, private dynamicScripts: HcaptchaScriptLoaderService) {
 		this.controlDir.valueAccessor = this;
 	}
 
@@ -29,8 +31,7 @@ export class HcaptchaComponent implements AfterViewInit, ControlValueAccessor {
  		this.onChange = fn;
 	}
 
-	ngAfterViewInit(): void {
-		// fetch hcaptcha key.
+	renderHCaptcha() {
 		this.config.awaitConfig().then(conf => {
 			this.zone.runOutsideAngular(() => this.captchaId = hcaptcha.render(this.container.nativeElement, {
 				sitekey: conf.hcaptcha_key,
@@ -41,6 +42,13 @@ export class HcaptchaComponent implements AfterViewInit, ControlValueAccessor {
 					});
 				}
 			}));
+		});
+	}
+
+	ngAfterViewInit(): void {
+		// fetch hcaptcha key.
+		this.dynamicScripts.loadHCaptchaScript().then(() => {
+			this.renderHCaptcha();
 		});
 	}
 

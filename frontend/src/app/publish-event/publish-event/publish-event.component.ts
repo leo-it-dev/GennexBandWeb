@@ -32,7 +32,7 @@ export class PublishEventComponent implements AfterViewInit {
 		}
 
 		if (eventPublishType == EventPublishType.NEW) {
-			this.loadingser.showLoadingOverlay(["Möchtest du ALLE Abonnenten per Mail auf das Event aufmerksam machen?"], "/images/rocket.json", true, false, "bla", 0, (bla: string) => { }, [
+			this.loadingser.showLoadingOverlay(["Möchtest du ALLE Abonnenten per Mail auf das Event aufmerksam machen?"], "/images/lottiefiles/rocket.json", true, false, "bla", 0, (bla: string) => { }, [
 				{ text: "Abbrechen", color: "#aaaaaa" },
 				{ text: "Publish", color: "#ff643d" },
 			], (btn: string) => {
@@ -47,7 +47,7 @@ export class PublishEventComponent implements AfterViewInit {
 				}
 			})
 		} else if (eventPublishType == EventPublishType.MODIFY) {
-			this.loadingser.showLoadingOverlay(["Möchtest du ALLE Abonnenten per Mail auf die Event-Änderung aufmerksam machen?"], "/images/rocket.json", true, false, "bla", 0, (bla: string) => { }, [
+			this.loadingser.showLoadingOverlay(["Möchtest du ALLE Abonnenten per Mail auf die Event-Änderung aufmerksam machen?"], "/images/lottiefiles/rocket.json", true, false, "bla", 0, (bla: string) => { }, [
 				{ text: "Abbrechen", color: "#aaaaaa" },
 				{ text: "Publish Change", color: "#ff643d" },
 			], (btn: string) => {
@@ -62,7 +62,7 @@ export class PublishEventComponent implements AfterViewInit {
 				}
 			})
 		} else if (eventPublishType == EventPublishType.DELETE) {
-			this.loadingser.showLoadingOverlay(["Möchtest du ALLE Abonnenten per Mail auf die Eventabsage aufmerksam machen?"], "/images/rocket.json", true, false, "bla", 0, (bla: string) => { }, [
+			this.loadingser.showLoadingOverlay(["Möchtest du ALLE Abonnenten per Mail auf die Eventabsage aufmerksam machen?"], "/images/lottiefiles/rocket.json", true, false, "bla", 0, (bla: string) => { }, [
 				{ text: "Abbrechen", color: "#aaaaaa" },
 				{ text: "Publish Deletion", color: "#ff643d" },
 			], (btn: string) => {
@@ -80,7 +80,7 @@ export class PublishEventComponent implements AfterViewInit {
 	}
 
 	async sendPublishForm(): Promise<PublishFormularResponse> {
-		this.loadingser.showLoadingOverlay(["Bitte warten"], "/images/paperplane.json", true, false, "", 0, (nt: string) => { });
+		this.loadingser.showLoadingOverlay(["Bitte warten"], "/images/lottiefiles/paperplane.json", true, false, "", 0, (nt: string) => { });
 
 		return new Promise((res, _) => {
 			this.backend.anonymousBackendCall<ApiInterfaceCalendarPublishIn, ApiInterfaceCalendarPublishOut>(CalendarBackendService.API_URL_PUBLISH, {
@@ -111,22 +111,22 @@ export class PublishEventComponent implements AfterViewInit {
 		switch (response) {
 			case PublishFormularResponse.SUCCESS:
 				if (eventPublishType == EventPublishType.NEW) {
-					this.loadingser.showLoadingOverlay(["Neues Event erfolgreich in Newsletter-Warteschlange hinterlegt!"], "/images/success.json", false, false, "", 0, (nt: string) => { });
+					this.loadingser.showLoadingOverlay(["Neues Event erfolgreich in Newsletter-Warteschlange hinterlegt!"], "/images/lottiefiles/success.json", false, false, "", 0, (nt: string) => { });
 				}
 				else if (eventPublishType == EventPublishType.MODIFY) {
-					this.loadingser.showLoadingOverlay(["Modifiziertes Event erfolgreich in Newsletter-Warteschlange hinterlegt!"], "/images/success.json", false, false, "", 0, (nt: string) => { });
+					this.loadingser.showLoadingOverlay(["Modifiziertes Event erfolgreich in Newsletter-Warteschlange hinterlegt!"], "/images/lottiefiles/success.json", false, false, "", 0, (nt: string) => { });
 				} else if (eventPublishType == EventPublishType.DELETE) {
-					this.loadingser.showLoadingOverlay(["Abgesagtes Event erfolgreich in Newsletter-Warteschlange hinterlegt!"], "/images/success.json", false, false, "", 0, (nt: string) => { });
+					this.loadingser.showLoadingOverlay(["Abgesagtes Event erfolgreich in Newsletter-Warteschlange hinterlegt!"], "/images/lottiefiles/success.json", false, false, "", 0, (nt: string) => { });
 				}
 				break;
 			case PublishFormularResponse.INTERNAL_ERROR:
-				this.loadingser.showLoadingOverlay(["Fehler beim Absenden des Newsletter!", "Server log beachten!"], "/images/error.json", true, false, "", 0, (nt: string) => { });
+				this.loadingser.showLoadingOverlay(["Fehler beim Absenden des Newsletter!", "Server log beachten!"], "/images/lottiefiles/error.json", true, false, "", 0, (nt: string) => { });
 				break;
 			case PublishFormularResponse.TOKEN_INVALID:
-				this.loadingser.showLoadingOverlay(["Dein Link ist ungültig.", "Versuche falls vorhanden einen Link aus einer neueren E-Mail zu öffnen."], "/images/error.json", true, false, "", 0, (nt: string) => { });
+				this.loadingser.showLoadingOverlay(["Dein Link ist ungültig.", "Versuche falls vorhanden einen Link aus einer neueren E-Mail zu öffnen."], "/images/lottiefiles/error.json", true, false, "", 0, (nt: string) => { });
 				break;
 			case PublishFormularResponse.UNKNOWN_EVENT:
-				this.loadingser.showLoadingOverlay(["Das angegebene Event ist nicht mehr verfügbar!", "Wurde das Event im Kalender gelöscht?"], "/images/error.json", true, false, "", 0, (nt: string) => { });
+				this.loadingser.showLoadingOverlay(["Das angegebene Event ist nicht mehr verfügbar!", "Wurde das Event im Kalender gelöscht?"], "/images/lottiefiles/error.json", true, false, "", 0, (nt: string) => { });
 				break;
 		}
 		removePathFromURL();

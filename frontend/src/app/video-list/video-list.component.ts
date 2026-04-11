@@ -33,7 +33,7 @@ export class VideoListComponent {
 			}
 		});
 
-		document.addEventListener("body-scroll", e => {
+		window.addEventListener("scroll", e => {
 			e.preventDefault();
 			let videoList = this.videoService.getVideoList()();
 			if (videoList.length > 0) {
@@ -46,9 +46,9 @@ export class VideoListComponent {
 				if (this.videoElementsDOM) {
 					for (let i = 0; i < this.videoElementsDOM.length; i++) {
 						if (nthElement == i) {
-							this.videoElementsDOM.get(i)?.nativeElement.classList.add("visible");
+							this.videoElementsDOM.get(i)?.nativeElement.classList.remove("fadeOut");
 						} else {
-							this.videoElementsDOM.get(i)?.nativeElement.classList.remove("visible");
+							this.videoElementsDOM.get(i)?.nativeElement.classList.add("fadeOut");
 							let player = this.youtubePlayersDOM.get(i);
 							let playerState = player?.getPlayerState();
 							if (player && (!playerState || [YT.PlayerState.BUFFERING, YT.PlayerState.CUED, YT.PlayerState.PLAYING].includes(playerState))) {

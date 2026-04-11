@@ -12,7 +12,7 @@
     
         <a href="https://www.youtube.com/@GennexPartyband" target="_blank">
             <div class="contact-cont">
-                <img id="youtube" #youtube src="/images/youtube.svg" />
+                <img id="youtube" #youtube src="/images/svg/youtube.svg" />
             </div>
         </a>
     </div>
@@ -21,7 +21,13 @@
         <h3>Dann abonniere hier gleich unseren Newsletter</h3>
         <div id="subscribe-inputs">
             <input type="text" name="subscribe-mail" placeholder="Deine E-Mail-Adresse..." formControlName="email" />
-            <app-hcaptcha #captcha formControlName="captcha"></app-hcaptcha>
+
+            @defer (on viewport) {
+                <app-hcaptcha #captcha formControlName="captcha"></app-hcaptcha>
+            } @placeholder(minimum 2000ms) {
+                <div class="input-margin" id="captcha-placeholder">Lade HCaptcha...</div>
+            }
+
             <button type="submit">Abonnieren</button>
         </div>
     </form>

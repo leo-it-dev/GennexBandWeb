@@ -1,5 +1,8 @@
 <app-section-header title="Galerie"></app-section-header>
 
+@if(!this.imagesLoaded) {
+    <h3 id="load-images">Lade Bilddaten...</h3>
+}
 <div id="mask">
     <app-diamond-image-map [images]="this.thumbnailImageURLs" [slideshow]="true" (imageClicked)="openBigImage($event)" [parentContainer]="this.elRef" [heightCrop]="true"></app-diamond-image-map>
 </div>
@@ -15,9 +18,17 @@
 </div>
 }
 
-@if(this.showBigImage() != "") {
+@if(this.showBigImageHR() != "") {
 <div id="galleryBigImage" #bigImage>
-    <img #bigImageViewer [src]="this.showBigImage()" id="galleryBigImageViewer" (click)="closeBigImage($event)">
+    <img #bigImageViewerHR [src]="this.showBigImageHR()" id="galleryBigImageViewerHR" (click)="closeBigImage($event)" [class.bigImageHRvisible]="this.hrImageLoaded" (load)="hrImageDoneLoading()">
+    <img #bigImageViewerLR [src]="this.showBigImageLR()" id="galleryBigImageViewerLR" (click)="closeBigImage($event)">
     <h1 id="galeryBigImageClose" (click)="closeBigImage($event)">✕</h1>
+
+    @if (!this.hrImageLoaded) {
+    <div id="hrLoadingWrapper">
+        <ng-lottie [options]="this.animationOptions()"></ng-lottie>
+        <h3>Lade HD Variante...</h3>
+    </div>
+    }
 </div>
 }

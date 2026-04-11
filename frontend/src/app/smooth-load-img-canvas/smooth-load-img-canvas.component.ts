@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, effect, ElementRef, EventEmitter, Input, Output, Signal, signal, ViewChild, WritableSignal } from '@angular/core';
-import { timer } from 'rxjs';
+import { Subject, switchMap, timer } from 'rxjs';
 import { ImageBufferService } from './image-buffer-service';
 
 @Component({
@@ -28,6 +28,8 @@ export class SmoothLoadImgCanvasComponent implements AfterViewInit {
 
 	@ViewChild('fadeOverlay') viewOverlay!: ElementRef;
 
+	fadeOutTimer = new Subject<void>();
+
 	ngAfterViewInit(): void {
 		let bounds = this.canvas.nativeElement.getBoundingClientRect();
 		const dpr = window.devicePixelRatio || 1;
@@ -49,7 +51,7 @@ export class SmoothLoadImgCanvasComponent implements AfterViewInit {
 		this._nextImage = value;
 		this.showFade.set(true);
 		// After fade duration, actually switch the image
-		setTimeout(() => this.fadeOutFinished(), this.fadeDuration);
+		this.fadeOutTimer.next();
 	}
 
 	get src() {
@@ -65,12 +67,11 @@ export class SmoothLoadImgCanvasComponent implements AfterViewInit {
 			if (this.imageURLs().length > 0) {
 				this.scheduleNextImage(0);
 			}
-		})
-	}
+		});
 
-	/** Start the repeating image cycle */
-	private startImageCycle() {
-		this.scheduleNextImage(0);
+		this.fadeOutTimer.pipe(
+			switchMap(() => timer(this.fadeDuration))
+		).subscribe(() => this.fadeOutFinished());
 	}
 
 	/** Stop the cycle */

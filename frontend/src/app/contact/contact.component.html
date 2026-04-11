@@ -1,4 +1,4 @@
-<app-slot [oneLineText]="this.oneLineText" imgUrl="/images/retro_microphone0001.png" [defaultScroll]="true" title="Kontakt">
+<app-slot [oneLineText]="this.oneLineText" imgUrl="/images/webp/retro_microphone0001.webp" [defaultScroll]="true" title="Kontakt">
     <form #slot id="slot" [formGroup]="contactFormGroup" [class.valid]="contactFormGroup.valid" (submit)="submitForm()">
         <div id="name">
             <input name="firstname" type="text" placeholder="Vorname" formControlName="firstName" />
@@ -8,7 +8,11 @@
         <input name="email" type="text" placeholder="E-Mail" formControlName="email" />
         <textarea name="message" placeholder="Deine Nachricht..." rows="10" formControlName="message"></textarea>
 
-        <app-hcaptcha #captcha formControlName="captcha"></app-hcaptcha>
+        @defer (on viewport) {
+            <app-hcaptcha #captcha formControlName="captcha"></app-hcaptcha>
+        } @placeholder(minimum 2000ms) {
+            <div class="input-margin" id="captcha-placeholder">Lade HCaptcha...</div>
+        }
 
         <button type="submit">Nachricht abschicken</button>
     </form>

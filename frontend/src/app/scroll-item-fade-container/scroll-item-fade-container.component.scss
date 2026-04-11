@@ -37,6 +37,10 @@
     transition: transform .2s ease-out;
 }
 
+.fade-scroll-items-container {
+	position: relative;
+}
+
 p.fade-scroll-item {
     color: white;
 }
@@ -60,6 +64,19 @@ p.fade-scroll-item {
     z-index: 1000;
 }
 
+#image-container {
+	height: calc(100% - 50vh);
+	top: 50vh;
+	position: absolute;
+	left: 0;
+	width: 100%;
+}
+
+.sifAnchor {
+	position: absolute;
+	bottom: calc(100vh + 100px);
+}
+
 @media screen and (max-width: 700px) {
 	#header {
 		top: 0px !important;
@@ -79,7 +96,7 @@ p.fade-scroll-item {
     
 	#logo {
 		position: fixed;
-		top: 100%;
+		top: calc(100% - 50px);
 		left: 50%;
 		margin: 0 !important;
 		padding: 10px !important;

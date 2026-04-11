@@ -1,7 +1,8 @@
 :host {
     width: 100%;
     position: relative;
-    height: 70dvh;
+    height: 70svh;
+    display: block;
 }
 
 #mask {
@@ -20,12 +21,24 @@
     background-color: #000c;
 }
 
-#galleryBigImageViewer {
+#galleryBigImageViewerHR {
+    opacity: 0;
+}
+
+.bigImageHRvisible {
+    opacity: 1 !important;
+    z-index: 10;
+}
+
+#galleryBigImageViewerHR,
+#galleryBigImageViewerLR {
     position: absolute;
     top: 10px;
-    left: 10px;
-    width: calc(100% - 20px);
+    max-width: calc(100% - 20px);
     height: calc(100% - 20px);
+    width: min-content;
+    left: 50%;
+    transform: translateX(-50%);
     object-fit: contain;
 }
 
@@ -74,12 +87,47 @@ app-section-header {
     z-index: 100;
 }
 
+ng-lottie {
+    width: 50px;
+    height: 50px;
+}
+
+#hrLoadingWrapper {
+    z-index: 11;
+    background-color: #0008;
+    padding: 5px 15px;
+    box-sizing: border-box;
+    border-radius: 10px;
+    position: absolute;
+    top: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: center;
+}
+
+#hrLoadingWrapper h3 {
+    color: white;
+    margin: 0;
+    padding-left: 10px;
+}
+
+#load-images {
+    color: white;
+    padding: 50px;
+    text-align: center;
+    font-size: 25pt;
+}
+
 @media screen and (max-width: 700px) {
     #wrapper {
         --size: 200px;
     }
     :host {
-        height: 200dvh;
+        height: 200svh;
     }
 
     app-section-header {

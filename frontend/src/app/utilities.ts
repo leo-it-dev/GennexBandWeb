@@ -1,9 +1,13 @@
-import { ApplicationRef, ElementRef, Injector } from "@angular/core";
-import { AppComponent } from "./app.component";
+import { ApplicationRef } from "@angular/core";
+import { Subject, switchMap, timer } from "rxjs";
 
 export async function timeout(timeoutMs: number) {
     return new Promise<void>((res, _) => {
-        setTimeout(() => res(), timeoutMs);
+        let sub = new Subject<void>();
+        sub.pipe(switchMap(() => timer(timeoutMs))).subscribe(() => {
+            res();
+        });
+        sub.next();
     });
 }
 

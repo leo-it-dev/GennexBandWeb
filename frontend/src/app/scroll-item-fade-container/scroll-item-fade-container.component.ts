@@ -10,7 +10,9 @@ import { SectionHeaderComponent } from '../section-header/section-header.compone
 export class ScrollItemFadeContainerComponent implements AfterViewInit {
 
 	constructor(private elRef: ElementRef,
-				private renderer: Renderer2) {}
+				private renderer: Renderer2) {
+					this.scrollInViewObs.observe(elRef.nativeElement);
+				}
 
 	public SECTION_TITLE_HEIGHT = 100;
 
@@ -23,12 +25,19 @@ export class ScrollItemFadeContainerComponent implements AfterViewInit {
 	@Input({required: true})
 	textList: string[] = [];
 
+	@Input({required: true})
+	public name: string = "";
+
 	sumItemHeight = 0;
+
+	scrollInViewObs = new IntersectionObserver((_) => {
+		this.onResize();
+	});
 
 	@HostListener('window:resize')
 	onResize() {
 		// scroll animation items
-		let pageHeight = document.body.getBoundingClientRect().height - this.SECTION_TITLE_HEIGHT;
+		let pageHeight = document.documentElement.clientHeight - this.SECTION_TITLE_HEIGHT;
 		let parentContainer = this.scrollItems.get(0)?.nativeElement.parentElement;
 		let accumTopOffset = parseInt(getComputedStyle(parentContainer).paddingTop ?? "0");
 
@@ -50,7 +59,7 @@ export class ScrollItemFadeContainerComponent implements AfterViewInit {
 	ngAfterViewInit(): void {
 		this.onResize();
 
-		document.addEventListener("body-scroll", e => {
+		window.addEventListener("scroll", e => {
 			e.preventDefault();
 			let parentContainer = (this.scrollItems.get(0)?.nativeElement as HTMLElement).parentElement!;
 			let parentBounds = parentContainer.getBoundingClientRect();
@@ -65,6 +74,7 @@ export class ScrollItemFadeContainerComponent implements AfterViewInit {
 				let scrollPercentBtm = (this.elRef.nativeElement.getBoundingClientRect().bottom - oversizeHeight - elRect.bottom) / 200;
 				let scrollPercent = Math.min(scrollPercentTop, scrollPercentBtm);
 				this.renderer.setStyle(scrollItem, 'opacity', scrollPercent.toString());
+				console.log(elRect.top - parseInt(getComputedStyle(scrollItem).top) / 200);
 
 				if (i == 0) {
 					this.renderer.setStyle(this.text?.nativeElement, 'backdrop-filter', 'blur(' + (scrollPercentTop * 10).toString() + 'px)');

@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, DOCUMENT, effect, ElementRef, HostListener, Inject, QueryList, Renderer2, signal, ViewChild, ViewChildren, WritableSignal } from '@angular/core';
+import { AfterViewInit, Component, DOCUMENT, effect, ElementRef, Inject, QueryList, signal, ViewChildren, WritableSignal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { CalendarListComponent } from './calendar-list/calendar-list/calendar-list.component';
 import { ContactChannelsComponent } from './contact-channels/contact-channels.component';
@@ -10,13 +10,12 @@ import { LoadingoverlayComponent } from './loadingoverlay/loadingoverlay.compone
 import { PrivacypolicyComponent } from './privacypolicy/privacypolicy.component';
 import { ScrollItemFadeContainerComponent } from './scroll-item-fade-container/scroll-item-fade-container.component';
 import { LoadingoverlayService } from './services/loadingoverlay.service';
-import { MP4FrameExtractionService } from './services/mp4frame/mp4-frame-extraction.service';
 import { PageControlService } from './services/page-control.service';
 import { SlotComponent } from './slot/slot.component';
 import { VideoListComponent } from './video-list/video-list.component';
 
 @Component({
-	selector: 'app-root',
+	selector: 'app-root',	
 	imports: [RouterOutlet, LoadingoverlayComponent, GalleryComponent, ContactComponent, DynamicBackgroundImageComponent, PrivacypolicyComponent, ImpressumComponent, SlotComponent, VideoListComponent, ContactChannelsComponent, CalendarListComponent, ScrollItemFadeContainerComponent],
 	templateUrl: './app.component.html',
 	styleUrl: './app.component.scss'
@@ -71,9 +70,5 @@ export class AppComponent implements AfterViewInit {
 		this.backgroundTriggerList.changes.subscribe(list => {
 			this.backgroundTriggers.set(list.toArray());
 		});
-	}
-
-	handleScroll(event: Event) {
-		document.dispatchEvent(new CustomEvent('body-scroll'));
 	}
 }

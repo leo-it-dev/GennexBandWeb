@@ -8,6 +8,7 @@
     border-image: linear-gradient(45deg, var(--primary1) 0%, var(--primary2) 100%) 25%;
     border-bottom: 5px solid;
     backdrop-filter: blur(16px);
+    display: block;
 }
 
 #channels {

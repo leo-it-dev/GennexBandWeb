@@ -1,4 +1,5 @@
-import { AfterViewInit, Component, effect, ElementRef, Input, QueryList, Signal, ViewChild, WritableSignal } from '@angular/core';
+import { AfterViewInit, Component, effect, ElementRef, Input, ViewChild, WritableSignal } from '@angular/core';
+import { Subject, switchMap, timer } from 'rxjs';
 
 @Component({
 	selector: 'app-dynamic-background-image',
@@ -11,70 +12,90 @@ export class DynamicBackgroundImageComponent implements AfterViewInit {
 	@Input({ required: true })
 	triggers!: WritableSignal<ElementRef<HTMLElement>[]>
 
-	@ViewChild('backgroundImgBack')
-	backgroundImageBack!: ElementRef<HTMLImageElement>
+	@ViewChild('backgroundImg1')
+	backgroundImage1!: ElementRef<HTMLImageElement>
 
-	@ViewChild('backgroundImgFront')
-	backgroundImageFront!: ElementRef<HTMLImageElement>
+	@ViewChild('backgroundImg2')
+	backgroundImage2!: ElementRef<HTMLImageElement>
 
-	lastActiveTrigger?: ElementRef = undefined;
+	lastActiveTriggerIdx = -1;
 	ctr = false;
+
+	backgroundLayerPrepareTimer = new Subject<void>();
+
+	intersectionObserver = new IntersectionObserver((entries) => {
+		let triggers = this.triggers();
+		let newActiveTriggerIdx = -1;
+
+		entries.forEach(e => {
+			let eIdx = triggers.findIndex(trigger => trigger.nativeElement == e.target);
+			if (e.isIntersecting) {
+				// if we intersect and the intersecting trigger's idx is larger than our current it must be further down the page.
+				// therefore we show the new trigger's image
+				newActiveTriggerIdx = Math.max(eIdx, this.lastActiveTriggerIdx);
+			}
+			if (!e.isIntersecting && eIdx == this.lastActiveTriggerIdx && e.boundingClientRect.y > window.innerHeight) {
+				// if we no longer intersect with some trigger we need to check if we scrolled up or downwards.
+				// if we scrolled downwards (the trigger left page on the top), we don't really need to do anything, as the current trigger still is active.
+				// if we scrolled upwards (the trigger left the page on the bottom), we need to activate the previous trigger (the one with a index smaller the current one).
+				newActiveTriggerIdx = triggers.findIndex(t => t.nativeElement == e.target) - 1;
+			}
+		});
+
+		if (newActiveTriggerIdx != -1 && newActiveTriggerIdx != this.lastActiveTriggerIdx) {
+			let image = triggers[newActiveTriggerIdx].nativeElement.getAttribute("img");
+			if (image) {
+				this.ctr = !this.ctr;
+				if (!this.ctr) {
+					this.backgroundImage2.nativeElement.src = image;
+				} else {
+					this.backgroundImage1.nativeElement.src = image;
+				}
+			}
+
+			this.lastActiveTriggerIdx = newActiveTriggerIdx;
+		}
+	});
 
 	constructor() {
 		effect(() => {
-			if (this.triggers().length > 0) {
-				this.updateOnScroll();
-			}
-		})
+			this.intersectionObserver.disconnect();
+			this.triggers().forEach(trigger => this.intersectionObserver.observe(trigger.nativeElement));
+		});
+
+		this.backgroundLayerPrepareTimer.pipe(
+			switchMap(() => timer(500)) // 500ms timeout
+		).subscribe(() => {
+			this.cleanUpBackgroundForNextSwap();
+		});
+	}
+
+	cleanUpBackgroundForNextSwap() {
+		if (this.ctr) {
+			this.backgroundImage2.nativeElement.style.maskPosition = "0% 0%";
+			this.backgroundImage2.nativeElement.style.zIndex = "-1";
+		} else {
+			this.backgroundImage1.nativeElement.style.maskPosition = "0% 0%";
+			this.backgroundImage1.nativeElement.style.zIndex = "-1";
+		}
 	}
 
 	handleImageSwap() {
 		if (!this.ctr) {
-			this.backgroundImageBack.nativeElement.style.opacity = "0";
-			this.backgroundImageFront.nativeElement.style.opacity = "1";
+			this.backgroundImage1.nativeElement.style.zIndex = "-1";
+			this.backgroundImage2.nativeElement.style.zIndex = "0";
+			this.backgroundImage2.nativeElement.style.maskPosition = "100% 100%";
+			this.backgroundLayerPrepareTimer.next();
 		} else {
-			this.backgroundImageBack.nativeElement.style.opacity = "1";
-			this.backgroundImageFront.nativeElement.style.opacity = "0";
-		}
-	}
-
-	updateOnScroll() {
-		if (this.triggers().length > 0) {
-			let activeTrigger: ElementRef | undefined = this.triggers()[0];
-
-			for (let elRef of this.triggers()) {
-				let natEl = elRef.nativeElement as HTMLElement
-				let bounds = natEl.getBoundingClientRect()
-				if (bounds.y < window.innerHeight) {
-					// trigger is now scrolled into viewport. Save it. We need to find the trigger that is closest to the bottom of our viewscreen.
-					activeTrigger = elRef;
-				}
-			}
-
-			if (activeTrigger && this.lastActiveTrigger != activeTrigger) {
-				this.lastActiveTrigger = activeTrigger;
-
-				let image = activeTrigger.nativeElement.getAttribute("img");
-				if (image) {
-					this.ctr = !this.ctr;
-
-					if (!this.ctr) {
-						this.backgroundImageFront.nativeElement.src = image;
-					} else {
-						this.backgroundImageBack.nativeElement.src = image;
-					}
-				}
-			}
+			this.backgroundImage2.nativeElement.style.zIndex = "-1";
+			this.backgroundImage1.nativeElement.style.zIndex = "0";
+			this.backgroundImage1.nativeElement.style.maskPosition = "100% 100%";
+			this.backgroundLayerPrepareTimer.next();
 		}
 	}
 
 	ngAfterViewInit(): void {
-		this.backgroundImageBack.nativeElement.onload = () => this.handleImageSwap();
-		this.backgroundImageFront.nativeElement.onload = () => this.handleImageSwap();
-
-		document.addEventListener("body-scroll", e => {
-			e.preventDefault();
-			this.updateOnScroll();
-		});
+		this.backgroundImage1.nativeElement.onload = () => this.handleImageSwap();
+		this.backgroundImage2.nativeElement.onload = () => this.handleImageSwap();
 	}
 }
