@@ -12,14 +12,14 @@
 
         #stickyBlock {
 
-            height: 80vh;
-            max-height: 80vh;
+            height: 80svh;
+            max-height: 80svh;
             background-image: linear-gradient(to right, var(--primary2), var(--primary1));
             box-shadow: 0px 0px 10px black;
             width: 100%;
 
             position: sticky;
-            top: 10vh;
+            top: 10svh;
 
             #close {
                 padding: 20px;
@@ -181,8 +181,8 @@
 
         #scrollerBlock {
             #stickyBlock {
-                height: 100dvh !important;
-                max-height: 100dvh !important;
+                height: 100svh !important;
+                max-height: 100svh !important;
                 top: 0px !important;
 
                 select {

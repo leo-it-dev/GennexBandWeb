@@ -60,13 +60,13 @@ p.fade-scroll-item {
 
 #header {
     position: sticky;
-    top: 10vh;
+    top: 10svh;
     z-index: 1000;
 }
 
 #image-container {
-	height: calc(100% - 50vh);
-	top: 50vh;
+	height: calc(100% - 50svh);
+	top: 50svh;
 	position: absolute;
 	left: 0;
 	width: 100%;
@@ -74,7 +74,7 @@ p.fade-scroll-item {
 
 .sifAnchor {
 	position: absolute;
-	bottom: calc(100vh + 100px);
+	bottom: calc(100svh + 100px);
 }
 
 @media screen and (max-width: 700px) {
