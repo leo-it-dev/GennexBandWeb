@@ -1,11 +1,11 @@
 <div #scrollContainer id="scrollerBlock">
-    <div id="stickyBlock" #stickyBlock>
+    <div id="stickyBlock" #stickyBlock [class.fullScreen]="this.fullScreen">
         <app-section-header [title]="this.title">
 
             @if(this.controlSelectElements.length > 0) {
-                <select id="select" name="select">
+                <select id="select" name="select" (change)="controlSelectChanged($event)">
                     @for(element of this.controlSelectElements; track element) {
-                        <option value="element">{{element}}</option>
+                        <option [value]="element">{{element}}</option>
                     }
                 </select>
             }

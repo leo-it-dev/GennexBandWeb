@@ -74,7 +74,6 @@ export class ScrollItemFadeContainerComponent implements AfterViewInit {
 				let scrollPercentBtm = (this.elRef.nativeElement.getBoundingClientRect().bottom - oversizeHeight - elRect.bottom) / 200;
 				let scrollPercent = Math.min(scrollPercentTop, scrollPercentBtm);
 				this.renderer.setStyle(scrollItem, 'opacity', scrollPercent.toString());
-				console.log(elRect.top - parseInt(getComputedStyle(scrollItem).top) / 200);
 
 				if (i == 0) {
 					this.renderer.setStyle(this.text?.nativeElement, 'backdrop-filter', 'blur(' + (scrollPercentTop * 10).toString() + 'px)');

@@ -1,8 +1,3 @@
-:host {
-    height: 100lvh;
-    max-height: 100lvh;
-}
-
 .vignette {
     position: relative;
     max-width: 100%;
@@ -23,7 +18,7 @@
         mask-size: 300% 300%;
         mask-position: 0% 0%;
         mask-repeat: no-repeat;
-        transition: mask-position .5s ease-in-out;
+        transition: mask-position 1.5s ease-in-out;
     }
 }
 

@@ -36,7 +36,7 @@ export class AppComponent implements AfterViewInit {
 		});
 
 		effect(() => {
-			this.pageControl.preventBodyScrolling.set(this.loadingOverlay.loadingOverlayVisible());
+			this.pageControl.preventBodyScrolling.set(this.loadingOverlay.loadingOverlayVisible() || this.doShowImpressum() || this.doShowPrivacyPolicy());
 		});
 	}
 
@@ -44,8 +44,8 @@ export class AppComponent implements AfterViewInit {
 	private backgroundTriggerList!: QueryList<ElementRef>;
 	public backgroundTriggers: WritableSignal<ElementRef<HTMLElement>[]> = signal([]);
 
-	doShowPrivacyPolicy: boolean = false;
-	doShowImpressum: boolean = false;
+	doShowPrivacyPolicy: WritableSignal<boolean> = signal(false);
+	doShowImpressum: WritableSignal<boolean> = signal(false);
 
 	aboutUsTexts = [
 		"Wir sind GENNEX, eine junge Partyband aus der Region Mühldorf -\

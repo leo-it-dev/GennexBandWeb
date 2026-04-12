@@ -5,9 +5,6 @@ body {
     background-color: black;
 }
 
-html {
-}
-
 @font-face {
     font-family: comfortaa;
     src: url('/fonts/Comfortaa.ttf');
@@ -82,6 +79,7 @@ button.action {
 	align-items: center;
 	justify-content: center;
 	z-index: 1000;
+    backdrop-filter: blur(16px);
 }
 
 .overlay app-slot {
@@ -106,14 +104,14 @@ button.action {
 }
 
 .fadeIn {
-    animation: fade .4s ease-out;
+    animation: fade .3s ease-out;
     animation-fill-mode: both;
 }
 .fadeOut {
-    animation: fade .4s ease-out;
+    animation: fade .3s ease-out;
     animation-direction: reverse;
-    animation-fill-mode: both;
-    position: absolute;
+    // animation-fill-mode: both;
+    // position: absolute;
 }
 
 .component-placeholder {

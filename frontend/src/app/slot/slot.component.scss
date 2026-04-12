@@ -10,16 +10,21 @@
         height: var(--stickyHeight);
         width: 100%;
 
+        .fullScreen {
+            height: 80lvh !important;
+            max-height: 80lvh !important;
+        }
+
         #stickyBlock {
 
-            height: 80svh;
-            max-height: 80svh;
+            height: 700px;
+            max-height: 700px;
             background-image: linear-gradient(to right, var(--primary2), var(--primary1));
             box-shadow: 0px 0px 10px black;
             width: 100%;
 
             position: sticky;
-            top: 10svh;
+            top: 100px;
 
             #close {
                 padding: 20px;
@@ -132,7 +137,7 @@
                         margin: 0;
                         z-index: 1;
                         width: 75%;
-                        left: calc(25%);
+                        left: 25%;
                         position: absolute;
                         top: 0;
                         transition: top 0.3s ease-out;
@@ -180,9 +185,15 @@
         }
 
         #scrollerBlock {
+
+            .fullScreen {
+                height: 100lvh !important;
+                max-height: 100lvh !important;
+            }
+
             #stickyBlock {
-                height: 100svh !important;
-                max-height: 100svh !important;
+                height: 700px;
+                max-height: 700px;
                 top: 0px !important;
 
                 select {
@@ -202,11 +213,8 @@
 
                 #headerBack {
                     width: 100% !important;
-                    ;
                     line-height: 100px !important;
-                    ;
                     height: 100px !important;
-                    ;
                     transform: unset !important;
 
                     #header {
@@ -219,7 +227,6 @@
                 #headerBack::after {
                     display: none !important;
                 }
-
             }
         }
     }

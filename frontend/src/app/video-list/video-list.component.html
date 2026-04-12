@@ -1,18 +1,14 @@
 <app-slot title="" imgUrl="/images/webp/Jonny_Guitar.webp" [scrollCommunication]="this.scrollCommunication"
-	[controlSelectElements]="this.getMediaPlaylistNames()">
-	@for(playlist of this.getMediaPlaylists()(); track playlist.playlist.playlistID) {
-		<div class="media-playlist">
-			@for(video of playlist.videos; track video.videoID) {
-				<div #mediaVideo class="media-video" [style.--elementHeight]="this.heightPerElement">
-					@defer(on viewport({rootMargin: '100px', threshold: 0.5})) {
-						<div class="media-video-loaded" animate.enter="fadeIn">
-							<h2 class="video-name">{{video.videoName}}</h2>
-							<youtube-player [videoId]="video.videoID" width="100%" #ytPlayer></youtube-player>
-						</div>
-					} @placeholder(minimum 2000ms) {
-						<div class="youtube-player-placeholder">Lade video...</div>
-					}
+	[controlSelectElements]="this.getMediaPlaylistNames()" (controlSelectChangedEvent)="this.changePlaylist($event)">
+	@for(video of this.selectedPlaylist()?.videos; track video.videoID) {
+		<div #mediaVideo class="media-video" [style.--elementHeight]="this.heightPerElement">
+			@defer(on viewport({rootMargin: '100px', threshold: 0.5})) {
+				<div class="media-video-loaded" animate.enter="fadeIn">
+					<h2 class="video-name">{{video.videoName}}</h2>
+					<youtube-player [videoId]="video.videoID" width="100%" #ytPlayer></youtube-player>
 				</div>
+			} @placeholder(minimum 1000ms) {
+				<div class="youtube-player-placeholder">Lade video...</div>
 			}
 		</div>
 	}

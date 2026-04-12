@@ -11,15 +11,15 @@
 <div id="background-border"></div>
 
 @if(this.showBigGallery()) {
-<div class="overlay">
-    <app-slot title="Galerie" [defaultScroll]="true" [hasCloseButton]="true" (closeEvent)="this.showBigGallery.set(false)" [contentNoPadding]="true">
+<div class="overlay" animate.enter="fadeIn" animate.leave="fadeOut">
+    <app-slot title="Galerie" [defaultScroll]="true" [hasCloseButton]="true" (closeEvent)="this.showBigGallery.set(false)" [contentNoPadding]="true" [fullScreen]="true">
         <app-diamond-image-map [images]="this.thumbnailImageURLs" [slideshow]="false" (imageClicked)="openBigImage($event)" [parentContainer]="this.elRef" [heightCrop]="false"></app-diamond-image-map>
     </app-slot>
 </div>
 }
 
 @if(this.showBigImageHR() != "") {
-<div id="galleryBigImage" #bigImage>
+<div class="overlay" #bigImage animate.enter="fadeIn" animate.leave="fadeOut">
     <img #bigImageViewerHR [src]="this.showBigImageHR()" id="galleryBigImageViewerHR" (click)="closeBigImage($event)" [class.bigImageHRvisible]="this.hrImageLoaded" (load)="hrImageDoneLoading()">
     <img #bigImageViewerLR [src]="this.showBigImageLR()" id="galleryBigImageViewerLR" (click)="closeBigImage($event)">
     <h1 id="galeryBigImageClose" (click)="closeBigImage($event)">✕</h1>

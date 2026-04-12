@@ -1,7 +1,7 @@
 :host {
     width: 100%;
     position: relative;
-    height: 70svh;
+    height: 700px;
     display: block;
 }
 
@@ -9,16 +9,6 @@
     height: 100%;
     overflow: hidden;
     mask-image: linear-gradient( to bottom, transparent 0%, black 30%, black 70%, transparent 100%);
-}
-
-#galleryBigImage {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100dvh;
-    z-index: 1000;
-    background-color: #000c;
 }
 
 #galleryBigImageViewerHR {
@@ -127,7 +117,7 @@ ng-lottie {
         --size: 200px;
     }
     :host {
-        height: 200svh;
+        height: 1400px;
     }
 
     app-section-header {

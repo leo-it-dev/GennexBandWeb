@@ -15,10 +15,12 @@ export type VideoInfo = {
     videoDescription: string;
 }
 
-export type VideoList = {
+export type Playlist = {
     playlist: PlaylistInfo,
     videos: VideoInfo[]
-}[]
+}
+
+export type VideoList = Playlist[]
 
 export interface ApiInterfaceVideosIn extends ApiModuleInterfaceF2B { };
 export interface ApiInterfaceVideosOut extends ApiModuleInterfaceB2F { videos: VideoList };

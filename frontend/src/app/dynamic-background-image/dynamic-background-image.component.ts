@@ -64,7 +64,7 @@ export class DynamicBackgroundImageComponent implements AfterViewInit {
 		});
 
 		this.backgroundLayerPrepareTimer.pipe(
-			switchMap(() => timer(500)) // 500ms timeout
+			switchMap(() => timer(1500)) // 1500ms timeout
 		).subscribe(() => {
 			this.cleanUpBackgroundForNextSwap();
 		});
@@ -85,11 +85,13 @@ export class DynamicBackgroundImageComponent implements AfterViewInit {
 			this.backgroundImage1.nativeElement.style.zIndex = "-1";
 			this.backgroundImage2.nativeElement.style.zIndex = "0";
 			this.backgroundImage2.nativeElement.style.maskPosition = "100% 100%";
+			this.backgroundImage1.nativeElement.style.maskPosition = "0% 0%";
 			this.backgroundLayerPrepareTimer.next();
 		} else {
 			this.backgroundImage2.nativeElement.style.zIndex = "-1";
 			this.backgroundImage1.nativeElement.style.zIndex = "0";
 			this.backgroundImage1.nativeElement.style.maskPosition = "100% 100%";
+			this.backgroundImage2.nativeElement.style.maskPosition = "0% 0%";
 			this.backgroundLayerPrepareTimer.next();
 		}
 	}

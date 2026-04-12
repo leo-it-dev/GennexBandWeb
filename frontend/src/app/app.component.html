@@ -47,7 +47,7 @@
 				<div class="overlayGradient"></div>
 			</app-gallery>
 		} @placeholder(minimum 200ms) {
-			<div class="component-placeholder" id="gallery-placeholder" animate.leave="fadeOut">Lade Galleries...</div>
+			<div class="component-placeholder" id="gallery-placeholder" animate.leave="fadeOut">Lade Gallerie...</div>
 		}
 	</div>
 
@@ -98,23 +98,23 @@
 
 <footer>
 	<ul>
-		<li (click)="this.doShowImpressum=true">Impressum</li>
-		<li (click)="this.doShowPrivacyPolicy=true">Datenschutzerklärung</li>
+		<li (click)="this.doShowImpressum.set(true)">Impressum</li>
+		<li (click)="this.doShowPrivacyPolicy.set(true)">Datenschutzerklärung</li>
 	</ul>
 </footer>
 
-@if(this.doShowPrivacyPolicy) {
-<div class="overlay">
-	<app-slot title="Datenschutzerklärung" [defaultScroll]="true" [hasCloseButton]="true"
-		(closeEvent)="this.doShowPrivacyPolicy=false">
+@if(this.doShowPrivacyPolicy()) {
+<div class="overlay" animate.enter="fadeIn" animate.leave="fadeOut">
+	<app-slot title="Datenschutzerklärung" [defaultScroll]="true" [hasCloseButton]="true" [fullScreen]="true"
+		(closeEvent)="this.doShowPrivacyPolicy.set(false)">
 		<app-privacypolicy></app-privacypolicy>
 	</app-slot>
 </div>
 }
-@if(this.doShowImpressum) {
-<div class="overlay">
-	<app-slot title="Impressum" [defaultScroll]="true" [hasCloseButton]="true"
-		(closeEvent)="this.doShowImpressum=false">
+@if(this.doShowImpressum()) {
+<div class="overlay" animate.enter="fadeIn" animate.leave="fadeOut">
+	<app-slot title="Impressum" [defaultScroll]="true" [hasCloseButton]="true" [fullScreen]="true"
+		(closeEvent)="this.doShowImpressum.set(false)">
 		<app-impressum></app-impressum>
 	</app-slot>
 </div>

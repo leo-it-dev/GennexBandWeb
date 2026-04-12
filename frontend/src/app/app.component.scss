@@ -36,17 +36,19 @@
 }
 
 #bannerImage {
-	position: sticky;
+	position: fixed;
 	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 0;
 }
 
 #bannerText {
-	position: absolute;
-	transform: translate(0%, -50%);
 	font-family: agencyfb-reg;
 	color: #eed;
-	top: 50lvh;
 	width: 100%;
+	margin-top: 200px;
 }
 
 #bannerNav {
@@ -89,14 +91,14 @@
 
 .spacer {
 	width: 100%;
-	height: 50lvh;
-	min-height: 50lvh;
+	height: 500px;
+	min-height: 500px;
 }
 
 .halfSpacer {
 	width: 100%;
-	height: 25lvh;
-	min-height: 25lvh;
+	height: 250px;
+	min-height: 250px;
 }
 
 #page1 {
@@ -130,11 +132,18 @@ app-contact-form {
 
 .section-wrapper {
 	padding: 100px 0px;
+	position: relative;
+}
+
+.component-placeholder.fadeOut {
+	position: absolute;
 }
 
 footer {
 	padding: 10px;
 	background: linear-gradient(45deg, #000, #300);
+	position: relative;
+	z-index: 10;
 
 	ul {
 		list-style: none;
