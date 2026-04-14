@@ -32,7 +32,6 @@ export class VideoListComponent {
 			let heightPerElement = this.scrollCommunication.scrollBlockHeight() / playlist.videos.length;
 			let nthElement = Math.round(this.scrollCommunication.scrollTop() / heightPerElement);
 			let snappingScrollTop = (nthElement / playlist.videos.length) * this.scrollCommunication.scrollBlockHeight();
-			console.log("sn", snappingScrollTop);
 			this.scrollCommunication.scrollOffset.set(snappingScrollTop);
 
 			if (this.videoElementsDOM) {

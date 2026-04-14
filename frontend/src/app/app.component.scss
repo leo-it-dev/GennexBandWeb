@@ -1,11 +1,13 @@
 @font-face {
 	font-family: 'agencyfb-bold';
 	src: url(/fonts/AGENCYB.TTF);
+	font-display: swap;
 }
 
 @font-face {
 	font-family: 'agencyfb-reg';
 	src: url(/fonts/AGENCYB.TTF);
+	font-display: swap;
 }
 
 * {
@@ -13,7 +15,7 @@
 	--primary2: #FF383877;
 	--primary1NoAlpha: #4538FF;
 	--primary2NoAlpha: #FF3838;
-	font-family: agencyfb-reg;
+	font-family: agencyfb-reg, sans-serif;
 }
 
 :host {
@@ -26,7 +28,7 @@
 	letter-spacing: var(--bandname-letter-space);
 	text-indent: var(--bandname-letter-space);
 	font-size: 100pt;
-	font-family: agencyfb-bold;
+	font-family: agencyfb-bold, sans-serif;
 	filter: drop-shadow(10px 10px 5px #000);
 	margin: 20px 0px;
 	/* margin-right: calc(0px - var(--bandname-letter-space)); */
@@ -45,7 +47,7 @@
 }
 
 #bannerText {
-	font-family: agencyfb-reg;
+	font-family: agencyfb-reg, sans-serif;
 	color: #eed;
 	width: 100%;
 	margin-top: 200px;

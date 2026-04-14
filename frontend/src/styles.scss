@@ -5,13 +5,8 @@ body {
     background-color: black;
 }
 
-@font-face {
-    font-family: comfortaa;
-    src: url('/fonts/Comfortaa.ttf');
-}
-
 input, button, textarea {
-    font-family: agencyfb-reg;
+    font-family: agencyfb-reg, sans-serif;
 }
 
 input[type=text],

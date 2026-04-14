@@ -220,6 +220,10 @@ app-section-header {
     padding-right: 25px;
     font-size: 24pt;
     font-weight: bolder;
+}
+
+#split-view td span {
+    display: inline;
     background: linear-gradient(45deg, var(--primary1NoAlpha), var(--primary2NoAlpha));
     background-clip: text;
     -webkit-text-fill-color: transparent;
