@@ -14,7 +14,7 @@
     flex-wrap: nowrap;
     flex-direction: row;
     gap: 30px;
-    padding: 60px 30px;
+    padding: 60px 0px;
     box-sizing: border-box;
 }
 
@@ -159,7 +159,7 @@ img {
     }
 
     #mask img {
-        max-width: 90vw;
+        max-width: 80vw;
         max-height: 400px;
     }
 }
