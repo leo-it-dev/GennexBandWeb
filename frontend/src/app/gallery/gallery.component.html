@@ -4,7 +4,10 @@
     <h3 id="load-images">Lade Bilddaten...</h3>
 }
 <div id="mask">
-    <app-diamond-image-map [images]="this.thumbnailImageURLs" [slideshow]="true" (imageClicked)="openBigImage($event)" [parentContainer]="this.elRef" [heightCrop]="true"></app-diamond-image-map>
+    @for(image of this.teaserImages(); track image) {
+        <img [src]="image" (click)="openBigImageEvt($event)" />
+    }
+    <!-- <app-diamond-image-map [images]="this.thumbnailImageURLs" [slideshow]="true" (imageClicked)="openBigImage($event)" [parentContainer]="this.elRef" [heightCrop]="true"></app-diamond-image-map> -->
 </div>
 <button class="action" (click)="this.showBigGallery.set(true)">Zeig mir mehr →</button>
 

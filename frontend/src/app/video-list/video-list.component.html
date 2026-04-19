@@ -1,15 +1,33 @@
-<app-slot title="" imgUrl="/images/webp/Jonny_Guitar.webp" [scrollCommunication]="this.scrollCommunication"
-	[controlSelectElements]="this.getMediaPlaylistNames()" (controlSelectChangedEvent)="this.changePlaylist($event)">
-	@for(video of this.selectedPlaylist()?.videos; track video.videoID) {
-		<div #mediaVideo class="media-video" [style.--elementHeight]="this.heightPerElement">
-			@defer(on viewport({rootMargin: '100px', threshold: 0.5})) {
-				<div class="media-video-loaded" animate.enter="fadeIn">
-					<h2 class="video-name">{{video.videoName}}</h2>
-					<youtube-player [videoId]="video.videoID" width="100%" #ytPlayer></youtube-player>
-				</div>
-			} @placeholder(minimum 1000ms) {
-				<div class="youtube-player-placeholder">Lade video...</div>
-			}
-		</div>
-	}
-</app-slot>
+<app-section-header title="">
+	<select id="select" name="select" (change)="this.changePlaylistHeaderEvent($event)">
+		@for(element of this.getMediaPlaylistNames(); track element) {
+		<option [value]="element">{{element}}</option>
+		}
+	</select>
+</app-section-header>
+
+<div id="video-wrapper">
+	<div id="sweep-left" class="sweep-desktop" (click)="swipeLeft()" [class.sweep-disabled]="this.videoIndex == 0"></div>
+
+	<div id="video-sweep" [style.left]="((this.videoIndex * -100) + 'vw')">
+		@for(video of this.selectedPlaylist()?.videos; track video.videoID) {
+			<div #mediaVideo class="media-video" [style.--elementHeight]="this.heightPerElement">
+				@defer(on viewport({rootMargin: '100px', threshold: 0.5})) {
+					<div class="media-video-loaded" animate.enter="fadeIn">
+						<h2 class="video-name">{{video.videoName}}</h2>
+						<youtube-player [videoId]="video.videoID" width="100%" #ytPlayer></youtube-player>
+					</div>
+				} @placeholder(minimum 1000ms) {
+					<div class="youtube-player-placeholder">Lade video...</div>
+				}
+			</div>
+		}
+	</div>
+
+	<div id="sweep-right" class="sweep-desktop" (click)="swipeRight()" [class.sweep-disabled]="this.videoIndex == (this.selectedPlaylist()?.videos ?? []).length-1"></div>
+
+	<div id="sweep-mobile">
+		<div id="sweep-left-mobile" (click)="swipeLeft()" [class.sweep-disabled]="this.videoIndex == 0">←</div>
+		<div id="sweep-right-mobile" (click)="swipeRight()" [class.sweep-disabled]="this.videoIndex == (this.selectedPlaylist()?.videos ?? []).length-1">→</div>
+	</div>
+</div>

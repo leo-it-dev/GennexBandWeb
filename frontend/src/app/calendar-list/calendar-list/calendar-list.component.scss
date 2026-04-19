@@ -113,12 +113,12 @@ app-section-header {
     height: 100dvh;
     top: 0;
     left: 0;
+    backdrop-filter: blur(30px);
 }
 
 #calendar-entry-big-blur {
     width: 100%;
     height: 100%;
-    backdrop-filter: blur(30px);
 }
 
 #calendar-entry-big-view-content {

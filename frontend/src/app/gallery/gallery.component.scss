@@ -1,7 +1,7 @@
 :host {
     width: 100%;
     position: relative;
-    height: 700px;
+    height: 550px;
     display: block;
 }
 
@@ -9,6 +9,13 @@
     height: 100%;
     overflow: hidden;
     mask-image: linear-gradient( to bottom, transparent 0%, black 30%, black 70%, transparent 100%);
+
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: row;
+    gap: 30px;
+    padding: 60px 30px;
+    box-sizing: border-box;
 }
 
 #galleryBigImageViewerHR {
@@ -42,6 +49,7 @@
     line-height: 20pt;
     text-shadow: 0px 0px 16px black;
     cursor: pointer;
+    z-index: 10;
 }
 
 .action {
@@ -112,15 +120,46 @@ ng-lottie {
     font-size: 25pt;
 }
 
+img {
+    border: 2px solid white;
+}
+
+#mask img {
+    box-sizing: border-box;
+    cursor: pointer;
+    transform-origin: center;
+    transition: transform .3s ease-out, box-shadow .3s ease-out;
+    transform: scale(1.0);
+    box-shadow: 0px 0px 0px white;
+    max-width: 30vw;
+    margin: 0 auto;
+    object-fit: cover;
+}
+
+#mask img:hover {
+    transform: scale(1.1);
+    box-shadow: 0px 0px 10px white;
+}
+
 @media screen and (max-width: 700px) {
     #wrapper {
         --size: 200px;
     }
     :host {
-        height: 1400px;
+        height: auto;
     }
 
     app-section-header {
         position: sticky;
+    }
+
+    #mask {
+        flex-direction: column;
+        mask-image: none !important;
+    }
+
+    #mask img {
+        max-width: 90vw;
+        max-height: 400px;
     }
 }

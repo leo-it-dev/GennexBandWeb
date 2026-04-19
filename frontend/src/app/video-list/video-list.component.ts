@@ -1,13 +1,14 @@
-import { ApplicationRef, Component, computed, effect, ElementRef, Injector, QueryList, runInInjectionContext, signal, ViewChildren, WritableSignal } from '@angular/core';
+import { Component, computed, effect, ElementRef, Injector, QueryList, signal, ViewChildren, WritableSignal } from '@angular/core';
 import { YouTubePlayer } from '@angular/youtube-player';
+import { Playlist } from '../../../../api_common/videos';
 import { VideosBackendService } from '../modules/videos/videos-backend.service';
-import { SlotComponent, SlotScrollCommunication } from '../slot/slot.component';
-import { Playlist, PlaylistInfo, VideoList } from '../../../../api_common/videos';
+import { SectionHeaderComponent } from '../section-header/section-header.component';
+import { SlotScrollCommunication } from '../slot/slot.component';
 import { computedIsUpdated } from '../utilities';
 
 @Component({
 	selector: 'app-video-list',
-	imports: [YouTubePlayer, SlotComponent],
+	imports: [YouTubePlayer, SectionHeaderComponent],
 	templateUrl: './video-list.component.html',
 	styleUrl: './video-list.component.scss',
 })
@@ -26,6 +27,8 @@ export class VideoListComponent {
 
 	selectedPlaylist: WritableSignal<Playlist|undefined> = signal(undefined);
 
+	videoIndex = 0;
+
 	onScroll() {
 		let playlist = this.selectedPlaylist();
 		if (playlist) {
@@ -37,9 +40,9 @@ export class VideoListComponent {
 			if (this.videoElementsDOM) {
 				for (let i = 0; i < this.videoElementsDOM.length; i++) {
 					if (nthElement == i) {
-						this.videoElementsDOM.get(i)?.nativeElement.classList.remove("fadeOut");
+						// this.videoElementsDOM.get(i)?.nativeElement.classList.remove("fadeOut");
 					} else {
-						this.videoElementsDOM.get(i)?.nativeElement.classList.add("fadeOut");
+						// this.videoElementsDOM.get(i)?.nativeElement.classList.add("fadeOut");
 						let player = this.youtubePlayersDOM.get(i);
 						let playerState = player?.getPlayerState();
 						if (player && (!playerState || [YT.PlayerState.BUFFERING, YT.PlayerState.CUED, YT.PlayerState.PLAYING].includes(playerState))) {
@@ -95,5 +98,19 @@ export class VideoListComponent {
 				this.scrollCommunication.scrollOffset.set(0);
 			});
 		}
+	}
+
+	changePlaylistHeaderEvent(event: Event) {
+		this.changePlaylist((event.target as HTMLInputElement).value);
+	}
+
+	swipeLeft() {
+		this.videoIndex--;
+		this.videoIndex = Math.max(0, this.videoIndex);
+	}
+
+	swipeRight() {
+		this.videoIndex++;
+		this.videoIndex = Math.min(this.videoIndex, (this.selectedPlaylist()?.videos.length ?? 0) - 1);
 	}
 }

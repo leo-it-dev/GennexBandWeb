@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, computed, effect, ElementRef, QueryList, Signal, signal, ViewChild, ViewChildren, WritableSignal } from '@angular/core';
+import { AfterViewInit, Component, computed, effect, ElementRef, QueryList, Signal, signal, ViewChild, ViewChildren, WritableSignal, ɵsetAllowDuplicateNgModuleIdsForTest } from '@angular/core';
 import { SectionHeaderComponent } from '../section-header/section-header.component';
 import { SlotComponent } from '../slot/slot.component';
 import { DiamondImageMapComponent } from '../diamond-image-map/diamond-image-map.component';
@@ -31,6 +31,8 @@ export class GalleryComponent implements AfterViewInit {
 	public showBigImageHR: WritableSignal<string> = signal("");
 	public showBigImageLR: WritableSignal<string> = signal("");
 	public hrImageLoaded = false;
+
+	public teaserImages: Signal<string[]> = computed(() => this.selectThreeGalleryImages(this.thumbnailImageURLs()));
 
 	animationOptions: Signal<AnimationOptions> = computed(() => {
 		return {
@@ -90,6 +92,10 @@ export class GalleryComponent implements AfterViewInit {
 		});
 	}
 
+	openBigImageEvt(event: Event) {
+		this.openBigImage(new URL((event.target as HTMLImageElement).src).pathname);
+	}
+
 	openBigImage(url: string) {
 		let thumbBaseName = new URL("https://" + location.host + url).pathname.split("/").pop();
 		let bigFileName = this.images()[thumbBaseName ?? ""];
@@ -105,5 +111,14 @@ export class GalleryComponent implements AfterViewInit {
 	closeBigImage(evt: Event) {
 		this.showBigImageLR.set("");
 		this.showBigImageHR.set("");
+	}
+
+	selectThreeGalleryImages(thumbnails: string[]): string[] {
+		let images: string[] = [];
+		let imagesRemaining = thumbnails;
+		for (let i = 0; i < 3; i++) {
+			images.push(imagesRemaining.splice(Math.floor(Math.random() * imagesRemaining.length), 1)[0]);
+		}
+		return images;
 	}
 }

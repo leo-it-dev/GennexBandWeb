@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, DOCUMENT, effect, ElementRef, Inject, QueryList, signal, ViewChildren, WritableSignal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { AboutUsComponent } from './about-us/about-us.component';
 import { CalendarListComponent } from './calendar-list/calendar-list/calendar-list.component';
 import { ContactChannelsComponent } from './contact-channels/contact-channels.component';
 import { ContactComponent } from './contact/contact.component';
@@ -8,7 +9,6 @@ import { GalleryComponent } from './gallery/gallery.component';
 import { ImpressumComponent } from './impressum/impressum.component';
 import { LoadingoverlayComponent } from './loadingoverlay/loadingoverlay.component';
 import { PrivacypolicyComponent } from './privacypolicy/privacypolicy.component';
-import { ScrollItemFadeContainerComponent } from './scroll-item-fade-container/scroll-item-fade-container.component';
 import { LoadingoverlayService } from './services/loadingoverlay.service';
 import { PageControlService } from './services/page-control.service';
 import { SlotComponent } from './slot/slot.component';
@@ -16,11 +16,12 @@ import { VideoListComponent } from './video-list/video-list.component';
 
 @Component({
 	selector: 'app-root',	
-	imports: [RouterOutlet, LoadingoverlayComponent, GalleryComponent, ContactComponent, DynamicBackgroundImageComponent, PrivacypolicyComponent, ImpressumComponent, SlotComponent, VideoListComponent, ContactChannelsComponent, CalendarListComponent, ScrollItemFadeContainerComponent],
+	imports: [RouterOutlet, LoadingoverlayComponent, GalleryComponent, ContactComponent, DynamicBackgroundImageComponent, PrivacypolicyComponent, ImpressumComponent, SlotComponent, VideoListComponent, ContactChannelsComponent, CalendarListComponent, AboutUsComponent],
 	templateUrl: './app.component.html',
 	styleUrl: './app.component.scss'
 })
 export class AppComponent implements AfterViewInit {
+
 	constructor(
 		public loadingOverlay: LoadingoverlayService,
 		public pageControl: PageControlService,
@@ -47,6 +48,8 @@ export class AppComponent implements AfterViewInit {
 	doShowPrivacyPolicy: WritableSignal<boolean> = signal(false);
 	doShowImpressum: WritableSignal<boolean> = signal(false);
 
+	forceLoadCalendar = false;
+
 	aboutUsTexts = [
 		"Wir sind GENNEX, eine junge Partyband aus der Region Mühldorf -\
 		laut gestartet als Schülerband und heute fester Bestandteil der lokalen Musikszene.",
@@ -70,5 +73,13 @@ export class AppComponent implements AfterViewInit {
 		this.backgroundTriggerList.changes.subscribe(list => {
 			this.backgroundTriggers.set(list.toArray());
 		});
+
+		// Let's check for some links.
+		// We may incounter this type of url:
+		// https://gennex.band/event?eid=68q3eor360rm4bb5cli38b9kcgsjgb9p74o6ab9g60pj4c9n70q36e1n64
+		// in this case, we immediately need to load the calendar view in order to render the full screen detailed version of the event.
+		if (location.pathname.startsWith("/event")) {
+			this.forceLoadCalendar = true;
+		}
 	}
 }

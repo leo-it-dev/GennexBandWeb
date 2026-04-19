@@ -27,8 +27,8 @@
     padding-left: 50px;
     padding-right: 50px;
     border-left: 1px solid transparent;
-    border-image: linear-gradient(to bottom, transparent 0%, white 20%, white 97%, transparent 100%) 1;
-    background: linear-gradient(to bottom, transparent 0%, #0008 20%, #0008 97%, transparent 100%);
+    border-image: linear-gradient(to bottom, transparent 0%, white 20%, white 80%, transparent 100%) 1;
+    background: linear-gradient(to bottom, transparent 0%, #0008 20%, #0008 80%, transparent 100%);
     border-image-slice: 1;
     font-weight: bold;
     margin-left: auto;
@@ -46,23 +46,16 @@ p.fade-scroll-item {
 }
 
 .fade-scroll-item {
-    top: 0px;
-    position: sticky;
     padding-top: 10px;
     padding-bottom: 10px;
     margin: 0;
 }
 
 .fade-scroll-item-spacer {
-    height: 400px;
+    height: 150px;
     margin: 0;
 }
 
-#header {
-    position: sticky;
-    top: 100px;
-    z-index: 1000;
-}
 
 #image-container {
 	height: calc(100% - 50svh);
@@ -106,5 +99,9 @@ p.fade-scroll-item {
 		min-width: unset !important;
 		transform: translate(-50%, -100%);
 		float: none;
+	}
+
+	.fade-scroll-item-spacer {
+		height: 0px;
 	}
 }

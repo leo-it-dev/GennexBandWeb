@@ -54,16 +54,13 @@
                         </tr>
                     </table>
                 </div>
-                <div>
-                    @for(attachment of this.resolvedBigImage()!.attachmentURLs; track attachment) {
-                    <img [src]="attachment.renderedPng" (click)="open(attachment.sourceURL)" />
-                    }
-
-                    @if (this.resolvedBigImage()!.attachmentURLs.length == 0) {
-                    <h2>Für dieses Event sind keine Anhänge hinterlegt.</h2>
-                    }
-
-                </div>
+                @if(this.resolvedBigImage()!.attachmentURLs.length != 0) {
+                    <div>
+                        @for(attachment of this.resolvedBigImage()!.attachmentURLs; track attachment) {
+                        <img [src]="attachment.renderedPng" (click)="open(attachment.sourceURL)" />
+                        }
+                    </div>
+                }
             </div>
 
             <h1 id="calendarBigImageClose" (click)="this.calendar.bigImageEntry.set(undefined);">✕</h1>

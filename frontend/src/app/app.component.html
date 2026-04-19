@@ -32,13 +32,35 @@
 	<div class="spacer"></div>
 	<div #backgroundTrigger class="background-trigger" img="/images/webp/back_live2.webp"></div>
 
-	<app-scroll-item-fade-container name="about-us" id="about-us" [textList]="this.aboutUsTexts"></app-scroll-item-fade-container>
+	<!-- <app-scroll-item-fade-container name="about-us" id="about-us" [textList]="this.aboutUsTexts"></app-scroll-item-fade-container> -->
+	<app-about-us name="about-us" id="about-us" [textList]="this.aboutUsTexts"></app-about-us>
 
-	<div class="spacer"></div>
+
+	<div class="halfSpacer"></div>
+
+	<div class="section-wrapper" id="contact-link">
+		@defer (on viewport) {
+			<app-contact id="contact" animate.enter="fadeIn"></app-contact>
+		} @placeholder(minimum 200ms) {
+			<div class="component-placeholder" id="contact-placeholder" animate.leave="fadeOut">Lade Kontaktformular...</div>
+		}
+	</div>
+
+	<div class="halfSpacer"></div>
+
+	<div class="section-wrapper" id="gigs-link">
+		@defer (when forceLoadCalendar; on viewport) {
+			<app-calendar-list id="gigs" animate.enter="fadeIn"></app-calendar-list>
+		} @placeholder(minimum 200ms) {
+			<div class="component-placeholder" id="gigs-placeholder" animate.leave="fadeOut">Lade Gig-Informationen...</div>
+		}
+	</div>
+
+	<div class="halfSpacer"></div>
 
 	<app-video-list id="live"></app-video-list>
 
-	<div class="spacer"></div>
+	<div class="halfSpacer"></div>
 	<div #backgroundTrigger class="background-trigger" img="/images/webp/logo_room0014.webp"></div>
 
 	<div class="section-wrapper" id="gallery-link">
@@ -51,27 +73,8 @@
 		}
 	</div>
 
-	<div class="spacer"></div>
-
-	<div class="section-wrapper" id="gigs-link">
-		@defer (on viewport) {
-			<app-calendar-list id="gigs" animate.enter="fadeIn"></app-calendar-list>
-		} @placeholder(minimum 200ms) {
-			<div class="component-placeholder" id="gigs-placeholder" animate.leave="fadeOut">Lade Gig-Informationen...</div>
-		}
-	</div>
-
 	<div class="halfSpacer"></div>
 	<div #backgroundTrigger class="background-trigger" img="/images/webp/crowd.webp"></div>
-	<div class="halfSpacer"></div>
-
-	<div class="section-wrapper" id="contact-link">
-		@defer (on viewport) {
-			<app-contact id="contact" animate.enter="fadeIn"></app-contact>
-		} @placeholder(minimum 200ms) {
-			<div class="component-placeholder" id="contact-placeholder" animate.leave="fadeOut">Lade Kontaktformular...</div>
-		}
-	</div>
 
 	<div class="halfSpacer"></div>
 
