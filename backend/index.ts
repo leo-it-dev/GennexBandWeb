@@ -25,6 +25,7 @@ import { ApiModuleAgentHandler } from './modules/agent/api_agent';
 import { AgentTrigger } from './modules/agent/agent_trigger';
 import { ApiModuleRenderedPDFs } from './modules/renderedpdf/api_renderedpdf';
 import { ApiModuleMailer } from './modules/mailer/api_mailer';
+import { staticSchema } from './schema/static_page_schema';
 
 let mainLogger = getLogger("index");
 
@@ -82,12 +83,9 @@ function serveIndex(req: Request, res: Response) {
         const indexPath = path.join(__dirname, path.join(filePathFrontend, 'index.html'));
         const staticSchemaPath = path.join(__dirname, "schema", "static_page_schema.json");
 
-        staticSchemaContent = JSON.parse(fs.readFileSync(staticSchemaPath, 'utf-8'));
         cachedIndexContent = fs.readFileSync(indexPath, 'utf-8');
     }
-    let schemaContent = staticSchemaContent;
-
-    res.send(cachedIndexContent.replace('``backend-insert-markup-schema``', JSON.stringify(schemaContent, (key, value) => {
+    res.send(cachedIndexContent.replace('``backend-insert-markup-schema``', JSON.stringify(staticSchema, (key, value) => {
         if (key == "@graph") {
             let markupScheme = getApiModule(ApiModuleCalendar).getCalendarMarkupScheme();
             return markupScheme ? [...(value as any[]), ...markupScheme] : value;

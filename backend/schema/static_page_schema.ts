@@ -1,4 +1,4 @@
-{
+export let staticSchema = {
     "@context": "https://schema.org",
     "@graph": [
         {
