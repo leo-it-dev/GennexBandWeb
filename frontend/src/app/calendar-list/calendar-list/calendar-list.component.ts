@@ -60,7 +60,7 @@ export class CalendarListComponent {
 				}
 				this.resolvedBigImage.set({
 					entry: bigImageEntry,
-					url: this.domSan.bypassSecurityTrustResourceUrl("https://www.google.com/maps?q=" + bigImageEntry.location?.lat + "," + bigImageEntry.location?.lon + "&z=15&output=embed"),
+					url: this.domSan.bypassSecurityTrustResourceUrl("https://www.google.com/maps?q=" + bigImageEntry.geocoding?.location.lat + "," + bigImageEntry.geocoding?.location.lon + "&z=15&output=embed"),
 					attachmentURLs: mappedAttachments
 				});
 			} else {

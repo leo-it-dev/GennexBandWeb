@@ -16,6 +16,7 @@ import { ApiModuleSubscribe } from '../subscribe/api_subscribe';
 import { GoogleCalendarWatchHandler } from './calendar-webhook';
 import { AccumulatedCalendarFilter } from './calendar_accumulated_filter';
 import { CalendarAPIHelper } from './calendar_helper';
+import { getEventMarkupScheme } from './calendar_event_schema';
 
 enum CalendarTokenAction {
     NEW = 'new', DELETE = 'delete', MODIFY = 'modify'
@@ -54,10 +55,16 @@ export class ApiModuleCalendar extends ApiModule {
         },
         {
             params: [],
+
             update: "CREATE TABLE IF NOT EXISTS geocoding (\
                         locstr VARCHAR(512) NOT NULL UNIQUE,\
                         lon FLOAT,\
-                        lat FLOAT\
+                        lat FLOAT,\
+                        streetAddress VARCHAR(128) NOT NULL,\
+                        addressLocality VARCHAR(128) NOT NULL,\
+                        addressRegion VARCHAR(128) NOT NULL,\
+                        postalCode INTEGER,\
+                        addressCountry VARCHAR(128) NOT NULL\
                     \)"
         }];
     }
@@ -270,5 +277,9 @@ export class ApiModuleCalendar extends ApiModule {
         } catch(err) {
             this.logger().info("Error updating calendar information!", {err: err});
         }
+    }
+
+    getCalendarMarkupScheme(): object[] {
+        return getEventMarkupScheme(this.calendarFilter.getCurrentCalendarState(), this.calendarFilter.getCurrentSyncToken());
     }
 }

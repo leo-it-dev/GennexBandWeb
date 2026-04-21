@@ -35,6 +35,9 @@ const httpsPort = config.get('generic.HTTPS_PORT') as number;
 const baseUrl = config.get("generic.APPLICATION_URL") + ((config.get('generic.APPLICATION_URL') as string).endsWith('/') ? '' : '/');
 const domain = config.get('generic.SERVE_DOMAIN');
 
+let cachedIndexContent: string|undefined = undefined;
+let staticSchemaContent: object|undefined = undefined;
+
 // Change directory to project root (ts-files)
 const projectRoot = path.resolve('./');
 process.chdir(projectRoot);
@@ -74,8 +77,38 @@ app.use(compression({ filter: shouldCompress }));
 
 app.use(express.json())
 
+function serveIndex(req: Request, res: Response) {
+    if (!cachedIndexContent) {
+        const indexPath = path.join(__dirname, path.join(filePathFrontend, 'index.html'));
+        const staticSchemaPath = path.join(__dirname, "schema", "static_page_schema.json");
+
+        staticSchemaContent = JSON.parse(fs.readFileSync(staticSchemaPath, 'utf-8'));
+        cachedIndexContent = fs.readFileSync(indexPath, 'utf-8');
+    }
+    let schemaContent = staticSchemaContent;
+
+    res.send(cachedIndexContent.replace('``backend-insert-markup-schema``', JSON.stringify(schemaContent, (key, value) => {
+        if (key == "@graph") {
+            let markupScheme = getApiModule(ApiModuleCalendar).getCalendarMarkupScheme();
+            return markupScheme ? [...(value as any[]), ...markupScheme] : value;
+        } else {
+            return value;
+        }
+    }, 4)));
+}
+
+app.get("/",            (req: Request, res: Response) => serveIndex(req, res));
+app.get("/index.html",  (req: Request, res: Response) => serveIndex(req, res));
+
 // serve static files in frontend dist folder.
 app.use(express.static(path.join(__dirname, filePathFrontend)));
+
+// /{*splat}
+// for default requests (to /) serve index.html
+app.get(/^(?!\/module).*/, (req: Request, res: Response) => {
+    const indexPath = path.join(__dirname, path.join(filePathFrontend, 'index.html'));
+    res.sendFile(indexPath);
+});
 
 function shouldCompress(req: Request, res: Response) {
     if (req.headers['x-no-compression']) {
@@ -177,12 +210,6 @@ async function initializeModules() {
 
 
 initializeModules();
-
-// /{*splat}
-// for default requests (to /) serve index.html
-app.get(/^(?!\/module).*/, (req: Request, res: Response) => {
-    res.sendFile(path.join(__dirname, path.join(filePathFrontend, 'index.html')));
-});
 
 export function getApiModule<T = ApiModule>(apiModuleClass: { new(...args: any[]): T }): T {
     for (let apiModule of apiModulesInstances) {

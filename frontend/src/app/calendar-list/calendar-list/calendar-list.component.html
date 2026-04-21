@@ -28,7 +28,7 @@
 <div id="calendar-entry-big-view" animate.enter="fadeIn" animate.leave="fadeOut">
     <div id="calendar-entry-big-blur">
         <div id="calendar-entry-big-view-content">
-            @if (this.resolvedBigImage()!.entry.location !== undefined) {
+            @if (this.resolvedBigImage()!.entry.geocoding !== undefined) {
             <iframe id="calendar-entry-big-map" [src]="this.resolvedBigImage()!.url" style="border:0;" allowfullscreen=""
                 loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
             }

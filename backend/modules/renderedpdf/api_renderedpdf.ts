@@ -10,9 +10,9 @@ import * as crypto from 'crypto';
 
 export class ApiModuleRenderedPDFs extends ApiModule {
 
-    pathPdfsInBase = "/pdfs";
+    pathPdfsInBase = "/event";
     pathPdfsIn = "";
-    pathPdfsOutBase = "/pdfs/render";
+    pathPdfsOutBase = "/event/render";
     pathPdfsOut = "";
     RENDER_PDF_WIDTH = 1000;
 
@@ -101,12 +101,12 @@ export class ApiModuleRenderedPDFs extends ApiModule {
                 let sourceUrlHash = this.hashSourceUrl(urlStr);
 
                 // download the pdf file locally for conversion.
-                await downloadFile(fixedUrl.toString(), sourceUrlHash, this.pathPdfsIn);
+                let extFileName = await downloadFile(fixedUrl.toString(), sourceUrlHash, this.pathPdfsIn, true, "png");
 
                 this.renderedPDFs = this.renderedPDFs.filter(pdf => pdf.sourceURL != urlStr)
                 this.renderedPDFs.push({
                     sourceURL: urlStr,
-                    pagePngURLs: Array.from(new Array(1)).map((p) => this.pathPdfsInBase + "/" + sourceUrlHash)
+                    pagePngURLs: Array.from(new Array(1)).map((p) => this.pathPdfsInBase + "/" + extFileName)
                 });
 
                 this.logger().info("Published PNG as document!", {urlStr: urlStr});
@@ -143,5 +143,9 @@ export class ApiModuleRenderedPDFs extends ApiModule {
                 }
             }
         });
+    }
+
+    findRenderedPdf(sourcePdfPath: string): string[] | undefined {
+        return this.renderedPDFs.find(r => r.sourceURL == sourcePdfPath)?.pagePngURLs;
     }
 }

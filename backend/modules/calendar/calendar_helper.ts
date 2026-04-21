@@ -1,5 +1,5 @@
 import config from 'config';
-import { Attachment, Calendar, CalendarEntry, CalendarEntryState, Location, Visibility } from '../../../api_common/calendar';
+import { Attachment, Calendar, CalendarEntry, CalendarEntryState, GeoCoding, Location, Visibility } from '../../../api_common/calendar';
 import { ApiModuleLazy } from '../../api_module';
 import { getAuthenticatedServiceAccount, ServiceAccountAccess } from '../../framework/service-account';
 import { SQLiteDB } from '../../framework/sqlite_database';
@@ -32,8 +32,8 @@ export class CalendarAPIHelper {
         this.geocodingApiKey = config.get("calendar.GEOCODING_DATA_API_KEY") ?? "<unknown key>";
     }
 
-    async resolveLocationToLongLat(locationName: string): Promise<Location> {
-        return new Promise<Location>(async (res, rej) => {
+    async resolveLocationToGeoCoding(locationName: string): Promise<GeoCoding> {
+        return new Promise<GeoCoding>(async (res, rej) => {
             try {
                 let cachedResult = this.getCachedGeocodingResult(locationName);
                 if (cachedResult != undefined) {
@@ -45,28 +45,47 @@ export class CalendarAPIHelper {
                 return;
             }
 
-            let searchPath = this.baseLinkGeocoding + "?address=" + encodeURIComponent(locationName) + "&key=" + this.geocodingApiKey;
+            let searchPath = this.baseLinkGeocoding + "?address=" + encodeURIComponent(locationName) + "&key=" + this.geocodingApiKey + "&language=de";
             fetch(searchPath).then(dat => dat.json()).then(async dat => {
                 let latitude = dat.results[0].geometry.location.lat;
                 let longitude = dat.results[0].geometry.location.lng;
 
+                function findComponent(name: string): any | undefined {
+                    return (dat.results[0].address_components as any[]).find(e => e.types.includes(name));
+                }
+
+                let streetAddress   = findComponent('route')?.long_name ?? "";
+                let addressLocality = findComponent('locality')?.long_name ?? "";
+                let addressRegion   = findComponent('administrative_area_level_1')?.long_name ?? "";
+                let postalCode      = parseInt(findComponent('postal_code')?.long_name ?? "0");
+                let addressCountry  = findComponent('country')?.short_name ?? "";
+                let streetNumber    = findComponent('street_number')?.short_name ?? "";
+                let geocoding = {
+                    addressCountry: addressCountry,
+                    addressLocality: addressLocality,
+                    addressRegion: addressRegion,
+                    postalCode: postalCode,
+                    streetAddress: streetAddress + " " + streetNumber,
+                    location: {
+                        lat: latitude,
+                        lon: longitude
+                    }
+                };
+
                 if (latitude != 0 && longitude != 0) {
-                    this.storeGeocodingResult(locationName, longitude, latitude);
+                    this.storeGeocodingResult(locationName, geocoding);
                 }
 
                 CalendarAPIHelper.logger.info("Resolved location string using google api.", { locStr: locationName, lon: longitude, lat: latitude });
 
-                res({
-                    lon: longitude,
-                    lat: latitude
-                })
+                res(geocoding);
             }).catch(err => {
                 rej("error resolving location: " + err);
             });
         });
     }
 
-    async getAllPublicCalendarEntriesIncr(calendarID: string, syncToken: string): Promise<CalendarSync> {
+    async getAllPublicCalendarEntriesIncr(calendarID: string, syncTokenIn: string): Promise<CalendarSync> {
         return new Promise<CalendarSync>(async (res, rej) => {
             let auth = await getAuthenticatedServiceAccount();
             if (!auth) {
@@ -74,7 +93,7 @@ export class CalendarAPIHelper {
                 return;
             }
 
-            fetch(this.baseLink + '/calendars/' + calendarID + '/events?maxResults=200' + (syncToken !== undefined ? "&syncToken=" + syncToken : ""),
+            fetch(this.baseLink + '/calendars/' + calendarID + '/events?maxResults=200' + (syncTokenIn !== undefined ? "&syncToken=" + syncTokenIn : ""),
             {
                 headers: {
                     'Authorization': 'Bearer ' + auth.accessToken
@@ -100,6 +119,15 @@ export class CalendarAPIHelper {
                                     return { title: attachment.title, url: attachment.fileUrl, mimeType: attachment.mimeType }
                                 });
 
+                                // If the service just started and we don't have a synch token google gives us ALL the calendar data.
+                                // this includes deleted old events. This leads to us downloading unneccessary data from old deleted events.
+                                // Therefore if we don't have a synch token yet skip all events marked as deleted.
+                                // YES this DOES INDEED skip sending DELETED events for events deleted during service downtime, but this is better than
+                                // unneccessary large startup times and google drive downloads. 
+                                if (!syncTokenIn && state == CalendarEntryState.DELETED) {
+                                    continue;
+                                }
+
                                 for(let attachment of attachments) {
                                     if (attachment.mimeType == "application/pdf") {
                                         try {
@@ -121,7 +149,7 @@ export class CalendarAPIHelper {
                                     date: new Date(start),
                                     description: description,
                                     id: id,
-                                    location: undefined,
+                                    geocoding: undefined,
                                     locationString: locationString,
                                     title: title,
                                     state: state,
@@ -131,9 +159,9 @@ export class CalendarAPIHelper {
 
                                 if (locationString != undefined) {
                                     try {
-                                        let location = await this.resolveLocationToLongLat(locationString);
-                                        calendarEntry.location = location;
-                                        CalendarAPIHelper.logger.info("Successfully resolved location string to lat/long coordinates: ", { locString: locationString, lat: location.lat, lon: location.lon });
+                                        let geocoding = await this.resolveLocationToGeoCoding(locationString);
+                                        calendarEntry.geocoding = geocoding;
+                                        CalendarAPIHelper.logger.info("Successfully resolved location string to lat/long coordinates: ", { locString: locationString, geocoding: geocoding });
                                     } catch (err) {
                                         CalendarAPIHelper.logger.error("Error resolving location string to lat/long coordinates: ", { locString: locationString });
                                     }
@@ -211,21 +239,27 @@ export class CalendarAPIHelper {
 
     // database -------------------------------------------
 
-    storeGeocodingResult(locStr: string, lon: number, lat: number) {
-        CalendarAPIHelper.logger.info("Caching geocoding result", { locStr: locStr, lon: lon, lat: lat });
+    storeGeocodingResult(locStr: string, geocoding: GeoCoding) {
+        CalendarAPIHelper.logger.info("Caching geocoding result", { locStr: locStr, coding: geocoding });
         this.sqlite.sqlUpdate({
-            params: [locStr, lon, lat],
-            update: "INSERT OR REPLACE INTO geocoding(locStr, lon, lat) VALUES (?, ?, ?)"
+            params: [locStr, geocoding.streetAddress, geocoding.addressLocality, geocoding.addressRegion, geocoding.postalCode, geocoding.addressCountry, geocoding.location.lon, geocoding.location.lat],
+            update: "INSERT OR REPLACE INTO geocoding(locStr, streetAddress, addressLocality, addressRegion, postalCode, addressCountry, lon, lat) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
         });
     }
 
-    getCachedGeocodingResult(locStr: string): Location | undefined {
-        let rows = this.sqlite.sqlFetchAll("SELECT lon,lat from geocoding WHERE locStr=?", [locStr]);
+    getCachedGeocodingResult(locStr: string): GeoCoding | undefined {
+        let rows = this.sqlite.sqlFetchAll("SELECT locStr, streetAddress, addressLocality, addressRegion, postalCode, addressCountry, lon, lat from geocoding WHERE locStr=?", [locStr]);
         if (rows.length > 0) {
             let lat = rows[0]["lat"];
             let lon = rows[0]["lon"];
+            let streetAddress = rows[0]["streetAddress"];
+            let addressLocality = rows[0]["addressLocality"];
+            let addressRegion = rows[0]["addressRegion"];
+            let postalCode = rows[0]["postalCode"];
+            let addressCountry = rows[0]["addressCountry"];
+
             CalendarAPIHelper.logger.info("Fetched geocoding cache", { locStr: locStr, lon: lon, lat: lat });
-            return { lat: lat, lon: lon };
+            return { streetAddress: streetAddress, addressLocality: addressLocality, addressRegion: addressRegion, postalCode: postalCode, addressCountry: addressCountry, location: { lat: lat, lon: lon } };
         }
         return undefined;
     }

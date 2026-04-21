@@ -10,6 +10,15 @@ export enum CalendarEntryState {
     DEFAULT = "DEFAULT"
 }
 
+export type GeoCoding = {
+    streetAddress: string,
+    addressLocality: string,
+    addressRegion: string,
+    postalCode: number,
+    addressCountry: string,
+    location: Location
+}
+
 export enum Visibility {
     PRIVATE = "PRIVATE", PUBLIC = "PUBLIC"
 }
@@ -24,7 +33,7 @@ export type CalendarEntry = {
     title: string,
     description: string,
     date: Date,
-    location?: Location,
+    geocoding?: GeoCoding
     locationString: string,
     id: string,
     state: CalendarEntryState,

@@ -1,0 +1,187 @@
+{
+    "@context": "https://schema.org",
+    "@graph": [
+        {
+            "@type": "MusicGroup",
+            "@id": "https://gennex.band/#musicgroup",
+            "name": "GENNEX",
+            "url": "https://gennex.band/",
+            "genre": [
+                "Rock",
+                "Hard Rock",
+                "Party",
+                "Cover"
+            ],
+            "image": {
+                "@type": "ImageObject",
+                "url": "https://gennex.band/images/webp/logo0014.webp"
+            },
+            "description": "Wir sind Gennex, eine junge Partyband aus der Region Mühldorf. Seit Jahren liefern wir was zählt: die besten Partyhymnen und Rockklassiker bei maximaler Stimmung, voller Bühnenenergie und einem Programm, das keine Wünsche offen lässt!",
+            "foundingLocation": {
+                "@type": "Place",
+                "name": "Schwindegg, Bayern, Deutschland"
+            },
+            "areaServed": {
+                "@type": "Country",
+                "name": "Deutschland"
+            },
+            "sameAs": [
+                "https://www.instagram.com/gennex_official/",
+                "https://www.youtube.com/@GennexPartyband"
+            ],
+            "member": [
+                {
+                    "@type": "OrganizationRole",
+                    "member": {
+                        "@type": "Person",
+                        "name": "Philipp Ittner"
+                    },
+                    "startDate": "2017",
+                    "roleName": [
+                        "guitar",
+                        "vocals"
+                    ]
+                },
+                {
+                    "@type": "OrganizationRole",
+                    "member": {
+                        "@type": "Person",
+                        "name": "Lukas Meidinger"
+                    },
+                    "startDate": "2017",
+                    "roleName": [
+                        "lead vocals",
+                        "guitar",
+                        "piano"
+                    ]
+                },
+                {
+                    "@type": "OrganizationRole",
+                    "member": {
+                        "@type": "Person",
+                        "name": "Jonas Eichner"
+                    },
+                    "startDate": "2018",
+                    "roleName": [
+                        "vocals",
+                        "guitar"
+                    ]
+                },
+                {
+                    "@type": "OrganizationRole",
+                    "member": {
+                        "@type": "Person",
+                        "name": "Leonhard Mittermeier"
+                    },
+                    "startDate": "2022",
+                    "roleName": ["drums"]
+                },
+                {
+                    "@type": "OrganizationRole",
+                    "member": {
+                        "@type": "Person",
+                        "name": "Anna Leitner"
+                    },
+                    "startDate": "2025",
+                    "roleName": ["bass guitar"]
+                }
+            ]
+        },
+        {
+            "@type": "EntertainmentBusiness",
+            "@id": "https://gennex.band/#business",
+            "name": "GENNEX",
+            "url": "https://gennex.band/",
+            "image": {
+                "@type": "ImageObject",
+                "url": "https://gennex.band/images/webp/logo0014.webp"
+            },
+            "priceRange": "€€",
+            "address": {
+                "@type": "PostalAddress",
+                "addressLocality": "Schwindegg",
+                "addressRegion": "Bayern",
+                "addressCountry": "DE"
+            },
+            "areaServed": {
+                "@type": "Country",
+                "name": "Deutschland"
+            },
+            "telephone": "+49 1516 8410486",
+            "email": "contact@gennex.band",
+            "sameAs": [
+                "https://www.instagram.com/gennex_official/",
+                "https://www.youtube.com/@GennexPartyband"
+            ]
+        },
+        {
+            "@type": "WebSite",
+            "@id": "https://gennex.band/#website",
+            "url": "https://gennex.band/",
+            "name": "GENNEX",
+            "publisher": {
+                "@id": "https://gennex.band/#musicgroup"
+            }
+        },
+        {
+            "@type": "WebPage",
+            "@id": "https://gennex.band/#webpage",
+            "url": "https://gennex.band/",
+            "name": "GENNEX",
+            "isPartOf": {
+                "@id": "https://gennex.band/#website"
+            },
+            "about": {
+                "@id": "https://gennex.band/#musicgroup"
+            }
+        },
+        {
+            "@type": "BreadcrumbList",
+            "@id": "https://gennex.band/#breadcrumb",
+            "itemListElement": [
+                {
+                    "@type": "ListItem",
+                    "position": 1,
+                    "name": "Startseite",
+                    "item": "https://gennex.band/"
+                },
+                {
+                    "@type": "ListItem",
+                    "position": 2,
+                    "name": "Über uns",
+                    "item": "https://gennex.band/#sifAnchor-about-us"
+                },
+                {
+                    "@type": "ListItem",
+                    "position": 3,
+                    "name": "Videos",
+                    "item": "https://gennex.band/#live"
+                },
+                {
+                    "@type": "ListItem",
+                    "position": 4,
+                    "name": "Gallerie",
+                    "item": "https://gennex.band/#gallery-link"
+                },
+                {
+                    "@type": "ListItem",
+                    "position": 5,
+                    "name": "Nächste Events",
+                    "item": "https://gennex.band/#gigs-link"
+                },
+                {
+                    "@type": "ListItem",
+                    "position": 6,
+                    "name": "Kontakt",
+                    "item": "https://gennex.band/#contact-link"
+                },
+                {
+                    "@type": "ListItem",
+                    "position": 7,
+                    "name": "Unsere Kanäle",
+                    "item": "https://gennex.band/#channels-link"
+                }
+            ]
+        }
+    ]
+}
