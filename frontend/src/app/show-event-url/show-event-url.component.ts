@@ -1,17 +1,16 @@
-import { AfterViewInit, Component, effect } from '@angular/core';
-import { removePathFromURL } from '../utilities';
+import { AfterViewInit, Component } from '@angular/core';
+import { MainpageComponent } from '../mainpage/mainpage.component';
 import { CalendarBackendService } from '../modules/calendar/calendar-backend.service';
 
 @Component({
 	selector: 'app-show-event-url',
-	imports: [],
+	imports: [MainpageComponent],
 	templateUrl: './show-event-url.component.html',
 	styleUrl: './show-event-url.component.scss',
 })
 export class ShowEventURLComponent implements AfterViewInit {
 
-	constructor(private calService: CalendarBackendService
-	) {}
+	constructor(private calService: CalendarBackendService) {}
 
 	ngAfterViewInit(): void {
 

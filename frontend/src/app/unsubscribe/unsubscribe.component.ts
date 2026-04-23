@@ -3,10 +3,11 @@ import { ApiInterfaceUnsubscribeIn, ApiInterfaceUnsubscribeOut } from '../../../
 import { UnsubscribeFormularResponse, UnsubscribeFormularStatusCodes } from '../../../../api_common/verification';
 import { SubscribeBackendService } from '../modules/subscribe/subscribe-backend.service';
 import { LoadingoverlayService } from '../services/loadingoverlay.service';
+import { MainpageComponent } from '../mainpage/mainpage.component';
 
 @Component({
 	selector: 'app-unsubscribe',
-	imports: [],
+	imports: [MainpageComponent],
 	templateUrl: './unsubscribe.component.html',
 	styleUrl: './unsubscribe.component.scss',
 })

@@ -1,3 +1,21 @@
+@font-face {
+	font-family: 'agencyfb-bold';
+	src: url(/fonts/AGENCYB.TTF);
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'agencyfb-reg';
+	src: url(/fonts/AGENCYB.TTF);
+	font-display: swap;
+}
+
+@font-face {
+    font-family: 'inter';
+    src: url(/fonts/INTER.TTF);
+    font-display: swap;
+}
+
 /* You can add global styles to this file, and also import other style files */
 body {
     margin: 0;
