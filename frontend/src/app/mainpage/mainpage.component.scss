@@ -1,0 +1,167 @@
+* {
+	--primary1: #4538FF77;
+	--primary2: #FF383877;
+	--primary1NoAlpha: #4538FF;
+	--primary2NoAlpha: #FF3838;
+	font-family: agencyfb-reg, sans-serif;
+}
+
+:host {
+	height: 100%;
+	position: relative;
+	--bandname-letter-space: 30px;
+}
+
+#bandname {
+	letter-spacing: var(--bandname-letter-space);
+	text-indent: var(--bandname-letter-space);
+	font-size: 100pt;
+	font-family: agencyfb-bold, sans-serif;
+	filter: drop-shadow(10px 10px 5px #000);
+	margin: 20px 0px;
+	/* margin-right: calc(0px - var(--bandname-letter-space)); */
+	left: 100px;
+	position: relative;
+	width: min-content;
+}
+
+#bannerImage {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 0;
+}
+
+#bannerText {
+	font-family: agencyfb-reg, sans-serif;
+	color: #eed;
+	width: 100%;
+	margin-top: 200px;
+}
+
+#bannerNav {
+	position: relative;
+}
+
+#bannerNav:after {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	border-top: 2px solid #eed;
+	border-bottom: 2px solid #eed;
+}
+
+#bannerNav>ul {
+	list-style: none;
+	display: flex;
+	flex-direction: column;
+	margin: 0;
+	padding: 0;
+	width: min-content;
+	left: 100px;
+	position: relative;
+	flex-wrap: wrap;
+}
+
+#bannerNav>ul>a {
+	color: inherit;
+	text-decoration: none;
+	margin: 0px 10px;
+	font-size: 20pt;
+	filter: drop-shadow(4px 4px 1px #000);
+	cursor: pointer;
+	z-index: 100;
+	white-space: nowrap;
+}
+
+.spacer {
+	width: 100%;
+	height: 500px;
+	min-height: 500px;
+}
+
+.halfSpacer {
+	width: 100%;
+	height: 100px;
+	min-height: 100px;
+}
+
+#page1 {
+	display: flex;
+	flex-direction: column;
+	position: relative;
+}
+
+img {
+	width: 100%;
+	height: 100%;
+}
+
+.overlayGradient {
+	background: linear-gradient(to bottom, transparent, black, transparent);
+	transform: translateY(-50%);
+	width: 100%;
+	height: 400px;
+	position: absolute;
+	z-index: 10;
+}
+
+app-gallery {
+	z-index: 100;
+}
+
+app-contact-form {
+	width: 80%;
+	margin: 50px;
+}
+
+.section-wrapper {
+	padding: 100px 0px;
+	position: relative;
+}
+
+.component-placeholder.fadeOut {
+	position: absolute;
+}
+
+footer {
+	padding: 10px;
+	background: linear-gradient(45deg, #000, #300);
+	position: relative;
+	z-index: 10;
+
+	ul {
+		list-style: none;
+		margin: 0;
+	}
+
+	li {
+		padding: 20px;
+		display: inline-block;
+		color: white;
+		cursor: pointer;
+	}
+}
+
+@media screen and (max-width: 700px) {
+	#bandname {
+		font-size: 10vw;
+		text-align: center;
+		left: 50%;
+		transform: translateX(-50%);
+	}
+
+	#bannerNav>ul {
+		left: 0;
+		width: 100%;
+	}
+
+	#bannerNav>ul>a {
+		margin: 5px 50px;
+	}
+}

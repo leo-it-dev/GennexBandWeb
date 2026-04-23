@@ -1,0 +1,124 @@
+<script src="/scripts/scrollAnim.js"></script>
+<div id="page1">
+	<div id="bannerImage">
+		<div #backgroundTrigger class="background-trigger" img="/images/webp/back_live1.webp"></div>
+		<app-dynamic-background-image [triggers]="this.backgroundTriggers"></app-dynamic-background-image>
+	</div>
+	<div id="bannerText">
+		<h1 id="bandname">GENNEX</h1>
+		<nav id="bannerNav">
+			<ul>
+				<a href="#sifAnchor-about-us">
+					<li>About us</li>
+				</a>
+				<a href="#live">
+					<li>Videos</li>
+				</a>
+				<a href="#gallery-link">
+					<li>Gallery</li>
+				</a>
+				<a href="#gigs-link">
+					<li>Nächste Events</li>
+				</a>
+				<a href="#contact-link">
+					<li>Contact</li>
+				</a>
+				<a href="#channels-link">
+					<li>Unsere Kanäle</li>
+				</a>
+			</ul>
+		</nav>
+	</div>
+	<div class="spacer"></div>
+	<div #backgroundTrigger class="background-trigger" img="/images/webp/back_live2.webp"></div>
+
+	<!-- <app-scroll-item-fade-container name="about-us" id="about-us" [textList]="this.aboutUsTexts"></app-scroll-item-fade-container> -->
+	<app-about-us name="about-us" id="about-us" [textList]="this.aboutUsTexts"></app-about-us>
+
+
+	<div class="halfSpacer"></div>
+
+	<div class="section-wrapper" id="contact-link">
+		@defer (on viewport) {
+			<app-contact id="contact" animate.enter="fadeIn"></app-contact>
+		} @placeholder(minimum 200ms) {
+			<div class="component-placeholder" id="contact-placeholder" animate.leave="fadeOut">Lade Kontaktformular...</div>
+		}
+	</div>
+
+	<div class="halfSpacer"></div>
+
+	<div class="section-wrapper" id="gigs-link">
+		@defer (when forceLoadCalendar; on viewport) {
+			<app-calendar-list id="gigs" animate.enter="fadeIn"></app-calendar-list>
+		} @placeholder(minimum 200ms) {
+			<div class="component-placeholder" id="gigs-placeholder" animate.leave="fadeOut">Lade Gig-Informationen...</div>
+		}
+	</div>
+
+	<div class="halfSpacer"></div>
+
+	<app-video-list id="live"></app-video-list>
+
+	<div class="halfSpacer"></div>
+	<div #backgroundTrigger class="background-trigger" img="/images/webp/logo_room0014.webp"></div>
+
+	<div class="section-wrapper" id="gallery-link">
+		@defer (on viewport) {
+			<app-gallery id="gallery" animate.enter="fadeIn">
+				<div class="overlayGradient"></div>
+			</app-gallery>
+		} @placeholder(minimum 200ms) {
+			<div class="component-placeholder" id="gallery-placeholder" animate.leave="fadeOut">Lade Gallerie...</div>
+		}
+	</div>
+
+	<div class="halfSpacer"></div>
+	<div #backgroundTrigger class="background-trigger" img="/images/webp/crowd.webp"></div>
+
+	<div class="halfSpacer"></div>
+
+	<div class="section-wrapper" id="channels-link">
+		@defer (on viewport) {
+			<app-contact-channels id="channels" animate.enter="fadeIn"></app-contact-channels>
+		} @placeholder(minimum 200ms) {
+			<div class="component-placeholder" id="channels-placeholder" animate.leave="fadeOut">Lade Kanalinfo...</div>
+		}
+	</div>
+	<div class="halfSpacer"></div>
+
+</div>
+
+@if (this.loadingOverlay.loadingOverlayVisible()) {
+<app-loadingoverlay [videoURL]="this.loadingOverlay.getVideoURL()" [message]="this.loadingOverlay.getMessage()"
+	[hasInputText]="this.loadingOverlay.hasInputText" [inputPlaceholder]="this.loadingOverlay.inputPlaceholder"
+	[maxInputLength]="this.loadingOverlay.inputMaxLength"
+	(inputTextChange)="this.loadingOverlay.inputTextChange($event)"
+	[inputMarkedErronous]="this.loadingOverlay.inputInvalid"
+	[videoShouldRepeat]="this.loadingOverlay.videoShouldRepeat" [buttons]="this.loadingOverlay.buttons"
+	(buttonClicked)="this.loadingOverlay.buttonClicked($event)"></app-loadingoverlay>
+}
+
+<footer>
+	<ul>
+		<li (click)="this.doShowImpressum.set(true)">Impressum</li>
+		<li (click)="this.doShowPrivacyPolicy.set(true)">Datenschutzerklärung</li>
+	</ul>
+</footer>
+
+@if(this.doShowPrivacyPolicy()) {
+<div class="overlay" animate.enter="fadeIn" animate.leave="fadeOut">
+	<app-slot title="Datenschutzerklärung" [defaultScroll]="true" [hasCloseButton]="true" [fullScreen]="true"
+		(closeEvent)="this.doShowPrivacyPolicy.set(false)">
+		<app-privacypolicy></app-privacypolicy>
+	</app-slot>
+</div>
+}
+@if(this.doShowImpressum()) {
+<div class="overlay" animate.enter="fadeIn" animate.leave="fadeOut">
+	<app-slot title="Impressum" [defaultScroll]="true" [hasCloseButton]="true" [fullScreen]="true"
+		(closeEvent)="this.doShowImpressum.set(false)">
+		<app-impressum></app-impressum>
+	</app-slot>
+</div>
+}

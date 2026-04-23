@@ -4,6 +4,7 @@ import { PublishFormularResponse, PublishFormularStatusCode } from '../../../../
 import { CalendarBackendService } from '../../modules/calendar/calendar-backend.service';
 import { LoadingoverlayService } from '../../services/loadingoverlay.service';
 import { removePathFromURL } from '../../utilities';
+import { MainpageComponent } from '../../mainpage/mainpage.component';
 
 enum EventPublishType {
 	NEW, MODIFY, DELETE
@@ -11,7 +12,7 @@ enum EventPublishType {
 
 @Component({
 	selector: 'app-publish-event',
-	imports: [],
+	imports: [MainpageComponent],
 	templateUrl: './publish-event.component.html',
 	styleUrl: './publish-event.component.scss',
 })
