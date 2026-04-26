@@ -1,0 +1,46 @@
+<div #titlebarShrinkTrigger></div>
+
+@if (this.mobileNavExpanded || !this.isMobile) {
+    <div class="adelayfast" id="mobile-backdrop" animate.enter="fadeInInner" animate.leave="fadeOutInner"></div>
+}
+
+<div #titlebarFixed id="titlebar-fixed">
+    <h1 id="title">GENNEX</h1>
+    @if (this.mobileNavExpanded || !this.isMobile) {
+        <nav>
+            <a (click)="navigate($event)" href="#about-us">
+                <span class="adelayfast" animate.enter="fadeInInner" animate.leave="fadeOutInner">Über Uns</span>
+            </a>
+            <a (click)="navigate($event)" href="#live-action">
+                <span class="adelayfast" animate.enter="fadeInInner" animate.leave="fadeOutInner">Videos</span>
+            </a>
+            <a (click)="navigate($event)" href="#next-events">
+                <span class="adelayfast" animate.enter="fadeInInner" animate.leave="fadeOutInner">Events</span>
+            </a>
+            <a (click)="navigate($event)" href="#setlist">
+                <span class="adelayfast" animate.enter="fadeInInner" animate.leave="fadeOutInner">Setlist</span>
+            </a>
+            <a (click)="navigate($event)" href="#gallery">
+                <span class="adelayfast" animate.enter="fadeInInner" animate.leave="fadeOutInner">Galerie</span>
+            </a>
+            <a (click)="navigate($event)" href="#booking">
+                <span class="adelayfast" animate.enter="fadeInInner" animate.leave="fadeOutInner">Kontakt</span>
+            </a>
+            <button>Booking</button>
+        </nav>
+
+        <svg id="hamburger" (click)="this.mobileNavExpanded=false" xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x">
+            <path d="M18 6 6 18"></path>
+            <path d="m6 6 12 12"></path>
+        </svg>
+    }
+    @else {
+        <svg id="hamburger" (click)="this.mobileNavExpanded = true" xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="4" x2="20" y1="12" y2="12"></line>
+            <line x1="4" x2="20" y1="6" y2="6"></line>
+            <line x1="4" x2="20" y1="18" y2="18"></line>
+        </svg>
+    }
+</div>

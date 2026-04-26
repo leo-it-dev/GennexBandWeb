@@ -2,12 +2,12 @@ import { AfterViewInit, Component } from '@angular/core';
 import { ApiInterfaceUnsubscribeIn, ApiInterfaceUnsubscribeOut } from '../../../../api_common/subscribe';
 import { UnsubscribeFormularResponse, UnsubscribeFormularStatusCodes } from '../../../../api_common/verification';
 import { SubscribeBackendService } from '../modules/subscribe/subscribe-backend.service';
+import { PageNewComponent } from '../page-new/page-new.component';
 import { LoadingoverlayService } from '../services/loadingoverlay.service';
-import { MainpageComponent } from '../mainpage/mainpage.component';
 
 @Component({
 	selector: 'app-unsubscribe',
-	imports: [MainpageComponent],
+	imports: [PageNewComponent],
 	templateUrl: './unsubscribe.component.html',
 	styleUrl: './unsubscribe.component.scss',
 })

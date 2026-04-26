@@ -1,3 +1,5 @@
+@use './variables.scss' as *;
+
 @font-face {
 	font-family: 'agencyfb-bold';
 	src: url(/fonts/AGENCYB.TTF);
@@ -16,20 +18,140 @@
     font-display: swap;
 }
 
+* {
+    --background: #000;
+    --backgroundOverlay: #0008;
+    --foreground: #f0f1f3;
+	--primary1: #4538FF;
+	--primary1_22: #4538FF22;
+	--primary1_88: #4538FF88;
+	--primary2: #FF3838;
+	--primary2_22: #FF383822;
+    --primaryLight: #00f2ff;
+    --primaryLightAlpha11: #00f2ff11;
+    --primaryLightAlpha1A: #00f2ff1a;
+    --primaryLightAlpha22: #00f2ff22;
+    --primaryLightAlpha55: #00f2ff55;
+    --primaryLightAlphaAA: #00f2ffAA;
+    --alternateSectionColoring: #050505;
+    --alternateSectionColoring2: #080808;
+    --alternateSectionColoring3: #09090b;
+    --alternateSectionColoring4: #020202;
+    --layer0: #aaaaaa11;
+    --layer1: #ffffff22;
+    --layer2: #ffffff77;
+    --layer3: #ffffff99;
+
+    -webkit-tap-highlight-color: transparent;
+}
+
+
+button {
+    border-radius: 50px;
+    color: black;
+    font-weight: 1000;
+    background-color: var(--primaryLight);
+    padding: 14px 25px;
+    font-size: 11pt;
+    text-transform: uppercase;
+    border: none;
+    box-shadow: 0px 0px 30px var(--primaryLightAlpha55);
+    transition: box-shadow .2s ease-out, filter .3s ease-out;
+    width: max-content;
+}
+
+button:hover:not(.action):not(.open-submenu) {
+    filter: brightness(1.4);
+    box-shadow: 0px 0px 40px var(--primaryLight);
+}
+
+button.action {
+    padding: 16px 30px !important;
+    letter-spacing: 3px;
+    position: relative;
+    overflow: hidden;
+    background-color: var(--primaryLight);
+    color: transparent;
+}
+
+button.action:after {
+    position: absolute;
+    content: attr(text);
+    left: 50%;
+    width: 100%;
+    top: 50%;
+    height: auto;
+    transform: translate(-50%, -50%);
+    color: black;
+}
+
+button.action:before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background-color: var(--primary1);
+    border-radius: 1000px;
+    width: 0px;
+    height: auto;
+    aspect-ratio: 1.0;
+    transition: width .5s ease-out;
+
+}
+
+button.action:hover::before {
+    width: 100%;
+    z-index: 0;
+}
+
+button.open-submenu {
+    color: white;
+    background-color: transparent;
+    box-shadow: none !important;
+    border: 1px solid var(--primaryLightAlpha55);
+    font-weight: 700 !important;
+    letter-spacing: 2px;
+    font-size: 10pt;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    line-height: 20px;
+    padding: 14px 32px !important;
+    transition: background-color .3s ease-out;
+    gap: 5px;
+}
+
+button.open-submenu svg {
+    color: var(--primaryLight);
+    transform-origin: center;
+    transition: transform .3s ease-out;
+    transform: rotate(0deg);
+}
+
+button.open-submenu.invertIcon svg {
+    transform: rotate(180deg);
+}
+
+
+button.open-submenu:hover {
+    background-color: var(--primaryLightAlpha22);
+}
+
+
 /* You can add global styles to this file, and also import other style files */
 body {
     margin: 0;
     height: 100%;
-    background-color: black;
+    background-color: var(--background);
 }
 
-input, button, textarea {
+input, textarea {
     font-family: agencyfb-reg, sans-serif;
 }
 
 input[type=text],
 textarea,
-button,
 .input-margin {
     padding: 15px;
     background-color: white;
@@ -47,11 +169,6 @@ button {
     cursor: pointer;
 }
 
-button:hover {
-    filter: brightness(1.1);
-    scale: 1.03;
-}
-
 input[type=text]:focus,
 button:focus,
 textarea:focus {
@@ -67,18 +184,6 @@ textarea.ng-invalid,
 app-hcaptcha.ng-invalid {
     border-left: 4px solid red !important;
 }
-
-
-button.action {
-    background-color: white;
-    border: 3px solid;
-    border-image: linear-gradient(45deg, var(--primary1), var(--primary2));
-    cursor: pointer;
-    font-size: 15pt;
-    color: black;
-    margin: 0;
-}
-
 
 .overlay {
 	position: fixed;
@@ -106,34 +211,73 @@ button.action {
 
 
 /* define the animation */
-@keyframes fade {
+@keyframes fadeHeight {
     from {
         opacity: 0;
+        max-height: 0px;
     }
 
     to {
         opacity: 1;
+        max-height: unset !important;
     }
 }
 
-.fadeIn {
-    animation: fade .3s ease-out;
-    animation-fill-mode: both;
-}
-.fadeOut {
-    animation: fade .3s ease-out;
-    animation-direction: reverse;
-    // animation-fill-mode: both;
-    // position: absolute;
+/* define the animation */
+@keyframes fade {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
-.component-placeholder {
-    width: 100%;
-    text-align: center;
-    padding: 50px;
-    box-sizing: border-box;
-    color: white;
-    font-size: 20pt;
-    background-color: #000c;
-    z-index: 1;
+.fadeInPN {
+    animation: fadeHeight 1s ease-in-out;
+    animation-fill-mode: both;
+}
+.fadeInInner {
+    animation: fade .4s ease-in-out;
+    animation-fill-mode: both;
+}
+.fadeOutPN {
+    animation: fadeHeight 1s ease-in-out;
+    animation-direction: reverse;
+    animation-fill-mode: both;
+}
+.fadeOutInner {
+    animation: fade .4s ease-in-out;
+    animation-direction: reverse;
+    animation-fill-mode: both;
+}
+
+.adelay:nth-child(1) { animation-delay: 0ms; }
+.adelay:nth-child(2) { animation-delay: 160ms; }
+.adelay:nth-child(3) { animation-delay: 320ms; }
+.adelay:nth-child(4) { animation-delay: 480ms; }
+.adelay:nth-child(5) { animation-delay: 640ms; }
+.adelay:nth-child(6) { animation-delay: 800ms; }
+.adelay:nth-child(7) { animation-delay: 960ms; }
+.adelay:nth-child(8) { animation-delay: 1120ms; }
+.adelay:nth-child(9) { animation-delay: 1280ms; }
+.adelay:nth-child(10) { animation-delay: 1440ms; }
+
+.adelayfast:nth-child(1) { animation-delay: 0ms; }
+.adelayfast:nth-child(2) { animation-delay: 80ms; }
+.adelayfast:nth-child(3) { animation-delay: 160ms; }
+.adelayfast:nth-child(4) { animation-delay: 240ms; }
+.adelayfast:nth-child(5) { animation-delay: 300ms; }
+.adelayfast:nth-child(6) { animation-delay: 380ms; }
+.adelayfast:nth-child(7) { animation-delay: 460ms; }
+.adelayfast:nth-child(8) { animation-delay: 540ms; }
+.adelayfast:nth-child(9) { animation-delay: 620ms; }
+.adelayfast:nth-child(10) { animation-delay: 700ms; }
+
+a {
+    text-decoration: none;
+    color: var(--foreground);
 }

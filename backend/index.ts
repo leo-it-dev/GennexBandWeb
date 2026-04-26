@@ -79,7 +79,7 @@ app.use(compression({ filter: shouldCompress }));
 app.use(express.json())
 
 function serveIndex(req: Request, res: Response) {
-    if (!cachedIndexContent) {
+    if (!cachedIndexContent || deploymentType == DeploymentType.DEVELOPMENT) {
         const indexPath = path.join(__dirname, path.join(filePathFrontend, 'index.html'));
         const staticSchemaPath = path.join(__dirname, "schema", "static_page_schema.json");
 
