@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { SectionHeaderComponent } from '../section-header/section-header.component';
 import { ArrowSvgComponent } from '../arrow-svg/arrow-svg.component';
+import { MembersBackendService } from '../modules/members/members-backend.service';
 
 @Component({
 	selector: 'app-about-us',
@@ -16,5 +17,7 @@ export class AboutUsComponent {
 		this.memberListShown = !this.memberListShown;
 	}
 
-	constructor() {}
+	constructor(public backend: MembersBackendService) {
+		
+	}
 }

@@ -12,31 +12,13 @@
 @if(this.memberListShown) {
     <div id="expandable-members" animate.enter="fadeInPN" animate.leave="fadeOutPN">
         <div id="member-cont">
-            <div class="adelay member" animate.enter="fadeInInner" animate.leave="fadeOutInner">
-                <img src="https://images.unsplash.com/photo-1520637102912-2df6bb2aec6d?q=80&w=600" />
-                <h3>Lukas</h3>
-                <h4>Lead-Gesang</h4>
-            </div>
-            <div class="adelay member" animate.enter="fadeInInner" animate.leave="fadeOutInner">
-                <img src="https://images.unsplash.com/photo-1516924962500-2b4b3b99ea02?q=80&w=600" />
-                <h3>Phil</h3>
-                <h4>Lead-Gitarre</h4>
-            </div>
-            <div class="adelay member" animate.enter="fadeInInner" animate.leave="fadeOutInner">
-                <img src="https://images.unsplash.com/photo-1776608721705-3a529722aea5?q=80&w=600" />
-                <h3>Johnny</h3>
-                <h4>Rhytmus-Gitarre</h4>
-            </div>
-            <div class="adelay member" animate.enter="fadeInInner" animate.leave="fadeOutInner">
-                <img src="https://images.unsplash.com/photo-1558227691-41ea78d1f631?q=80&w=600" />
-                <h3>Anna</h3>
-                <h4>Bass</h4>
-            </div>
-            <div class="adelay member" animate.enter="fadeInInner" animate.leave="fadeOutInner">
-                <img src="https://images.unsplash.com/photo-1519892300165-cb5542fb47c7?q=80&w=600" />
-                <h3>Leo</h3>
-                <h4>Schlagzeug</h4>
-            </div>
+            @for(pair of this.backend.members(); track pair.thumbnailPath) {
+                <div class="adelay member" animate.enter="fadeInInner" animate.leave="fadeOutInner">
+                    <img [src]="pair.thumbnailPath" />
+                    <h3>{{pair.member.name}}</h3>
+                    <h4>{{pair.member.role}}</h4>
+                </div>
+            }
         </div>
     </div>
 }

@@ -1,11 +1,9 @@
+import config from 'config';
+import * as fs from 'fs';
 import { getFilePathFrontend, getRepeatedScheduler } from "../..";
 import { ApiInterfaceGalleryIn, ApiInterfaceGalleryOut } from "../../../api_common/gallery";
 import { ApiModule } from "../../api_module";
-import sharp = require('sharp');
 import * as immich from '../../framework/immich_api';
-import * as fs from 'fs';
-import config from 'config';
-import * as path from 'path';
 
 export class ApiModuleGallery extends ApiModule {
 
@@ -17,12 +15,16 @@ export class ApiModuleGallery extends ApiModule {
     filePathBandpics = "";
     filePathBandpicsThumbnails = "";
 
+    galleryAlbum!: immich.SyncableAlbum;
+
     async initialize() {
         this.filePathBandpics = getFilePathFrontend() + this.urlPathBandpics;
         this.filePathBandpicsThumbnails = getFilePathFrontend() + this.urlPathBandpicsThumbs;
 
+        this.galleryAlbum = immich.registerImmichAlbumSynch(config.get('immich.GALLERY_ALBUM') as string, this.urlPathBandpics);
+
         getRepeatedScheduler().scheduleRepeatedEvent(this, "gallery-sync", 60 * this.SYNCHRONIZE_INTERVAL_MINUTES, (finished) => {
-            immich.syncGalleryWithImmich().then(syncResult => {
+            immich.syncWithImmich(this.galleryAlbum).then(syncResult => {
 
                 let updatedGalleryFiles: string[] = [];
                 fs.readdirSync(this.filePathBandpics).forEach(file => {
@@ -32,7 +34,7 @@ export class ApiModuleGallery extends ApiModule {
                 });
                 this.galleryFiles = updatedGalleryFiles;
 
-                this.generateAssetThumbnails(this.filePathBandpics, this.filePathBandpicsThumbnails, syncResult, 1024).then(() => {
+                immich.generateAssetThumbnails(this.filePathBandpics, this.filePathBandpicsThumbnails, syncResult, 1024).then(() => {
                     finished();
                 });
             });
@@ -56,44 +58,5 @@ export class ApiModuleGallery extends ApiModule {
                 }
             }
         });
-    }
-
-    async generateAssetThumbnails(sourceImagesPath: string, thumbnailFolderOut: string, assetSyncResult: immich.SyncGalleryResult, thumbnailImageWidth: number): Promise<void> {
-        if (!fs.existsSync(thumbnailFolderOut)) {
-            fs.mkdirSync(thumbnailFolderOut);
-        }
-
-        let thumbnailLogger = this.logger().child({ service: 'thumbnail-compressor' });
-        thumbnailLogger.info("Starting image thumbnail generation...");
-
-        let filePaths: string[] = [];
-        fs.readdirSync(sourceImagesPath).forEach(assetIdfileName => {
-            let assetId = assetIdfileName.split(".")[0];
-            let assetIdThumbnailPath = path.resolve(sourceImagesPath, assetIdfileName);
-            if (fs.lstatSync(assetIdThumbnailPath).isFile()) {
-                if (assetSyncResult.updateAssetsIDs.includes(assetId)) {
-                    filePaths.push(assetIdThumbnailPath);
-                    thumbnailLogger.info("Generating asset thumbnail!", { assetId: assetIdfileName });
-                }
-                else if (assetSyncResult.deleteAssetsIDs.map(asset => asset.id).includes(assetId)) {
-                    fs.rmSync(assetIdThumbnailPath, { force: true, maxRetries: 3, recursive: false, retryDelay: 1 })
-                    thumbnailLogger.info("Deleting asset thumbnail!", { assetId: assetIdfileName });
-                }
-            }
-        });
-
-        await Promise.all(filePaths.map(async assetIdFileName => {
-            let basename: string = path.basename(assetIdFileName);
-            let sepIdx = basename.lastIndexOf(".");
-            let stem = sepIdx != -1 ? basename.substring(0, sepIdx) : basename;
-            let thumbnailImageName = stem + ".webp";
-            let outputFile = path.resolve(thumbnailFolderOut, thumbnailImageName);
-
-            await sharp(assetIdFileName)
-                .resize(thumbnailImageWidth)
-                .webp({ quality: 70 })
-                .toFile(outputFile);
-        }));
-        thumbnailLogger.info("Finished image thumbnail generation!");
     }
 }

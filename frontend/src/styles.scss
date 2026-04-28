@@ -501,6 +501,12 @@ hr {
         margin: 10px auto !important;
     }
 
+    .section-header,
+    .section-text-subtitle {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+    
     .left-align {
         text-align: center;
     }

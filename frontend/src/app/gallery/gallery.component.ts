@@ -2,6 +2,7 @@ import { AfterViewInit, Component, computed, effect, ElementRef, Signal, signal,
 import { AnimationOptions } from 'ngx-lottie';
 import { PageControlService } from '../services/page-control.service';
 import { ArrowSvgComponent } from '../arrow-svg/arrow-svg.component';
+import { GalleryBackendService } from '../modules/gallery/gallery-backend.service';
 
 @Component({
 	selector: 'app-gallery',
@@ -9,7 +10,7 @@ import { ArrowSvgComponent } from '../arrow-svg/arrow-svg.component';
 	templateUrl: './gallery.component.html',
 	styleUrl: './gallery.component.scss'
 })
-export class GalleryComponent implements AfterViewInit {
+export class GalleryComponent {
 
 	@ViewChild('wrapper')
 	wrapper?: ElementRef;
@@ -17,20 +18,11 @@ export class GalleryComponent implements AfterViewInit {
 	@ViewChild('bigImage')
 	bigImage?: ElementRef;
 
-	imagesLoaded = false;
-
-	public images: WritableSignal<{ [key: string]: string }> = signal({});
-	public thumbnailImageURLs: Signal<string[]> = computed(() => Object.keys(this.images()).map(name => this.thumbnailURLPath + "/" + name));
-
-	public thumbnailURLPath = "";
-	public bigURLPath = "";
 	public showBigGallery: WritableSignal<boolean> = signal(false);
-
 	public showBigImageHR: WritableSignal<string> = signal("");
 	public showBigImageLR: WritableSignal<string> = signal("");
 	public hrImageLoaded = false;
-
-	public teaserImages: Signal<string[]> = computed(() => this.selectGalleryImages(this.thumbnailImageURLs(), 5));
+	public teaserImages: Signal<string[]> = computed(() => this.selectGalleryImages(this.backend.thumbnailImageURLs(), 5));
 
 	animationOptions: Signal<AnimationOptions> = computed(() => {
 		return {
@@ -40,7 +32,7 @@ export class GalleryComponent implements AfterViewInit {
 		}
 	});
 
-	constructor(public elRef: ElementRef, private pageControl: PageControlService) {
+	constructor(public elRef: ElementRef, private pageControl: PageControlService, public backend: GalleryBackendService) {
 		effect(() => {
 			this.pageControl.preventBodyScrolling.set(this.showBigGallery() || this.showBigImageLR() != "");
 		});
@@ -55,50 +47,15 @@ export class GalleryComponent implements AfterViewInit {
 		}
 	}
 
-	ngAfterViewInit(): void {
-		fetch(document.location.origin + "/module/gallery/gallery", {
-			method: "GET",
-			headers: {
-				'Accept': 'application/json'
-			}
-		}).then(async resp => resp.json()).then(galleryList => {
-
-			this.imagesLoaded = true;
-
-			galleryList = galleryList.content;
-			let files: string[] = galleryList["files"];
-			let thumbnails = galleryList["thumbnails"];
-			let big = galleryList["big"];
-			let thumbnailFormat = galleryList["thumbnailFormat"];
-			this.thumbnailURLPath = thumbnails;
-			this.bigURLPath = big;
-
-			let imageMap: { [key: string]: string } = {};
-
-			files.map(file => {
-				let basename = file;
-				let sepIdx = basename.lastIndexOf(".");
-				let stem = sepIdx != -1 ? basename.substring(0, sepIdx) : basename;
-
-				let thumbnailURL = stem + "." + thumbnailFormat;
-				let bigURL = basename;
-
-				imageMap[thumbnailURL] = bigURL;
-			});
-
-			this.images.set(imageMap);
-		});
-	}
-
 	openBigImageEvt(event: Event) {
 		this.openBigImage(new URL((event.target as HTMLImageElement).src).pathname);
 	}
 
 	openBigImage(url: string) {
 		let thumbBaseName = new URL("https://" + location.host + url).pathname.split("/").pop();
-		let bigFileName = this.images()[thumbBaseName ?? ""];
+		let bigFileName = this.backend.images()[thumbBaseName ?? ""];
 		this.hrImageLoaded = false;
-		this.showBigImageHR.set(this.bigURLPath + "/" + bigFileName);
+		this.showBigImageHR.set(this.backend.bigImagePath + "/" + bigFileName);
 		this.showBigImageLR.set(url);
 	}
 

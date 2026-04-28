@@ -24,6 +24,7 @@
     "chalk": "^4",
     "compression": "^1.8.1",
     "config": "^4.1.1",
+    "exiftool-vendored": "^35.19.0",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.3",
     "lru-cache": "^11.2.4",

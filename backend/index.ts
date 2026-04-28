@@ -26,6 +26,7 @@ import { AgentTrigger } from './modules/agent/agent_trigger';
 import { ApiModuleRenderedPDFs } from './modules/renderedpdf/api_renderedpdf';
 import { ApiModuleMailer } from './modules/mailer/api_mailer';
 import { staticSchema } from './schema/static_page_schema';
+import { ApiModuleMembers } from './modules/members/api_members';
 
 let mainLogger = getLogger("index");
 
@@ -189,7 +190,8 @@ async function initializeModules() {
         ApiModuleCalendar,
         ApiModuleSubscribe,
         ApiModuleAgentHandler,
-        ApiModuleRenderedPDFs
+        ApiModuleRenderedPDFs,
+        ApiModuleMembers
     ]
 
     let moduleLoaderLogger = getLogger('module-loader');

@@ -1,6 +1,6 @@
 <h1 class="section-header">Live <span class="section-header-highlight">Highlights</span></h1>
 
-@defer (when this.imagesLoaded) {
+@defer (when this.backend.imagesLoaded) {
     <span class="section-text" id="gallery-images">
         @for(image of this.teaserImages(); track image) {
             <div><img [src]="image" (click)="openBigImageEvt($event)" /></div>
