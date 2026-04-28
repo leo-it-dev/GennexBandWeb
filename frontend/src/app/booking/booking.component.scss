@@ -1,0 +1,114 @@
+:host {
+    background-color: var(--alternateSectionColoring3);
+}
+
+.inline-hints {
+    padding-top: 50px;
+}
+
+.inline-hint {
+    padding: 10px 20px;
+    width: min-content;
+    border-radius: 7px;
+    border: 1px solid var(--layer1);
+    background-color: var(--layer0);
+    color: var(--layer2);
+    font-size: 11pt;
+    line-height: 11pt;
+    text-wrap: nowrap;
+    font-weight: 500;
+    display: inline-block;
+    margin-right: 20px;
+}
+
+.inline-hint svg {
+    height: 11pt;
+    width: 11pt;
+    padding-right: 3px;
+    color: var(--primaryLight);
+    position: relative;
+    top: 2px;
+}
+
+#downloads {
+    background-color: var(--alternateSectionColoring);
+    border-radius: 30px;
+    border: 1px solid var(--layer1);
+    padding: 35px;
+    box-sizing: border-box;
+}
+
+#downloads .download {
+    background-color: var(--layer0);
+    border-radius: 15px;
+    border: 1px solid var(--layer1);
+    padding: 15px;
+    width: 100%;
+    text-align: left;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    margin-bottom: 10px;
+    transition: background-color .15s ease-out, border-color .15s ease-out;
+    cursor: pointer;
+}
+
+#downloads .download:hover svg:nth-of-type(0n+1) {
+    background-color: var(--primaryLight) !important;
+    color: black !important;
+}
+#downloads .download:hover svg:nth-of-type(0n+2) {
+    color: var(--primaryLight) !important;
+}
+#downloads .download:hover {
+    background-color: var(--layer1);
+    border-color: var(--primaryLight);
+}
+#downloads > h1 {
+    text-transform: uppercase;
+    color: var(--layer2);
+    font-size: 18pt;
+    text-align: left;
+    font-weight: 600;
+    margin-top: 0;
+}
+
+#downloads .download svg:nth-of-type(0n+1) {
+    width: 20px;
+    height: 20px;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: var(--primaryLightAlpha22);
+    color: var(--primaryLight);
+    margin-right: 10px;
+    transition: color .15s linear, background-color .15s linear;
+}
+
+#downloads .download svg:nth-of-type(0n+2) {
+    width: 20px;
+    height: 20px;
+    padding: 10px;
+    border-radius: 10px;
+    color: var(--layer2);
+    margin-left: auto;
+    transition: color .15s linear;
+}
+
+#downloads .download h2 {
+    font-weight: 800;
+    color: var(--foreground);
+    margin: 0px;
+    font-size: 12pt;
+    line-height: 12pt;
+    letter-spacing: 0px;
+}
+#downloads .download h3 {
+    font-weight: 400;
+    color: var(--layer2);
+    margin: 0px;
+    margin-top: 5px;
+    font-size: 10pt;
+    line-height: 10pt;
+    letter-spacing: 0px;
+}

@@ -65,12 +65,12 @@ h1 {
 
 }
 
-.spacer {
+.press-spacer {
     width: 20px;
     display: inline-block !important;
 }
 
-.section {
+.press-section {
     width: 100%;
     min-width: 100%;
     box-sizing: border-box;
@@ -79,7 +79,7 @@ h1 {
     margin-bottom: 15px;
 }
 
-.section-header {
+.press-section-header {
     width: 100%;
     padding-left: 15px;
     display: flex;
@@ -88,7 +88,7 @@ h1 {
     box-sizing: border-box;
 }
 
-.section h2 {
+.press-section h2 {
     font-weight: bolder;
     font-size: 22pt;
     margin: 5px 0px;
@@ -98,14 +98,14 @@ h1 {
     width: max-content;
 }
 
-.section img {
+.press-section img {
     width: 25px;
     object-fit: contain;
     line-height: 22pt;
     margin-right: 15px;
 }
 
-.section-content {
+.press-section-content {
     word-wrap: normal;
     font-size: 12pt;
     color: white;
@@ -113,27 +113,27 @@ h1 {
     letter-spacing: 5px;
 }
 
-.section-content span,
-.section-content iframe {
+.press-section-content span,
+.press-section-content iframe {
     display: block;
 }
 
-.separator-lines p {
+.press-separator-lines p {
     padding-top: 20px;
     margin: 0;
 }
 
-.separator-lines p:nth-of-type(0n+1) {
+.press-separator-lines p:nth-of-type(0n+1) {
     padding-top: 0px !important;
 }
 
-.separator-lines {
+.press-separator-lines {
     border-top: 1px solid #ffffff22;
     border-bottom: 1px solid #ffffff22;
     padding: 20px 0px;
 }
 
-.section-content iframe {
+.press-section-content iframe {
     border: none;
     width: 100%;
     // height: auto;
@@ -146,20 +146,20 @@ h1 {
     margin: 10px 0px 10px 0px;
 }
 
-.separator-lines .section-header:nth-child(0n+1) {
+.press-separator-lines .press-section-header:nth-child(0n+1) {
     margin: 0 !important;
 }
 
-.separator-lines ul {
+.press-separator-lines ul {
     padding-left: 20px !important;
     margin: 0 !important;
 }
 
-.separator-lines > ul > li {
+.press-separator-lines > ul > li {
     padding-top: 10px;
 }
 
-.separator-lines > ul > li:nth-of-type(0n+1) {
+.press-separator-lines > ul > li:nth-of-type(0n+1) {
     padding-top: 0px !important;
 }
 
@@ -169,7 +169,7 @@ h1 {
         padding: 50px 30px;
     }
 
-    .section-content {
+    .press-section-content {
         padding: 0px 20px 30px 20px !important;
     }
 

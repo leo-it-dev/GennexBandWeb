@@ -1,34 +1,16 @@
 :host {
-    background: black;
-    z-index: 1;
-    padding: 0px 0px 50px 0px;
-    border-bottom: 5px solid black;
-    border-top: 5px solid black;
-    border-image: linear-gradient(45deg, var(--primary1) 0%, var(--primary2) 100%) 25%;
+    background: linear-gradient(180deg, black 0%, black 70%, #111 100%);
 }
 
-.media-video {
-    height: var(--elementHeight);
-    width: 55vw;
-    min-width: 55vw;
-    margin: 0% 22.5vw;
-    transition: opacity .5s ease-out;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    flex-wrap: nowrap;
-    position: relative;
-    animation-fill-mode: both;
-}
-
-#selectPlaylistCont {
-    height: var(--elementHeight);
-}
 
 :host ::ng-deep youtube-player iframe {
     width: 100%;
     height: 100%;
     display: block;
+}
+
+:host ::ng-deep youtube-player {
+    width: unset !important;
 }
 
 :host ::ng-deep youtube-player>div {
@@ -39,179 +21,4 @@
 :host ::ng-deep youtube-player youtube-player-placeholder {
     width: 100% !important;
     height: 100% !important;
-}
-
-youtube-player {
-    flex: 1;
-    border: 1px solid white;
-}
-
-.video-name {
-    margin: 0;
-    padding: 20px;
-    background: white;
-    color: black;
-    flex: 0;
-}
-
-.youtube-player-placeholder {
-    flex: 1;
-    background-color: #0008;
-    color: white;
-    font-size: 15pt;
-    text-align: center;
-}
-
-.media-video-loaded {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    flex-wrap: nowrap;
-}
-
-select {
-    width: 100%;
-    height: 100%;
-    background: transparent;
-    border: none;
-    font-family: agencyfb-reg, sans-serif !important;
-    font-weight: bolder;
-    font-size: 20pt;
-    text-overflow: ellipsis;
-    max-width: 100%;
-}
-
-option {
-    font-family: agencyfb-reg, sans-serif !important;
-    font-size: 15pt;
-}
-
-
-#video-wrapper {
-    max-width: 100vw;
-    overflow: hidden;
-    position: relative;
-}
-
-#video-sweep {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    position: relative;
-}
-
-#sweep-left,
-#sweep-right {
-    position: absolute;
-    top: 0;
-    cursor: pointer;
-    height: 100%;
-    width: 15vw;
-    opacity: 1;
-    transition: opacity .3s ease-out;
-}
-
-#sweep-left-mobile,
-#sweep-right-mobile {
-    flex: 1;
-    height: 100px;
-    position: relative;
-}
-
-#sweep-left:after,
-#sweep-right:after {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 500pt;
-    color: white;
-
-    border-top: 16px solid white;
-    border-left: 16px solid white;
-    width: 100px;
-    height: 100px;
-    border-radius: 10px;
-
-    content: '';
-    left: 50%;
-}
-
-#sweep-left,
-#sweep-left-mobile {
-    left: 0vw;
-}
-
-#sweep-right,
-#sweep-right-mobile {
-    right: 0vw;
-}
-
-#sweep-left-mobile,
-#sweep-right-mobile {
-    color: white;
-    font-size: 50pt;
-    text-align: center;
-    line-height: 100px;
-    cursor: pointer;
-    transition: opacity .3s ease-out;
-}
-
-
-#sweep-left:after {
-    transform: translateX(-50%) scaleX(.3) rotate(-45deg) translateY(-50%);
-}
-
-#sweep-right:after {
-    transform: translateX(-50%) scaleX(.3) rotate(135deg) translateY(50%);
-}
-
-.sweep-disabled {
-    cursor: unset !important;
-    opacity: 0 !important;
-}
-
-#sweep-mobile {
-    display: none;
-}
-
-.sweep-desktop {
-    display: block;
-}
-
-@media screen and (max-width: 700px) {
-    :host {
-        padding: 0px !important;
-    }
-
-    select {
-        width: initial !important;
-        text-align: left;
-        color: white !important;
-        text-shadow: 0px 0px 5px black;
-    }
-
-    .media-video {
-        height: var(--elementHeight);
-        width: 80vw !important;
-        min-width: 80vw !important;
-        margin: 10px 10vw 0px 10vw !important;
-        transition: opacity .5s ease-out;
-        box-sizing: border-box;
-        display: flex;
-        flex-direction: column;
-        flex-wrap: nowrap;
-        position: relative;
-        animation-fill-mode: both;
-    }
-
-    
-    #sweep-mobile {
-        display: flex !important;
-        flex-direction: row;
-        flex-wrap: nowrap;
-    }
-    .sweep-desktop {
-        display: none !important;
-    }
-
 }

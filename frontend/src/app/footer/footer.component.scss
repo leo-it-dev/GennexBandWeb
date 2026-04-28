@@ -1,0 +1,30 @@
+footer {
+    width: 100%;
+    padding: 0px 40px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 20px;
+    border-top: 1px solid var(--layer1);
+    box-sizing: border-box;
+
+    background: var(--primaryLightAlpha1A);
+}
+
+footer,
+footer h3 {
+    color: var(--layer2);
+    font-size: 11pt;
+    font-weight: 1;
+}
+
+footer h3 {
+    margin: 0;
+    padding: 20px 0px;
+    cursor: pointer;
+}
+
+.spacer {
+    flex: 1;
+}

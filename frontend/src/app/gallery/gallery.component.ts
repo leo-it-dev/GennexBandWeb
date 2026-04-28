@@ -1,13 +1,11 @@
-import { AfterViewInit, Component, computed, effect, ElementRef, QueryList, Signal, signal, ViewChild, ViewChildren, WritableSignal, ɵsetAllowDuplicateNgModuleIdsForTest } from '@angular/core';
-import { SectionHeaderComponent } from '../section-header/section-header.component';
-import { SlotComponent } from '../slot/slot.component';
-import { DiamondImageMapComponent } from '../diamond-image-map/diamond-image-map.component';
+import { AfterViewInit, Component, computed, effect, ElementRef, Signal, signal, ViewChild, WritableSignal } from '@angular/core';
+import { AnimationOptions } from 'ngx-lottie';
 import { PageControlService } from '../services/page-control.service';
-import { AnimationOptions, LottieComponent } from 'ngx-lottie';
+import { ArrowSvgComponent } from '../arrow-svg/arrow-svg.component';
 
 @Component({
 	selector: 'app-gallery',
-	imports: [SectionHeaderComponent, SlotComponent, DiamondImageMapComponent, LottieComponent],
+	imports: [ArrowSvgComponent],
 	templateUrl: './gallery.component.html',
 	styleUrl: './gallery.component.scss'
 })
@@ -32,7 +30,7 @@ export class GalleryComponent implements AfterViewInit {
 	public showBigImageLR: WritableSignal<string> = signal("");
 	public hrImageLoaded = false;
 
-	public teaserImages: Signal<string[]> = computed(() => this.selectThreeGalleryImages(this.thumbnailImageURLs()));
+	public teaserImages: Signal<string[]> = computed(() => this.selectGalleryImages(this.thumbnailImageURLs(), 5));
 
 	animationOptions: Signal<AnimationOptions> = computed(() => {
 		return {
@@ -113,10 +111,10 @@ export class GalleryComponent implements AfterViewInit {
 		this.showBigImageHR.set("");
 	}
 
-	selectThreeGalleryImages(thumbnails: string[]): string[] {
+	selectGalleryImages(thumbnails: string[], count: number): string[] {
 		let images: string[] = [];
 		let imagesRemaining = thumbnails;
-		for (let i = 0; i < 3; i++) {
+		for (let i = 0; i < count; i++) {
 			images.push(imagesRemaining.splice(Math.floor(Math.random() * imagesRemaining.length), 1)[0]);
 		}
 		return images;

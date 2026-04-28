@@ -21,7 +21,6 @@ export class ConfigService {
 
 	async awaitConfig(): Promise<ApiInterfaceConfigOut> {
 		while (ConfigService.config == undefined) {
-			console.log(ConfigService.config);
 			await timeout(100);
 		}
 		return ConfigService.config;

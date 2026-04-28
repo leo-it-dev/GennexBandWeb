@@ -2,16 +2,15 @@ import { Component, inject, ViewChild } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ApiInterfaceContactIn, ApiInterfaceContactOut } from '../../../../api_common/contact';
 import { contactFormularRequestVerification, ContactFormularResponse, ContactFormularStatusCodes, VERIFICATION_CODE_LENGTH } from '../../../../api_common/verification';
+import { BackendService } from '../api/backend.service';
 import { formBuilderGroupFromInputVerifierTemplate } from '../formVerifier';
 import { HcaptchaComponent } from '../hcaptcha/hcaptcha.component';
-import { LoadingoverlayService } from '../services/loadingoverlay.service';
-import { SlotComponent } from '../slot/slot.component';
-import { BackendService } from '../api/backend.service';
 import { ContactBackendService } from '../modules/contact/contact-backend.service';
+import { LoadingoverlayService } from '../services/loadingoverlay.service';
 
 @Component({
 	selector: 'app-contact',
-	imports: [SlotComponent, HcaptchaComponent, ReactiveFormsModule],
+	imports: [HcaptchaComponent, ReactiveFormsModule],
 	templateUrl: './contact.component.html',
 	styleUrl: './contact.component.scss'
 })

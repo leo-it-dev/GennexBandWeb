@@ -1,22 +1,42 @@
-<div class="fade-scroll-items-container" #fadeScrollItemContainer [style.--sectionTitleHeight]="this.SECTION_TITLE_HEIGHT + 'px'">
-    <div id="image-container">
-        <img id="logo" src="/images/webp/logo0014.webp" />
-    </div>
+<h1 class="section-header">Wir Sind <span class="section-header-highlight">Gennex</span></h1>
+<span class="section-text">
+    Fünf Freunde, eine Leidenschaft:
+    Handgemachte Musik, die ins Blut geht.
+    Wir bringen die Energie von Rock-Klassikern und den Vibe aktueller Chart-Hits direkt auf
+    eure Bühne - 100% ehrlich, 100% live und immer mit vollem Einsatz.
+</span>
+<button [class.invertIcon]="this.memberListShown" class="open-submenu" (click)="toggleMemberList()">{{this.memberListShown ? "Weniger Anzeigen" : "Erfahre mehr dazu"}}
+    <app-arrow-svg></app-arrow-svg>
+</button>
 
-    <div id="content">
-        <app-section-header id="header" title="Über uns"></app-section-header>
-        <div id="text-wrapper">
-            <div id="text" #text>
-                <p class="fade-scroll-item" #scrollItem> </p>
-                <p class="fade-scroll-item-spacer"></p>
-                @for(text of this.textList; track text) {
-                    <p class="fade-scroll-item" #scrollItem>
-                        {{text}}
-                    </p>
-                }
-                <p class="fade-scroll-item-spacer"></p>
+@if(this.memberListShown) {
+    <div id="expandable-members" animate.enter="fadeInPN" animate.leave="fadeOutPN">
+        <div id="member-cont">
+            <div class="adelay member" animate.enter="fadeInInner" animate.leave="fadeOutInner">
+                <img src="https://images.unsplash.com/photo-1520637102912-2df6bb2aec6d?q=80&w=600" />
+                <h3>Lukas</h3>
+                <h4>Lead-Gesang</h4>
+            </div>
+            <div class="adelay member" animate.enter="fadeInInner" animate.leave="fadeOutInner">
+                <img src="https://images.unsplash.com/photo-1516924962500-2b4b3b99ea02?q=80&w=600" />
+                <h3>Phil</h3>
+                <h4>Lead-Gitarre</h4>
+            </div>
+            <div class="adelay member" animate.enter="fadeInInner" animate.leave="fadeOutInner">
+                <img src="https://images.unsplash.com/photo-1776608721705-3a529722aea5?q=80&w=600" />
+                <h3>Johnny</h3>
+                <h4>Rhytmus-Gitarre</h4>
+            </div>
+            <div class="adelay member" animate.enter="fadeInInner" animate.leave="fadeOutInner">
+                <img src="https://images.unsplash.com/photo-1558227691-41ea78d1f631?q=80&w=600" />
+                <h3>Anna</h3>
+                <h4>Bass</h4>
+            </div>
+            <div class="adelay member" animate.enter="fadeInInner" animate.leave="fadeOutInner">
+                <img src="https://images.unsplash.com/photo-1519892300165-cb5542fb47c7?q=80&w=600" />
+                <h3>Leo</h3>
+                <h4>Schlagzeug</h4>
             </div>
         </div>
     </div>
-    <div class="sifAnchor" [id]='"sifAnchor-" + this.name'></div>
-</div>
+}

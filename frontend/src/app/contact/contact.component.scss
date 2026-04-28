@@ -1,35 +1,79 @@
-#slot {
-    display: flex;
-    flex-direction: column;
-    flex-wrap: nowrap;
-    width: 100%;
-    height: 100%;
-    padding-bottom: 20px;
+:host {
+    background: linear-gradient(180deg, var(--alternateSectionColoring4) 0%, var(--primaryLightAlpha1A) 100%);
+    padding-bottom: 0 !important;
 }
 
-#name {
+#contact-mail {
+    font-size: 26pt;
+    line-height: 30pt;
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    letter-spacing: 0px;
+    color: white;
+    gap: 15px;
+    transition: color .15s ease-out;
+    cursor: pointer;
+}
+#contact-mail svg:nth-child(0n+1) {
+    width: 30pt;
+    height: 30pt;
+    color: var(--primaryLight);
+    transition: color .15s ease-out;
 }
 
-#name input {
-    width: 50% !important;
-}
-#name input:nth-child(1) {
-    margin-right: 4px !important;
-}
-#name input:nth-child(2) {
-    margin-left: 4px !important;
-}
-
-textarea {
-    flex: 1;
+#contact-mail svg:nth-child(0n+2) {
+    color: var(--primaryLight);
+    width: 30px;
+    height: 30px;
+    margin-left: -30px;
+    opacity: 0;
+    transition: color .15s ease-out, opacity .15s ease-out, margin-left .15s ease-out;
 }
 
-#captcha-placeholder {
+#contact-mail:hover {
+    color: var(--primaryLight) !important;
+}
+#contact-mail:hover svg:nth-child(0n+1) {
+    color: white;
+}
+#contact-mail:hover svg:nth-child(0n+2) {
+    opacity: 1 !important;
+    margin: 0 !important;
+}
+
+#other-channels {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+#other-channels a {
+    border-radius: 100px;
+    background-color: var(--alternateSectionColoring);
+    border: 1px solid var(--layer1);
     padding: 20px;
-    font-size: 15pt;
-    background-color: white;
-    box-shadow: 0px 0px 5px gray;
+    box-sizing: border-box;
+    width: 80px;
+    height: 80px;
+    transition: border .3s ease-out, transform .3s ease-out, background-color .3s ease-out;
+}
+
+#other-channels a img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    transform: translateY(0px);
+}
+
+#other-channels a:hover {
+    border: 1px solid var(--primaryLight);
+    transform: translateY(-10px);
+    background-color: var(--alternateSectionColoring4);
 }

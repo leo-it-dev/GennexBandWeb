@@ -1,19 +1,25 @@
-<app-section-header title="Galerie"></app-section-header>
+<h1 class="section-header">Live <span class="section-header-highlight">Highlights</span></h1>
 
-@if(!this.imagesLoaded) {
+@defer (when this.imagesLoaded) {
+    <span class="section-text" id="gallery-images">
+        @for(image of this.teaserImages(); track image) {
+            <div><img [src]="image" (click)="openBigImageEvt($event)" /></div>
+            <!-- <app-diamond-image-map [images]="this.thumbnailImageURLs" [slideshow]="true" (imageClicked)="openBigImage($event)" [parentContainer]="this.elRef" [heightCrop]="true"></app-diamond-image-map> -->
+        }
+    </span>
+} @placeholder(minimum 500ms) {
     <h3 id="load-images">Lade Bilddaten...</h3>
 }
-<div id="mask">
-    @for(image of this.teaserImages(); track image) {
-        <img [src]="image" (click)="openBigImageEvt($event)" />
-    }
-    <!-- <app-diamond-image-map [images]="this.thumbnailImageURLs" [slideshow]="true" (imageClicked)="openBigImage($event)" [parentContainer]="this.elRef" [heightCrop]="true"></app-diamond-image-map> -->
-</div>
-<button class="action" (click)="this.showBigGallery.set(true)">Zeig mir mehr →</button>
 
-<div id="background-border"></div>
 
-@if(this.showBigGallery()) {
+<button (click)="this.showBigGallery.set(true)" class="low-attention">
+    Zeig mir mehr
+    <app-arrow-svg></app-arrow-svg>
+</button>
+
+
+
+<!-- @if(this.showBigGallery()) {
 <div class="overlay" animate.enter="fadeIn" animate.leave="fadeOut">
     <app-slot title="Galerie" [defaultScroll]="true" [hasCloseButton]="true" (closeEvent)="this.showBigGallery.set(false)" [contentNoPadding]="true" [fullScreen]="true">
         <app-diamond-image-map [images]="this.thumbnailImageURLs" [slideshow]="false" (imageClicked)="openBigImage($event)" [parentContainer]="this.elRef" [heightCrop]="false"></app-diamond-image-map>
@@ -34,4 +40,4 @@
     </div>
     }
 </div>
-}
+} -->

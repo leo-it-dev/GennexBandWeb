@@ -2,13 +2,12 @@ import { Component, computed, effect, ElementRef, Injector, QueryList, signal, V
 import { YouTubePlayer } from '@angular/youtube-player';
 import { Playlist } from '../../../../api_common/videos';
 import { VideosBackendService } from '../modules/videos/videos-backend.service';
-import { SectionHeaderComponent } from '../section-header/section-header.component';
 import { SlotScrollCommunication } from '../slot/slot.component';
 import { computedIsUpdated } from '../utilities';
 
 @Component({
 	selector: 'app-video-list',
-	imports: [YouTubePlayer, SectionHeaderComponent],
+	imports: [YouTubePlayer],
 	templateUrl: './video-list.component.html',
 	styleUrl: './video-list.component.scss',
 })

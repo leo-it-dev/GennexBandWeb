@@ -1,0 +1,20 @@
+<div class="big-circle-prim2"></div>
+
+<div class="section-left-content1">
+    <h1 class="section-header-compact">Unsere <span class="section-header-highlight2">Setlist</span></h1>
+    <span class="section-text-subtitle">
+        Ein kleiner Auszug aus unserem Repertoire. Von absoluten Party-Krachern bis hin zu legendären Rock-Hymnen
+        - wir spielen das, was die Menge zum Beben bringt.
+    </span>
+</div>
+<span class="section-text section-left-content2">
+    @defer(when this.setlistURL !== undefined) {
+        <iframe style="border-radius:12px"
+            [src]="this.setlistURL"
+            width="100%" height="500" frameborder="0" allowfullscreen=""
+            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"
+            title="Gennnex Spotify Playlist"></iframe>
+    } @placeholder {
+        <h1>Warte auf Spotify...</h1>
+    }
+</span>

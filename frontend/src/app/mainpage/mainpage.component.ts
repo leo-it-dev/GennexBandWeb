@@ -1,6 +1,4 @@
 import { AfterViewInit, Component, DOCUMENT, effect, ElementRef, Inject, QueryList, signal, ViewChildren, WritableSignal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import { AboutUsComponent } from '../about-us/about-us.component';
 import { CalendarListComponent } from '../calendar-list/calendar-list/calendar-list.component';
 import { ContactChannelsComponent } from '../contact-channels/contact-channels.component';
 import { ContactComponent } from '../contact/contact.component';
@@ -16,7 +14,7 @@ import { VideoListComponent } from '../video-list/video-list.component';
 
 @Component({
 	selector: 'app-mainpage',
-	imports: [LoadingoverlayComponent, GalleryComponent, ContactComponent, DynamicBackgroundImageComponent, PrivacypolicyComponent, ImpressumComponent, SlotComponent, VideoListComponent, ContactChannelsComponent, CalendarListComponent, AboutUsComponent],
+	imports: [LoadingoverlayComponent, GalleryComponent, ContactComponent, DynamicBackgroundImageComponent, PrivacypolicyComponent, ImpressumComponent, SlotComponent, VideoListComponent, ContactChannelsComponent, CalendarListComponent],
 	templateUrl: './mainpage.component.html',
 	styleUrl: './mainpage.component.scss',
 })

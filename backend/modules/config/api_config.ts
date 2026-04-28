@@ -18,7 +18,8 @@ export class ApiModuleConfig extends ApiModule {
                 statusCode: 200,
                 error: undefined,
                 responseObject: {
-                    hcaptcha_key: config.get("generic.HCAPTCHA_SITEKEY")
+                    hcaptcha_key: config.get("generic.HCAPTCHA_SITEKEY"),
+                    spotify_playlist_id: config.get("spotify.SETLIST_PLAYLIST_ID")
                 }
             }
         });

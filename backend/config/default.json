@@ -25,6 +25,9 @@
         "CHANNEL_ID": "enter_your_channel_id_here",
         "UPDATE_INTERVAL_MINUTES": 86400
     },
+    "spotify": {
+        "SETLIST_PLAYLIST_ID": "some-spotify-playlist-id"
+    },
     "calendar": {
         "CALENDAR_ID": "your_calender_id@group.calendar.google.com",
         "GEOCODING_DATA_API_KEY": "enter_your_geocode_api_key_here",

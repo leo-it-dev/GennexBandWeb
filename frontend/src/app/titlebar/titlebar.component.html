@@ -23,10 +23,12 @@
             <a (click)="navigate($event)" href="#gallery">
                 <span class="adelayfast" animate.enter="fadeInInner" animate.leave="fadeOutInner">Galerie</span>
             </a>
-            <a (click)="navigate($event)" href="#booking">
+            <a (click)="navigate($event)" href="#contact">
                 <span class="adelayfast" animate.enter="fadeInInner" animate.leave="fadeOutInner">Kontakt</span>
             </a>
-            <button>Booking</button>
+            <a href="#booking">
+                <button>Booking</button>
+            </a>
         </nav>
 
         <svg id="hamburger" (click)="this.mobileNavExpanded=false" xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"

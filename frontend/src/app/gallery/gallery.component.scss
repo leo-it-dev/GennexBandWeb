@@ -1,22 +1,57 @@
-:host {
-    width: 100%;
-    position: relative;
-    height: 550px;
-    display: block;
-}
 
-#mask {
-    height: 100%;
-    overflow: hidden;
-    mask-image: linear-gradient( to bottom, transparent 0%, black 30%, black 70%, transparent 100%);
-
+#gallery-images {
     display: flex;
-    flex-wrap: nowrap;
     flex-direction: row;
-    gap: 30px;
-    padding: 60px 0px;
-    box-sizing: border-box;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+    max-width: 80vw;
 }
+
+#gallery-images div {
+    width: 150px;
+    height: 150px;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+}
+
+#gallery-images div img {
+    object-position: center;
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+    filter: grayscale(1.0);
+    transition: filter .15s ease-out, transform .15s ease-out;
+}
+
+#gallery-images div:hover img {
+    filter: grayscale(0.0) !important;
+    transform: scale(1.1);
+}
+
+#gallery-images div:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 50%, transparent 0%, #0009 80%);
+    z-index: 1;
+}
+
+:host {
+    border-bottom: 1px solid var(--layer1);
+    border-top: 1px solid var(--layer1);
+    padding: 50px 0px;
+}
+
+
+
+//  Old code:
 
 #galleryBigImageViewerHR {
     opacity: 0;
@@ -52,39 +87,6 @@
     z-index: 10;
 }
 
-.action {
-    position: relative;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    transition: transform .2s ease-out;
-}
-
-.action:hover {
-    transform-origin: center;
-    transform: translate(-50%, -50%) scale(1.1);
-}
-
-#background-border {
-    position: absolute;
-    height: 100%;
-    z-index: -1;
-    background-color: black;
-    top: 0%;
-    left: 0%;
-    width: 100%;
-    border-top: 5px solid transparent;
-    border-image: linear-gradient(45deg, var(--primary1) 0%, var(--primary2) 100%) 25%;
-    border-bottom: 5px solid;
-}
-
-app-section-header {
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 100;
-}
-
 ng-lottie {
     width: 50px;
     height: 50px;
@@ -118,48 +120,4 @@ ng-lottie {
     padding: 50px;
     text-align: center;
     font-size: 25pt;
-}
-
-img {
-    border: 2px solid white;
-}
-
-#mask img {
-    box-sizing: border-box;
-    cursor: pointer;
-    transform-origin: center;
-    transition: transform .3s ease-out, box-shadow .3s ease-out;
-    transform: scale(1.0);
-    box-shadow: 0px 0px 0px white;
-    max-width: 30vw;
-    margin: 0 auto;
-    object-fit: cover;
-}
-
-#mask img:hover {
-    transform: scale(1.1);
-    box-shadow: 0px 0px 10px white;
-}
-
-@media screen and (max-width: 700px) {
-    #wrapper {
-        --size: 200px;
-    }
-    :host {
-        height: auto;
-    }
-
-    app-section-header {
-        position: sticky;
-    }
-
-    #mask {
-        flex-direction: column;
-        mask-image: none !important;
-    }
-
-    #mask img {
-        max-width: 80vw;
-        max-height: 400px;
-    }
 }

@@ -24,6 +24,7 @@
     "@angular/service-worker": "^21.2.0",
     "@angular/youtube-player": "^21.2.1",
     "lottie-web": "^5.13.0",
+    "maplibre-gl": "^5.24.0",
     "mp4box": "^2.1.1",
     "ngx-lottie": "^21.2.0",
     "rxjs": "~7.8.0",
