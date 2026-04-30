@@ -7,6 +7,7 @@ import { CalendarBackendService } from '../../modules/calendar/calendar-backend.
 import { ConfigService } from '../../services/config.service';
 import { PageControlService } from '../../services/page-control.service';
 import { PdfRenderService } from '../../services/pdf-render.service';
+import { BigOverlayComponent } from '../../big-overlay/big-overlay.component';
 
 type AttachmentMapped = {
 	sourceURL: string,
@@ -21,7 +22,7 @@ export type CalendarEntryWithUrl = {
 
 @Component({
 	selector: 'app-calendar-list',
-	imports: [ArrowSvgComponent],
+	imports: [ArrowSvgComponent, BigOverlayComponent],
 	templateUrl: './calendar-list.component.html',
 	styleUrl: './calendar-list.component.scss',
 })

@@ -1,11 +1,11 @@
-import { Component, Input } from '@angular/core';
-import { SectionHeaderComponent } from '../section-header/section-header.component';
+import { Component } from '@angular/core';
 import { ArrowSvgComponent } from '../arrow-svg/arrow-svg.component';
 import { MembersBackendService } from '../modules/members/members-backend.service';
+import { SectionHeaderComponent } from '../section-header/section-header.component';
 
 @Component({
 	selector: 'app-about-us',
-	imports: [SectionHeaderComponent, ArrowSvgComponent],
+	imports: [ArrowSvgComponent],
 	templateUrl: './about-us.component.html',
 	styleUrl: './about-us.component.scss',
 })

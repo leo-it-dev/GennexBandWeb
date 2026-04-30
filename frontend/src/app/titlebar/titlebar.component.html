@@ -8,11 +8,11 @@
     <h1 id="title">GENNEX</h1>
     @if (this.mobileNavExpanded || !this.isMobile) {
         <nav>
-            <a (click)="navigate($event)" href="#about-us">
-                <span class="adelayfast" animate.enter="fadeInInner" animate.leave="fadeOutInner">Über Uns</span>
-            </a>
             <a (click)="navigate($event)" href="#live-action">
                 <span class="adelayfast" animate.enter="fadeInInner" animate.leave="fadeOutInner">Videos</span>
+            </a>
+            <a (click)="navigate($event)" href="#about-us">
+                <span class="adelayfast" animate.enter="fadeInInner" animate.leave="fadeOutInner">Über Uns</span>
             </a>
             <a (click)="navigate($event)" href="#next-events">
                 <span class="adelayfast" animate.enter="fadeInInner" animate.leave="fadeOutInner">Events</span>

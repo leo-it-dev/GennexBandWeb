@@ -4,40 +4,35 @@
     <span class="section-text" id="gallery-images">
         @for(image of this.teaserImages(); track image) {
             <div><img [src]="image" (click)="openBigImageEvt($event)" /></div>
-            <!-- <app-diamond-image-map [images]="this.thumbnailImageURLs" [slideshow]="true" (imageClicked)="openBigImage($event)" [parentContainer]="this.elRef" [heightCrop]="true"></app-diamond-image-map> -->
         }
     </span>
 } @placeholder(minimum 500ms) {
     <h3 id="load-images">Lade Bilddaten...</h3>
 }
 
-
 <button (click)="this.showBigGallery.set(true)" class="low-attention">
     Zeig mir mehr
     <app-arrow-svg></app-arrow-svg>
 </button>
 
-
-
-<!-- @if(this.showBigGallery()) {
-<div class="overlay" animate.enter="fadeIn" animate.leave="fadeOut">
-    <app-slot title="Galerie" [defaultScroll]="true" [hasCloseButton]="true" (closeEvent)="this.showBigGallery.set(false)" [contentNoPadding]="true" [fullScreen]="true">
-        <app-diamond-image-map [images]="this.thumbnailImageURLs" [slideshow]="false" (imageClicked)="openBigImage($event)" [parentContainer]="this.elRef" [heightCrop]="false"></app-diamond-image-map>
-    </app-slot>
-</div>
+@if(this.showBigGallery()) {
+    <app-big-overlay (close)="this.showBigGallery.set(false)">
+        <h1 class="section-header">Unsere Live <span class="section-header-highlight">Highlights!</span></h1>
+        <app-diamond-image-map [images]="this.backend.thumbnailImageURLs" [slideshow]="false" (imageClicked)="openBigImage($event)" [parentContainer]="this.elRef" [heightCrop]="false"></app-diamond-image-map>
+    </app-big-overlay>
 }
 
-@if(this.showBigImageHR() != "") {
-<div class="overlay" #bigImage animate.enter="fadeIn" animate.leave="fadeOut">
-    <img #bigImageViewerHR [src]="this.showBigImageHR()" id="galleryBigImageViewerHR" (click)="closeBigImage($event)" [class.bigImageHRvisible]="this.hrImageLoaded" (load)="hrImageDoneLoading()">
-    <img #bigImageViewerLR [src]="this.showBigImageLR()" id="galleryBigImageViewerLR" (click)="closeBigImage($event)">
-    <h1 id="galeryBigImageClose" (click)="closeBigImage($event)">✕</h1>
 
-    @if (!this.hrImageLoaded) {
-    <div id="hrLoadingWrapper">
-        <ng-lottie [options]="this.animationOptions()"></ng-lottie>
-        <h3>Lade HD Variante...</h3>
-    </div>
-    }
-</div>
-} -->
+@if(this.showBigImageHR() != "") {
+    <app-big-overlay (close)="closeBigImage()">
+        <img #bigImageViewerHR [src]="this.showBigImageHR()" id="galleryBigImageViewerHR" (click)="closeBigImage()" [class.bigImageHRvisible]="this.hrImageLoaded" (load)="hrImageDoneLoading()">
+        <img #bigImageViewerLR [src]="this.showBigImageLR()" id="galleryBigImageViewerLR" (click)="closeBigImage()">
+
+        @if (!this.hrImageLoaded) {
+        <div id="hrLoadingWrapper">
+            <ng-lottie [options]="this.animationOptions()"></ng-lottie>
+            <h3>Lade HD Variante...</h3>
+        </div>
+        }
+    </app-big-overlay>
+}

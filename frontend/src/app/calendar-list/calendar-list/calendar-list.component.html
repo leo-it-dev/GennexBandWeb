@@ -28,70 +28,60 @@
 </span>
 
 @if(this.resolvedBigImage() != undefined) {
-<div id="calendar-entry-big-view" animate.enter="fadeIn" animate.leave="fadeOut">
-    <div id="calendar-entry-big-blur">
-        <div id="overflow-fix-scrollbar">
-            <div id="calendar-entry-big-view-content">
-                <div id="calendar-entry-close" (click)="this.calendar.bigImageEntry.set(undefined);">✕</div>
-    
-                <div id="calendar-entry-top-cont">
-                    <div #map id="calendar-entry-map" (click)="openMapsLink()"></div>
-                    
-                    <!-- <div #map id="calendar-entry-map" ></div> -->
-                    <!-- <iframe id="calendar-entry-map" src="https://www.google.com/maps?q=48.2719077,12.2571031&z=15&output=embed"></iframe> -->
-                    <div id="calendar-entry-details">
-                        <h3 class="small-highlight no-margin">Live Event</h3>
-                        <h1 id="entry-title" class="section-header left-align no-margin">Live in <span class="section-header-highlight">{{this.resolvedBigImage()!.entry.locationString.split(",")[0]}}</span></h1>
-                        <h3 id="entry-description" class="section-text-subtitle left-align no-margin">{{this.resolvedBigImage()!.entry.description}}</h3>
-    
-                        <div class="entry-detail-comp">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin text-brand-teal"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path><circle cx="12" cy="10" r="3"></circle></svg>
-                            <div class="entry-detail-comp-text">
-                                <h3>Ort</h3>
-                                <h3>{{this.resolvedBigImage()!.entry.locationString.split(",")[0]}}</h3>
-                                <h3>{{this.resolvedBigImage()!.entry.locationString.split(",").splice(1).join(',')}}</h3>
-                            </div>
-                        </div>
-                        <div class="entry-detail-comp">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="3"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="8" y1="3" x2="8" y2="7"></line><line x1="16" y1="3" x2="16" y2="7"></line></svg>
-                            <div class="entry-detail-comp-text">
-                                <h3>Datum</h3>
-                                <h3>{{formatDate(this.resolvedBigImage()!.entry.date)}}</h3>
-                            </div>
-                        </div>
-                        <div class="entry-detail-comp">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>
-                            <div class="entry-detail-comp-text">
-                                <h3>Zeit</h3>
-                                <h3>Einlass: {{formatTime(this.resolvedBigImage()!.entry.date)}}</h3>
-                            </div>
-                        </div>
+    <app-big-overlay (close)="this.calendar.bigImageEntry.set(undefined)">
+
+        <div id="calendar-entry-top-cont">
+            <div #map id="calendar-entry-map" (click)="openMapsLink()"></div>
+            <div id="calendar-entry-details">
+                <h3 class="small-highlight no-margin">Live Event</h3>
+                <h1 id="entry-title" class="section-header left-align no-margin">Live in <span class="section-header-highlight">{{this.resolvedBigImage()!.entry.locationString.split(",")[0]}}</span></h1>
+                <h3 id="entry-description" class="section-text-subtitle left-align no-margin">{{this.resolvedBigImage()!.entry.description}}</h3>
+
+                <div class="entry-detail-comp">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin text-brand-teal"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                    <div class="entry-detail-comp-text">
+                        <h3>Ort</h3>
+                        <h3>{{this.resolvedBigImage()!.entry.locationString.split(",")[0]}}</h3>
+                        <h3>{{this.resolvedBigImage()!.entry.locationString.split(",").splice(1).join(',')}}</h3>
                     </div>
                 </div>
-                
-                @if(this.resolvedBigImage()!.attachmentURLs.length != 0) {
-                    <div id="flyer">
-                        <hr />
-                        <h3 id="flyer-title">Flyer</h3>
-                            <div id="flyer-scroll">
-                                <div id="flyer-scroll-left" [class.scrollActive]="this.scrollLeftActive" (click)="scrollLeft()"><app-arrow-svg col="#fff"></app-arrow-svg></div>
-                                <div class="flyer-spacer"></div>
-    
-                                <div id="flyer-scroll-items" #flyerScroll (scroll)="this.scroll()">
-                                    <div class="flyer-spacer"></div>
-                                    @for(attachment of this.resolvedBigImage()!.attachmentURLs; track attachment) {
-                                        <img [src]="attachment.renderedPng" (click)="open(attachment.sourceURL)" />
-                                    }
-                                    <div class="flyer-spacer"></div>
-                                </div>
-    
-                                <div class="flyer-spacer"></div>
-                                <div id="flyer-scroll-right" [class.scrollActive]="this.scrollRightActive" (click)="scrollRight()"><app-arrow-svg col="#fff"></app-arrow-svg></div>
-                            </div>
+                <div class="entry-detail-comp">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="3"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="8" y1="3" x2="8" y2="7"></line><line x1="16" y1="3" x2="16" y2="7"></line></svg>
+                    <div class="entry-detail-comp-text">
+                        <h3>Datum</h3>
+                        <h3>{{formatDate(this.resolvedBigImage()!.entry.date)}}</h3>
                     </div>
-                }
+                </div>
+                <div class="entry-detail-comp">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>
+                    <div class="entry-detail-comp-text">
+                        <h3>Zeit</h3>
+                        <h3>Einlass: {{formatTime(this.resolvedBigImage()!.entry.date)}}</h3>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-</div>
+            
+        @if(this.resolvedBigImage()!.attachmentURLs.length != 0) {
+            <div id="flyer">
+                <hr />
+                <h3 id="flyer-title">Flyer</h3>
+                    <div id="flyer-scroll">
+                        <div id="flyer-scroll-left" [class.scrollActive]="this.scrollLeftActive" (click)="scrollLeft()"><app-arrow-svg col="#fff"></app-arrow-svg></div>
+                        <div class="flyer-spacer"></div>
+
+                        <div id="flyer-scroll-items" #flyerScroll (scroll)="this.scroll()">
+                            <div class="flyer-spacer"></div>
+                            @for(attachment of this.resolvedBigImage()!.attachmentURLs; track attachment) {
+                                <img [src]="attachment.renderedPng" (click)="open(attachment.sourceURL)" />
+                            }
+                            <div class="flyer-spacer"></div>
+                        </div>
+
+                        <div class="flyer-spacer"></div>
+                        <div id="flyer-scroll-right" [class.scrollActive]="this.scrollRightActive" (click)="scrollRight()"><app-arrow-svg col="#fff"></app-arrow-svg></div>
+                    </div>
+            </div>
+        }
+    </app-big-overlay>
 }

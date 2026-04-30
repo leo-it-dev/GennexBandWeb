@@ -1,0 +1,10 @@
+<div id="big-view" animate.enter="fadeIn" animate.leave="fadeOut">
+    <div id="big-blur">
+        <div id="overflow-fix-scrollbar">
+            <div id="big-view-content">
+                <div id="close" (click)="this.signalClose()">✕</div>
+                <ng-content></ng-content>
+            </div>
+        </div>
+    </div>
+</div>
