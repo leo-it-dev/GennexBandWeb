@@ -110,7 +110,6 @@ export class CalendarAPIHelper {
                             if (entry.kind == "calendar#event") {
                                 let title = entry.summary;
                                 let description = entry.description;
-                                let start = entry.start.dateTime || entry.start.date;
                                 let id = entry.id;
                                 let locationString = entry.location;
                                 let state = entry.status == "cancelled" ? CalendarEntryState.DELETED : CalendarEntryState.DEFAULT;
@@ -146,7 +145,7 @@ export class CalendarAPIHelper {
                                 }
 
                                 let calendarEntry: CalendarEntry = {
-                                    date: new Date(start),
+                                    date: new Date(entry.start.dateTime || entry.start.date),
                                     description: description,
                                     id: id,
                                     geocoding: undefined,
