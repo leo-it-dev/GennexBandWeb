@@ -1,0 +1,9 @@
+@use "../../variables.scss" as *;
+
+:host {
+    height: 100%;
+}
+
+#left-img {
+    padding: 30px;
+}

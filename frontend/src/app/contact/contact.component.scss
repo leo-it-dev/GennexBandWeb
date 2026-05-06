@@ -18,16 +18,16 @@
     transition: color .15s ease-out;
     cursor: pointer;
 }
-#contact-mail svg:nth-child(0n+1) {
-    width: 30pt;
+#contact-mail app-colored-svg:nth-child(0n+1) {
+    --hovCol: var(--primaryLight);
+    min-width: 30pt;
     height: 30pt;
-    color: var(--primaryLight);
     transition: color .15s ease-out;
 }
 
-#contact-mail svg:nth-child(0n+2) {
-    color: var(--primaryLight);
-    width: 30px;
+#contact-mail app-colored-svg:nth-child(0n+2) {
+    --hovCol: var(--primaryLight);
+    min-width: 30px;
     height: 30px;
     margin-left: -30px;
     opacity: 0;
@@ -37,10 +37,10 @@
 #contact-mail:hover {
     color: var(--primaryLight) !important;
 }
-#contact-mail:hover svg:nth-child(0n+1) {
-    color: white;
+#contact-mail:hover app-colored-svg:nth-child(0n+1) {
+    --hovCol: white !important;
 }
-#contact-mail:hover svg:nth-child(0n+2) {
+#contact-mail:hover app-colored-svg:nth-child(0n+2) {
     opacity: 1 !important;
     margin: 0 !important;
 }

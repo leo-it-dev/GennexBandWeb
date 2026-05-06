@@ -7,4 +7,15 @@
 <app-booking id="booking" class="section-left-wide"></app-booking>
 <app-gallery id="gallery" class="section"></app-gallery>
 <app-contact id="contact" class="section"></app-contact>
-<app-footer></app-footer>
+<app-footer (onPrivacyPolicy)="this.doShowPrivacyPolicy.set(true)" (onImpressum)="this.doShowImpressum.set(true)"></app-footer>
+
+@if(this.doShowPrivacyPolicy()) {
+<app-big-overlay (close)="this.doShowPrivacyPolicy.set(false)">
+		<app-privacypolicy></app-privacypolicy>
+</app-big-overlay>
+}
+@if(this.doShowImpressum()) {
+<app-big-overlay (close)="this.doShowImpressum.set(false)">
+		<app-impressum></app-impressum>
+</app-big-overlay>
+}

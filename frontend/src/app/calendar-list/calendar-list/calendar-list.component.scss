@@ -59,6 +59,7 @@
     display: flex;
     flex-direction: column;
     flex-wrap: nowrap;
+    gap: 5px;
 }
 
 .event-location h2 {
@@ -79,12 +80,6 @@
     line-height: 16pt;
 }
 
-.event-location svg {
-    display: inline-block;
-    color: var(--primaryLight);
-    padding-right: 3px;
-}
-
 .event-hover-bar {
     margin: 0 0 0 auto;
     width: 50px;
@@ -99,76 +94,13 @@
     background-color: var(--primaryLight);
 }
 
-#calendar-entry-top-cont {
-    flex: 1;
+.event-loc-details {
     display: flex;
     flex-direction: row;
-    flex-wrap: nowrap;
-    box-sizing: border-box;
-    gap: 50px;
-    margin: 40px 40px 40px 40px;
-    box-sizing: border-box;
+    gap: 10px;
 }
 
-#calendar-entry-map {
-    width: 50%;
-    overflow: hidden;
-    border-radius: 10px;
-    border: 1px solid var(--primaryLightAlpha55);
-    filter: drop-shadow(0px 0px 40px var(--primaryLightAlpha55));
-    box-sizing: border-box;
-    cursor: pointer;
-}
 
-#entry-description {
-    font-size: 13pt;
-    line-height: 18pt;
-    margin: 10px 0px !important;
-}
-
-#entry-title {
-    font-size: 20pt;
-    line-height: 22pt;
-    margin: 10px 0px !important;
-}
-
-.entry-detail-comp {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    gap: 15px;
-    padding-bottom: 25px;
-}
-
-.entry-detail-comp svg {
-    color: var(--primaryLight);
-    width: 30px;
-    height: 30px;
-}
-
-.entry-detail-comp-text h3:nth-of-type(0n+1) {
-    font-size: 15pt;
-    color: var(--foreground);
-    text-transform: uppercase;
-}
-
-.entry-detail-comp-text h3:nth-of-type(1n+2) {
-    font-size: 13pt;
-    color: var(--layer2);
-    font-weight: 100;
-    line-height: 13pt;
-}
-
-.entry-detail-comp-text h3 {
-    margin: 0;
-}
-
-.entry-detail-comp-text {
-    display: flex;
-    flex-direction: column;
-    flex-wrap: nowrap;
-    gap: 13px;
-}
 
 #flyer {
     flex: 1;
@@ -312,14 +244,6 @@
         margin: 0 !important;
     }
 
-    #calendar-entry-top-cont {
-        flex-direction: column;
-    }
-
-    #calendar-entry-map {
-        width: 100%;
-    }
-
     .flyer-spacer {
         display: none;
     }
@@ -331,17 +255,5 @@
     #flyer-scroll-left,
     #flyer-scroll-right {
         display: none !important;
-    }
-
-    .event-date {
-        width: 100% !important;
-    }
-
-    .event-location {
-        width: 100% !important;
-    }
-
-    .event-location h2 {
-        padding-bottom: 15px;
     }
 }

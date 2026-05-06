@@ -1,8 +1,9 @@
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
+import { ColoredSvgComponent } from '../colored-svg/colored-svg.component';
 
 @Component({
 	selector: 'app-titlebar',
-	imports: [],
+	imports: [ColoredSvgComponent],
 	templateUrl: './titlebar.component.html',
 	styleUrl: './titlebar.component.scss',
 })

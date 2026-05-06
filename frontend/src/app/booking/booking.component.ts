@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
+import { ColoredSvgComponent } from '../colored-svg/colored-svg.component';
 
 @Component({
   selector: 'app-booking',
-  imports: [],
+  imports: [ColoredSvgComponent],
   templateUrl: './booking.component.html',
   styleUrl: './booking.component.scss',
 })

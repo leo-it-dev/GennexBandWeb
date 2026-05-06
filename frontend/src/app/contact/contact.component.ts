@@ -7,10 +7,11 @@ import { formBuilderGroupFromInputVerifierTemplate } from '../formVerifier';
 import { HcaptchaComponent } from '../hcaptcha/hcaptcha.component';
 import { ContactBackendService } from '../modules/contact/contact-backend.service';
 import { LoadingoverlayService } from '../services/loadingoverlay.service';
+import { ColoredSvgComponent } from '../colored-svg/colored-svg.component';
 
 @Component({
 	selector: 'app-contact',
-	imports: [HcaptchaComponent, ReactiveFormsModule],
+	imports: [HcaptchaComponent, ReactiveFormsModule, ColoredSvgComponent],
 	templateUrl: './contact.component.html',
 	styleUrl: './contact.component.scss'
 })

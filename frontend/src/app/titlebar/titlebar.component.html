@@ -31,18 +31,9 @@
             </a>
         </nav>
 
-        <svg id="hamburger" (click)="this.mobileNavExpanded=false" xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x">
-            <path d="M18 6 6 18"></path>
-            <path d="m6 6 12 12"></path>
-        </svg>
+        <app-colored-svg id="hamburger" (click)="this.mobileNavExpanded = false" svgSrc="/images/svg/closex.svg"></app-colored-svg>
     }
     @else {
-        <svg id="hamburger" (click)="this.mobileNavExpanded = true" xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="4" x2="20" y1="12" y2="12"></line>
-            <line x1="4" x2="20" y1="6" y2="6"></line>
-            <line x1="4" x2="20" y1="18" y2="18"></line>
-        </svg>
+        <app-colored-svg id="hamburger" (click)="this.mobileNavExpanded = true" svgSrc="/images/svg/hamburger.svg"></app-colored-svg>
     }
 </div>

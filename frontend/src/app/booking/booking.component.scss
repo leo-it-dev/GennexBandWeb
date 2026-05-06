@@ -21,11 +21,10 @@
     margin-right: 20px;
 }
 
-.inline-hint svg {
+.inline-hint app-colored-svg {
     height: 11pt;
     width: 11pt;
     padding-right: 3px;
-    color: var(--primaryLight);
     position: relative;
     top: 2px;
 }
@@ -54,12 +53,12 @@
     cursor: pointer;
 }
 
-#downloads .download:hover svg:nth-of-type(0n+1) {
+#downloads .download:hover app-colored-svg:nth-of-type(0n+1) {
+    --colHov: black !important;
     background-color: var(--primaryLight) !important;
-    color: black !important;
 }
-#downloads .download:hover svg:nth-of-type(0n+2) {
-    color: var(--primaryLight) !important;
+#downloads .download:hover app-colored-svg:nth-of-type(0n+2) {
+    --colHov: var(--primaryLight) !important;
 }
 #downloads .download:hover {
     background-color: var(--layer1);
@@ -74,25 +73,31 @@
     margin-top: 0;
 }
 
-#downloads .download svg:nth-of-type(0n+1) {
+#downloads .download app-colored-svg:nth-of-type(0n+1) {
     width: 20px;
     height: 20px;
     padding: 10px;
     border-radius: 10px;
     background-color: var(--primaryLightAlpha22);
-    color: var(--primaryLight);
+    --colHov: var(--primaryLight);
     margin-right: 10px;
     transition: color .15s linear, background-color .15s linear;
 }
 
-#downloads .download svg:nth-of-type(0n+2) {
+#downloads .download app-colored-svg:nth-of-type(0n+2) {
     width: 20px;
     height: 20px;
     padding: 10px;
     border-radius: 10px;
-    color: var(--layer2);
+    --colHov: var(--layer2);
     margin-left: auto;
     transition: color .15s linear;
+}
+
+#downloads .download app-colored-svg {
+    min-width: 18px;
+    min-height: 18px;
+    line-height: 18px;
 }
 
 #downloads .download h2 {

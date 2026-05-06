@@ -1,15 +1,19 @@
+@use '../../variables.scss' as *;
+
 :host {
     position: relative;
     padding-bottom: 50px;
 }
 
 .section {
-    position: sticky;
-    top: 0;
-    background: rgba(255, 255, 255, 0.4);
-    backdrop-filter: blur(50px);
-    padding: 10px;
+    background: black;
+    padding: 30px;
+    border-radius: 10px;
+    text-transform: uppercase;
     text-overflow: ellipsis;
     overflow: hidden;
-    text-wrap: nowrap;
+    color: var(--primaryLight);
+    border: 1px solid var(--primaryLightAlphaAA);
+    border-left: none;
+    border-right: none;
 }

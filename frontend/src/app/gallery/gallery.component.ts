@@ -1,14 +1,14 @@
 import { Component, computed, effect, ElementRef, Signal, signal, ViewChild, WritableSignal } from '@angular/core';
 import { AnimationOptions, LottieComponent } from 'ngx-lottie';
-import { ArrowSvgComponent } from '../arrow-svg/arrow-svg.component';
 import { BigOverlayComponent } from '../big-overlay/big-overlay.component';
 import { GalleryBackendService } from '../modules/gallery/gallery-backend.service';
 import { PageControlService } from '../services/page-control.service';
 import { DiamondImageMapComponent } from '../diamond-image-map/diamond-image-map.component';
+import { ColoredSvgComponent } from '../colored-svg/colored-svg.component';
 
 @Component({
 	selector: 'app-gallery',
-	imports: [ArrowSvgComponent, BigOverlayComponent, DiamondImageMapComponent, LottieComponent],
+	imports: [ColoredSvgComponent, BigOverlayComponent, DiamondImageMapComponent, LottieComponent],
 	templateUrl: './gallery.component.html',
 	styleUrl: './gallery.component.scss'
 })

@@ -37,6 +37,7 @@
     flex-direction: column;
     flex-wrap: nowrap;
     overflow-y: scroll;
+    padding-top: 20px;
 }
 
 #close {
@@ -63,8 +64,135 @@
     z-index: 20;
 }
 
+::ng-deep .overlay-content,
+::ng-deep .overlay-content-full-height {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    padding: 50px;
+    box-sizing: border-box;
+    gap: 50px;
+}
+
+::ng-deep .overlay-content-full-height {
+    height: 100%;
+}
+
+::ng-deep .overlay-card-entry,
+::ng-deep .overlay-card-entry-wide {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 5px;
+    margin: 15px 0px;
+    width: 50%;
+    float: left;
+}
+
+::ng-deep .overlay-card-entry-wide {
+    width: 100% !important;
+}
+
+::ng-deep .overlay-card-entry app-colored-svg,
+::ng-deep .overlay-card-entry-wide app-colored-svg {
+    min-width: 40px;
+    min-height: 40px;
+    line-height: 40px;
+    align-items: start;
+    margin: 0px 10px 0px 0px;
+}
+
+::ng-deep .overlay-card-entry-content {
+    display: block;
+    flex: 1;
+    max-width: calc(100% - 50px);
+}
+
+::ng-deep .overlay-card-entry-content h3 {
+    text-align: left !important;
+}
+
+::ng-deep .overlay-card-entry-content p {
+    margin: 5px 0px;
+    font-size: 13pt;
+    line-height: 20pt;
+    color: var(--foreground);
+    word-wrap: break-word;
+}
+
+::ng-deep #left {
+    flex: 1;
+    display: flex;
+    max-height: calc(90svh - 100px - 20px);
+}
+
+::ng-deep #left.overlay-left-sticky {
+    position: sticky;
+    top: 50px;
+}
+
+::ng-deep #left-img {
+    overflow: hidden;
+    box-sizing: border-box;
+    filter: drop-shadow(0px 0px 40px var(--primaryLightAlpha55));
+    border: 1px solid var(--primaryLightAlpha55);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    background: linear-gradient(-45deg, var(--primaryLightAlpha1A), black, var(--primaryLightAlpha1A));
+}
+
+::ng-deep #left app-colored-svg {
+    width: 100px;
+    height: 100px;
+    aspect-ratio: auto;
+    filter: drop-shadow(0px 0px 5px var(--primaryLightAlpha55));
+}
+
+::ng-deep .overlay-img-subtext {
+    text-transform: uppercase;
+    color: var(--primaryLight);
+    font-size: 22pt;
+    letter-spacing: 1pt;
+    font-weight: 600;
+    text-align: center;
+    width: 100%;
+    margin: 0 auto;
+}
+
+::ng-deep #right {
+    flex: 2;
+}
+
 @media screen and (max-width: $switchToMobileWidthPx) {
     #big-view-content {
         padding-top: 90px;
+    }
+
+    ::ng-deep .overlay-content,
+    ::ng-deep .overlay-content-full-height {
+        flex-direction: column !important;
+        padding: 0px 40px;
+    }
+
+    ::ng-deep .overlay-card-entry {
+        width: 100%;
+    }
+
+    ::ng-deep #left-img.hide-on-mobile {
+        display: none !important;
+    }
+
+    #overflow-fix-scrollbar {
+        width: 100% !important;
+        height: 100% !important;
+        top: 0 !important;
+        left: 0 !important;
+        border: unset !important;
     }
 }

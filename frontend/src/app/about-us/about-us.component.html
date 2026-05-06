@@ -6,7 +6,7 @@
     eure Bühne - 100% ehrlich, 100% live und immer mit vollem Einsatz.
 </span>
 <button [class.invertIcon]="this.memberListShown" class="open-submenu" (click)="toggleMemberList()">{{this.memberListShown ? "Weniger Anzeigen" : "Erfahre mehr dazu"}}
-    <app-arrow-svg></app-arrow-svg>
+    <app-colored-svg svgSrc="/images/svg/arrow.svg"></app-colored-svg>
 </button>
 
 @if(this.memberListShown) {

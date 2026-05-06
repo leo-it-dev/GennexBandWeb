@@ -2,12 +2,12 @@ import { AfterViewInit, Component, effect, ElementRef, signal, ViewChild, Writab
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import * as maplibregl from 'maplibre-gl';
 import { Attachment, CalendarEntry } from '../../../../../api_common/calendar';
-import { ArrowSvgComponent } from '../../arrow-svg/arrow-svg.component';
 import { CalendarBackendService } from '../../modules/calendar/calendar-backend.service';
 import { ConfigService } from '../../services/config.service';
 import { PageControlService } from '../../services/page-control.service';
 import { PdfRenderService } from '../../services/pdf-render.service';
 import { BigOverlayComponent } from '../../big-overlay/big-overlay.component';
+import { ColoredSvgComponent } from '../../colored-svg/colored-svg.component';
 
 type AttachmentMapped = {
 	sourceURL: string,
@@ -22,7 +22,7 @@ export type CalendarEntryWithUrl = {
 
 @Component({
 	selector: 'app-calendar-list',
-	imports: [ArrowSvgComponent, BigOverlayComponent],
+	imports: [ColoredSvgComponent, BigOverlayComponent],
 	templateUrl: './calendar-list.component.html',
 	styleUrl: './calendar-list.component.scss',
 })
@@ -33,7 +33,6 @@ export class CalendarListComponent {
 
 	@ViewChild('map')
 	set map(el: ElementRef<HTMLElement> | undefined) {
-		console.log("MAP!!!");
 		if (el) {
 			this.initMap(el);
 		}
@@ -151,7 +150,7 @@ export class CalendarListComponent {
 				let minZoom = meta["minzoom"];
 
 				this.maplibregl = new maplibregl.Map({
-					container: "calendar-entry-map",
+					container: "left-img",
 					style: style,
 					attributionControl: false,
 					maxZoom: maxZoom,
