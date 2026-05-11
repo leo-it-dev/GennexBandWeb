@@ -5,6 +5,7 @@
     top: 0;
     left: 0;
     z-index: 1000;
+    color: var(--foreground);
 }
 
 #backdrop-blur {
@@ -28,10 +29,10 @@
 }
 
 .loverlayFadeIn {
-    animation: fadeInO .3s ease-out;
+    animation: fadeInO .15s ease-out;
 }
 .loverlayFadeOut {
-    animation: fadeInO .3s ease-out;
+    animation: fadeInO .15s ease-out;
     animation-direction: reverse;
 }
 
@@ -46,11 +47,13 @@
 
 .overlayContainer {
     padding: 20px;
-    background-color: white;
     display: flex;
     flex-direction: column;
     align-items: center;
     position: relative;
+    background-color: var(--alternateSectionColoring);
+    border: 2px solid var(--layer1);
+    border-radius: 20px;
 }
 
 #close {
@@ -85,6 +88,7 @@ img {
 div {
     font-size: 15pt;
     margin: 0 auto;
+    color: var(--foreground);
 }
 
 ng-lottie {

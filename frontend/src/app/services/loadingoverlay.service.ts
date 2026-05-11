@@ -1,4 +1,5 @@
-import { Injectable, Signal, signal, WritableSignal } from '@angular/core';
+import { effect, Injectable, Signal, signal, WritableSignal } from '@angular/core';
+import { PageControlService } from './page-control.service';
 
 export type OverlayButton = {
 	text: string,
@@ -21,10 +22,13 @@ export class LoadingoverlayService {
 	inputMaxLength: WritableSignal<number> = signal(100);
 	subscribeTextChange?: Function = undefined;
 	subscribeButtonClicked?: Function = undefined;
+	captchaSolved?: Function = undefined;
 
 	inputInvalid: WritableSignal<boolean> = signal(false);
 
 	buttons: WritableSignal<OverlayButton[]> = signal([]);
+
+	hasCaptcha: WritableSignal<boolean> = signal(false);
 
 	inputTextChange(newText: string) {
 		if (this.subscribeTextChange) {
@@ -39,11 +43,13 @@ export class LoadingoverlayService {
 		}
 	}
 
-	constructor() {
-		
+	constructor(private pageControl: PageControlService) {
+		effect(() => {
+			this.pageControl.preventBodyScrolling.set(this.loadingOverlayVisible());
+		});
 	}
 
-	showLoadingOverlay(message: string[], videoURL: string, videoShouldRepeat: boolean, hasInputText: boolean, inputPlaceholder: string, inputMaxLength: number, inputTextChange: Function, buttons: OverlayButton[] = [], buttonClicked: Function = (btn: OverlayButton) => {}) {
+	showLoadingOverlay(message: string[], videoURL: string, videoShouldRepeat: boolean, hasInputText: boolean, inputPlaceholder: string, inputMaxLength: number, inputTextChange: Function, buttons: OverlayButton[] = [], buttonClicked: Function = (btn: OverlayButton) => {}, hasCaptcha = false, captchaSolved: Function = (token: string) => {}) {
 		this.videoURL.set(videoURL);
 		this.message.set(message);
 		this.hasInputText.set(hasInputText);
@@ -55,6 +61,8 @@ export class LoadingoverlayService {
 		this.subscribeButtonClicked = buttonClicked;
 		this.loadingOverlayVisible.set(true);
 		this.inputInvalid.set(false);
+		this.hasCaptcha.set(hasCaptcha);
+		this.captchaSolved = captchaSolved;
 	}
 	hideLoadingOverlay() {
 		this.loadingOverlayVisible.set(false);

@@ -14,6 +14,12 @@ export let contactFormularRequestVerification = new InputVerifierTemplate({
 	}
 });
 
+export let overlayCaptchaVerification = new InputVerifierTemplate({
+	fields: {
+		'captcha': { 'default': "", verifiers: [new VRequired(), new VMaxLength(4000)] },
+	}
+});
+
 export let subscribeFormularRequestVerification = new InputVerifierTemplate({
 	fields: {
 		'email': { 'default': "", verifiers: [new VRequired(), new VMaxLength(200), new VEMailAddress()] },

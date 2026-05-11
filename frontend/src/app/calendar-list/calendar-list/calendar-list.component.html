@@ -9,22 +9,35 @@
     @if (this.elements.length == 0) {
         <h1 id="no-gigs-planned">🥁 Aktuell haben wir keine Events geplant. Schau doch gerne später wieder vorbei 🎸</h1>
     }
-    @for(entry of this.elements; track entry.id) {
-        <div class="event" (click)="this.calendar.bigImageEntry.set(entry);">
-            <div class="event-date">
-                <h2>{{formatDate(entry.date)}}</h2>
-                <h3>{{formatTime(entry.date)}}</h3>
+    <div id="events">
+        @for(entry of this.elements; track entry.id) {
+            <div class="event" (click)="this.calendar.bigImageEntry.set(entry);">
+                <div class="event-date">
+                    <h2>{{formatDate(entry.date)}}</h2>
+                    <h3>{{formatTime(entry.date)}}</h3>
+                </div>
+                <div class="event-location">
+                    <h2>{{entry.title}}</h2>
+                    <h3 class="event-loc-details">
+                        <app-colored-svg svgSrc="/images/svg/location.svg"></app-colored-svg>
+                        {{entry.locationString.split(",")[0]}}
+                    </h3>
+                </div>
+                <div class="event-hover-bar"></div>
             </div>
-            <div class="event-location">
-                <h2>{{entry.title}}</h2>
-                <h3 class="event-loc-details">
-                    <app-colored-svg svgSrc="/images/svg/location.svg"></app-colored-svg>
-                    {{entry.locationString.split(",")[0]}}
-                </h3>
-            </div>
-            <div class="event-hover-bar"></div>
+        }
+    </div>
+
+
+    <span class="section-header-small">Neue Events direkt in deine <span class="section-header-highlight">Inbox</span></span>
+    <form #subscribe id="subscribe-mails" [formGroup]="this.subscribeFormGroup" [class.valid]="subscribeFormGroup.valid" (submit)="submitForm()">
+        <h3 class="section-text-subtitle">Abonniere hier unseren Newsletter und verpasse keine Eventankündigungen mehr.</h3>
+        <div id="subscribe-inputs">
+            <input type="text" name="subscribe-mail" placeholder="Deine E-Mail-Adresse..." formControlName="email" />
+            <input type="hidden" name="subscribe-captcha" formControlName="captcha" />
+            <button type="submit">Abonnieren</button>
         </div>
-    }
+    </form>
 </span>
 
 @if(this.resolvedBigImage() != undefined) {

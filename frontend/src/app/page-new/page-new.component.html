@@ -9,6 +9,17 @@
 <app-contact id="contact" class="section"></app-contact>
 <app-footer (onPrivacyPolicy)="this.doShowPrivacyPolicy.set(true)" (onImpressum)="this.doShowImpressum.set(true)"></app-footer>
 
+@if (this.loadingOverlay.loadingOverlayVisible()) {
+<app-loadingoverlay [videoURL]="this.loadingOverlay.getVideoURL()" [message]="this.loadingOverlay.getMessage()"
+	[hasInputText]="this.loadingOverlay.hasInputText" [inputPlaceholder]="this.loadingOverlay.inputPlaceholder"
+	[maxInputLength]="this.loadingOverlay.inputMaxLength"
+	(inputTextChange)="this.loadingOverlay.inputTextChange($event)"
+	[inputMarkedErronous]="this.loadingOverlay.inputInvalid"
+	[videoShouldRepeat]="this.loadingOverlay.videoShouldRepeat" [buttons]="this.loadingOverlay.buttons"
+	(buttonClicked)="this.loadingOverlay.buttonClicked($event)"
+	[hasCaptcha]="this.loadingOverlay.hasCaptcha"></app-loadingoverlay>
+}
+
 @if(this.doShowPrivacyPolicy()) {
 <app-big-overlay (close)="this.doShowPrivacyPolicy.set(false)">
 		<app-privacypolicy></app-privacypolicy>

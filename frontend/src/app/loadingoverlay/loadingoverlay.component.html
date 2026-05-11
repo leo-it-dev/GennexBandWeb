@@ -1,9 +1,6 @@
-<div id="overlayFullSize">
+<form id="overlayFullSize" [formGroup]="captchaFormGroup">
 	<div id="backdrop-blur" animate.enter="loverlayFadeIn" animate.leave="loverlayFadeOut"></div>
 	<div class="overlayContainer" animate.enter="loverlayFadeIn" animate.leave="loverlayFadeOut">
-		<!--<video #video autoplay muted playsinline [loop]="this.videoShouldRepeat()">
-			<source [src]="this.videoURL()" type="video/webm" />
-		</video>!-->
 		<ng-lottie [options]="this.animationOptions()"></ng-lottie>
 
 		@for (msg of this.message(); track msg) {
@@ -21,6 +18,15 @@
 				}
 			</div>
 		}
+
+		@if (this.hasCaptcha()) {
+			@defer (on viewport) {
+				<app-hcaptcha #captcha formControlName="captcha"></app-hcaptcha>
+			} @placeholder(minimum 200ms) {
+				<div class="input-margin" id="captcha-placeholder">Lade HCaptcha...</div>
+			}
+		}
+
 		<h1 id="close" (click)="this.close()">╳</h1>
 	</div>
-</div>
+</form>

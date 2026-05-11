@@ -13,10 +13,12 @@ import { PageControlService } from '../services/page-control.service';
 import { ImpressumComponent } from '../impressum/impressum.component';
 import { PrivacypolicyComponent } from '../privacypolicy/privacypolicy.component';
 import { BigOverlayComponent } from '../big-overlay/big-overlay.component';
+import { LoadingoverlayService } from '../services/loadingoverlay.service';
+import { LoadingoverlayComponent } from '../loadingoverlay/loadingoverlay.component';
 
 @Component({
 	selector: 'app-page-new',
-	imports: [TitlebarComponent, CalendarListComponent, LogoBlockComponent, AboutUsComponent, VideoListComponent, SetlistComponent, GalleryComponent, BookingComponent, ContactComponent, FooterComponent, ImpressumComponent, PrivacypolicyComponent, BigOverlayComponent],
+	imports: [TitlebarComponent, CalendarListComponent, LogoBlockComponent, AboutUsComponent, VideoListComponent, SetlistComponent, GalleryComponent, BookingComponent, ContactComponent, FooterComponent, ImpressumComponent, PrivacypolicyComponent, BigOverlayComponent, LoadingoverlayComponent],
 	templateUrl: './page-new.component.html',
 	styleUrl: './page-new.component.scss',
 })
@@ -26,6 +28,7 @@ export class PageNewComponent {
 	public doShowImpressum: WritableSignal<boolean> = signal(false);
 
 	constructor(public pageControl: PageControlService,
+		public loadingOverlay: LoadingoverlayService,
 		@Inject(DOCUMENT)
 		private document: Document
 	) {

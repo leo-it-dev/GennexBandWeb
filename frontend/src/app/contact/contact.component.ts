@@ -1,26 +1,22 @@
-import { Component, inject, ViewChild } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ApiInterfaceContactIn, ApiInterfaceContactOut } from '../../../../api_common/contact';
 import { contactFormularRequestVerification, ContactFormularResponse, ContactFormularStatusCodes, VERIFICATION_CODE_LENGTH } from '../../../../api_common/verification';
 import { BackendService } from '../api/backend.service';
+import { ColoredSvgComponent } from '../colored-svg/colored-svg.component';
 import { formBuilderGroupFromInputVerifierTemplate } from '../formVerifier';
-import { HcaptchaComponent } from '../hcaptcha/hcaptcha.component';
 import { ContactBackendService } from '../modules/contact/contact-backend.service';
 import { LoadingoverlayService } from '../services/loadingoverlay.service';
-import { ColoredSvgComponent } from '../colored-svg/colored-svg.component';
 
 @Component({
 	selector: 'app-contact',
-	imports: [HcaptchaComponent, ReactiveFormsModule, ColoredSvgComponent],
+	imports: [ReactiveFormsModule, ColoredSvgComponent],
 	templateUrl: './contact.component.html',
 	styleUrl: './contact.component.scss'
 })
 export class ContactComponent {
 
 	public oneLineText = "Du möchtest uns eine Konzertanfrage senden oder genaueres erfahren? Dann kannst Du hier per Mail mit uns in Kontakt treten.";
-
-	@ViewChild('captcha')
-	private captcha!: HcaptchaComponent;
 
 	constructor(private loadingser: LoadingoverlayService, private backendService: BackendService) {
 
@@ -55,7 +51,7 @@ export class ContactComponent {
 				console.error(err);
 				res(ContactFormularResponse.UNKNOWN_ERROR);
 			}).finally(() => {
-				this.captcha.reset();
+				// this.captcha.reset();
 			});
 		});
 	}
@@ -103,19 +99,37 @@ export class ContactComponent {
 	}
 
 	submitForm() {
-		this.contactFormGroup.updateValueAndValidity();
-		if (this.contactFormGroup.valid) {
+		let validityElements = ['firstName', 'surName', 'email', 'message'];
+		let allValid = (validityElements.map(v => {
+			let element = this.contactFormGroup.get(v);
+			if (element) {
+				element.updateValueAndValidity();
+				return element.valid;
+			}
+			return false;
+		}).find(e => e == false)) === undefined;
 
-			this.sendContactFormular({
-				firstName: this.contactFormGroup.controls['firstName'].value as string,
-				surName: this.contactFormGroup.controls['surName'].value as string,
-				email: this.contactFormGroup.controls['email'].value as string,
-				message: this.contactFormGroup.controls['message'].value as string,
-				captcha: this.contactFormGroup.controls['captcha'].value as string,
-				mailVerificationCode: ''
-			}).then(res => {
-				this.handleContactFormularResponse(res);
-			})
+		if (allValid) {
+			this.loadingser.showLoadingOverlay([], "/images/lottiefiles/bot.json", true, false, "", 0, (nt: string) => { }, undefined, undefined, true, ((token: string) => {
+				this.loadingser.hideLoadingOverlay();
+				this.contactFormGroup.patchValue({
+					captcha: token
+				});
+
+				this.contactFormGroup.updateValueAndValidity();
+				if (this.contactFormGroup.valid) {
+					this.sendContactFormular({
+						firstName: this.contactFormGroup.controls['firstName'].value as string,
+						surName: this.contactFormGroup.controls['surName'].value as string,
+						email: this.contactFormGroup.controls['email'].value as string,
+						message: this.contactFormGroup.controls['message'].value as string,
+						captcha: this.contactFormGroup.controls['captcha'].value as string,
+						mailVerificationCode: ''
+					}).then(res => {
+						this.handleContactFormularResponse(res);
+					});
+				}
+			}));
 		}
 	}
 }

@@ -22,8 +22,8 @@ export class UnsubscribeComponent implements AfterViewInit {
 
 	ngAfterViewInit(): void {
 		this.loadingser.showLoadingOverlay(["Möchtest du unseren Newsletter abbestellen?"], "/images/lottiefiles/unlink.json", true, false, "bla", 0, (bla: string) => { }, [
-			{ text: "Abbrechen", color: "#aaaaaa" },
-			{ text: "Abbestellen", color: "#ff643d" },
+			{ text: "Abbrechen", color: "var(--foreground)" },
+			{ text: "Abbestellen", color: "var(--warning)" },
 		], (btn: string) => {
 			if (btn == "Abbrechen") {
 				this.loadingser.hideLoadingOverlay();

@@ -96,7 +96,8 @@
 	(inputTextChange)="this.loadingOverlay.inputTextChange($event)"
 	[inputMarkedErronous]="this.loadingOverlay.inputInvalid"
 	[videoShouldRepeat]="this.loadingOverlay.videoShouldRepeat" [buttons]="this.loadingOverlay.buttons"
-	(buttonClicked)="this.loadingOverlay.buttonClicked($event)"></app-loadingoverlay>
+	(buttonClicked)="this.loadingOverlay.buttonClicked($event)"
+	[hasCaptcha]="this.loadingOverlay.hasCaptcha"></app-loadingoverlay>
 }
 
 <footer>

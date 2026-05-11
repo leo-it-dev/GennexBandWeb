@@ -1,31 +1,27 @@
-
-import { AfterViewInit, Component, computed, effect, ElementRef, EventEmitter, Input, OnDestroy, Output, signal, Signal, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, computed, ElementRef, EventEmitter, inject, Input, Output, signal, Signal } from '@angular/core';
+import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { AnimationOptions, BMDestroyEvent, LottieComponent } from 'ngx-lottie';
+import { overlayCaptchaVerification } from '../../../../api_common/verification';
+import { formBuilderGroupFromInputVerifierTemplate } from '../formVerifier';
+import { HcaptchaComponent } from '../hcaptcha/hcaptcha.component';
 import { LoadingoverlayService, OverlayButton } from '../services/loadingoverlay.service';
-import { AnimationOptions, LottieComponent } from 'ngx-lottie';
 
 @Component({
 	selector: 'app-loadingoverlay',
-	imports: [LottieComponent],
+	imports: [LottieComponent, HcaptchaComponent, ReactiveFormsModule],
 	templateUrl: './loadingoverlay.component.html',
 	styleUrl: './loadingoverlay.component.scss'
 })
-export class LoadingoverlayComponent {
+export class LoadingoverlayComponent implements AfterViewInit {
 
-	constructor(private elRef: ElementRef, private serv: LoadingoverlayService) {
-		// effect(() => {
-		// this.videoURL();
-		// if (this.video) {
-		// this.video.nativeElement.load()
-		// }
-		// });
-	}
+	private formBuilder = inject(FormBuilder);
+	public captchaFormGroup = formBuilderGroupFromInputVerifierTemplate(this.formBuilder, overlayCaptchaVerification);
+
+	constructor(private elRef: ElementRef, private serv: LoadingoverlayService) {}
 
 	close() {
 		this.serv.hideLoadingOverlay();
 	}
-
-	// @ViewChild('video')
-	// video!: ElementRef<HTMLVideoElement>
 
 	@Input({ required: true })
 	message: Signal<string[]> = signal([""]);
@@ -48,6 +44,8 @@ export class LoadingoverlayComponent {
 	buttons: Signal<OverlayButton[]> = signal([]);
 	@Output()
 	buttonClicked: EventEmitter<string> = new EventEmitter<string>();
+	@Input({required: false})
+	hasCaptcha: Signal<boolean> = signal(false);
 
 	animationOptions: Signal<AnimationOptions> = computed(() => 
 		{ 
@@ -65,5 +63,14 @@ export class LoadingoverlayComponent {
 
 	buttonClickedEvt(evt: PointerEvent) {
 		this.buttonClicked.emit((evt.target as HTMLButtonElement).textContent);
+	}
+
+	ngAfterViewInit(): void {
+		this.captchaFormGroup.valueChanges.subscribe(c => {
+			let token = this.captchaFormGroup.value['captcha'];
+			if (this.serv.captchaSolved) {
+				this.serv.captchaSolved(token);
+			}
+		});
 	}
 }

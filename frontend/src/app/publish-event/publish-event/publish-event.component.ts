@@ -35,8 +35,8 @@ export class PublishEventComponent implements AfterViewInit {
 
 		if (eventPublishType == EventPublishType.NEW) {
 			this.loadingser.showLoadingOverlay(["Möchtest du ALLE Abonnenten per Mail auf das Event aufmerksam machen?"], "/images/lottiefiles/rocket.json", true, false, "bla", 0, (bla: string) => { }, [
-				{ text: "Abbrechen", color: "#aaaaaa" },
-				{ text: "Publish", color: "#ff643d" },
+				{ text: "Abbrechen", color: "var(--foreground)" },
+				{ text: "Publish", color: "var(--primaryLight)" },
 			], (btn: string) => {
 				if (btn == "Abbrechen") {
 					this.loadingser.hideLoadingOverlay();
@@ -50,8 +50,8 @@ export class PublishEventComponent implements AfterViewInit {
 			})
 		} else if (eventPublishType == EventPublishType.MODIFY) {
 			this.loadingser.showLoadingOverlay(["Möchtest du ALLE Abonnenten per Mail auf die Event-Änderung aufmerksam machen?"], "/images/lottiefiles/rocket.json", true, false, "bla", 0, (bla: string) => { }, [
-				{ text: "Abbrechen", color: "#aaaaaa" },
-				{ text: "Publish Change", color: "#ff643d" },
+				{ text: "Abbrechen", color: "var(--foreground)" },
+				{ text: "Publish Change", color: "var(--primaryLight)" },
 			], (btn: string) => {
 				if (btn == "Abbrechen") {
 					this.loadingser.hideLoadingOverlay();
@@ -65,8 +65,8 @@ export class PublishEventComponent implements AfterViewInit {
 			})
 		} else if (eventPublishType == EventPublishType.DELETE) {
 			this.loadingser.showLoadingOverlay(["Möchtest du ALLE Abonnenten per Mail auf die Eventabsage aufmerksam machen?"], "/images/lottiefiles/rocket.json", true, false, "bla", 0, (bla: string) => { }, [
-				{ text: "Abbrechen", color: "#aaaaaa" },
-				{ text: "Publish Deletion", color: "#ff643d" },
+				{ text: "Abbrechen", color: "var(--foreground)" },
+				{ text: "Publish Deletion", color: "var(--primaryLight)" },
 			], (btn: string) => {
 				if (btn == "Abbrechen") {
 					this.loadingser.hideLoadingOverlay();

@@ -27,6 +27,8 @@
 	--primary1_88: #4538FF88;
 	--primary2: #FF3838;
 	--primary2_22: #FF383822;
+
+    --warning: #c72c2c;
     --primaryLight: #00f2ff;
     --primaryLightAlpha11: #00f2ff11;
     --primaryLightAlpha1A: #00f2ff1a;
@@ -162,16 +164,16 @@ input, textarea {
 input[type=text],
 textarea,
 .input-margin {
-    padding: 15px;
-    background-color: white;
-    box-shadow: 0px 0px black;
-    font-size: 12pt;
-    border: none;
-    border-radius: 4px;
-    color: black;
-    margin: 4px 20px;
-    box-shadow: 0px 0px 5px gray;
-    transition: filter 0.1s ease-in, scale 0.1s ease-in;
+    border: 1px solid var(--layer3);
+    border-radius: 3px;
+    padding: 10px;
+    font-size: 13pt;
+    letter-spacing: 2px;
+    background-color: var(--layer1);
+    color: var(--foreground);
+    border-color: var(--layer1);
+    width: 100%;
+    box-sizing: border-box;
 }
 
 button {
@@ -191,7 +193,7 @@ app-hcaptcha {
 input.ng-invalid:not(form),
 textarea.ng-invalid,
 app-hcaptcha.ng-invalid {
-    border-left: 4px solid red !important;
+    border-left: 4px solid var(--warning) !important;
 }
 
 .overlay {
@@ -342,7 +344,8 @@ a {
 
 .section-header,
 .section-header-compact,
-.section-header-big {
+.section-header-big,
+.section-header-small {
     text-align: center;
     font-size: 35pt;
     font-weight: 1000;
@@ -358,6 +361,9 @@ a {
 }
 .section-header-big {
     font-size: 50pt;
+}
+.section-header-small {
+    font-size: 15pt;
 }
 
 .no-margin {
