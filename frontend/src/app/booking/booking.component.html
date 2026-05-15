@@ -19,29 +19,34 @@
 <span class="section-text section-left-content2">
     <div id="downloads">
         <h1>Downloads</h1>
-        <div class="download">
-            <app-colored-svg col="var(--colHov)" svgSrc="/images/svg/download.svg"></app-colored-svg>
-            <div>
-                <h2>Technical Rider</h2>
-                <h3>PDF • 1.2MB</h3>
-            </div>
-            <app-colored-svg col="var(--colHov)" svgSrc="/images/svg/arrow2.svg"></app-colored-svg>
-        </div>
-        <div class="download">
-            <app-colored-svg col="var(--colHov)" svgSrc="/images/svg/download.svg"></app-colored-svg>
-            <div>
-                <h2>Presskit (Bilder & Bio)</h2>
-                <h3>PDF • 15.8MB</h3>
-            </div>
-            <app-colored-svg col="var(--colHov)" svgSrc="/images/svg/arrow2.svg"></app-colored-svg>
-        </div>
-        <div class="download">
-            <app-colored-svg col="var(--colHov)" svgSrc="/images/svg/download.svg"></app-colored-svg>
-            <div>
-                <h2>Setlist (Beispiel)</h2>
-                <h3>PDF • 0.5MB</h3>
-            </div>
-            <app-colored-svg col="var(--colHov)" svgSrc="/images/svg/arrow2.svg"></app-colored-svg>
-        </div>
+
+        @defer (when this.backend.documentsLoaded) {
+
+            @for(document of this.backend.documents(); track document.url) {
+                <a [href]="document.url" target="_blank">
+                    <div class="download">
+                        <app-colored-svg col="var(--colHov)" svgSrc="/images/svg/download.svg"></app-colored-svg>
+                        <div>
+                            <h2>{{formatFileName(document.name)}}</h2>
+                            <h3>{{formatFileType(document.name)}} • {{formatSize(document.size)}}</h3>
+                        </div>
+                        <app-colored-svg col="var(--colHov)" svgSrc="/images/svg/arrow2.svg"></app-colored-svg>
+                    </div>
+                </a>
+            }
+
+            @for(link of this.backend.links(); track link.url) {
+                <a [href]="link.url" target="_blank">
+                    <div class="download">
+                        <app-colored-svg col="var(--colHov)" svgSrc="/images/svg/link.svg"></app-colored-svg>
+                        <h2>{{link.name}}</h2>
+                        <app-colored-svg col="var(--colHov)" svgSrc="/images/svg/arrow2.svg"></app-colored-svg>
+                    </div>
+                </a>
+            }
+
+        } @placeholder(minimum 500ms) {
+            <h3 id="load-documents">Lade Dokumente</h3>
+        }
     </div>
 </span>

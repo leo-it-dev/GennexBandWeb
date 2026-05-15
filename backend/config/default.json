@@ -43,5 +43,13 @@
         "GALLERY_ALBUM": "gallery",
         "MEMBERS_ALBUM": "members",
         "SYNCHRONIZE_INTERVAL_MINUTES": 20
+    },
+    "nextcloud": {
+        "NEXTCLOUD_BASE_URL": "https://cloud.your-instance.de/",
+        "WEBDAV_URL": "https://cloud.your-instance.de/remote.php/webdav",
+        "USERNAME": "enter_your_username_here",
+        "PASSWORD": "enter_your_password_here",
+        "SYNC_PATH": "/Shared/Webpage/Download",
+        "FORWARD_LINK_FILE": "EMBED_LINKS.txt"
     }
 }

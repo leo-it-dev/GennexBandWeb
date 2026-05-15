@@ -1,0 +1,22 @@
+https://cloud.gennex.band/apps/files/files/191?dir=/Shared/Gennex%20Songs/All%20the%20small%20things
+
+curl -u "admin":"589cd24213661600257fe51e6bfdc1c6f0db33dc26bc9a70" "https://cloud.gennex.band/remote.php/webdav/Gennex%20Songs/All%20the%20small%20things/all%20the%20small%20things%20chords.pdf" -o test.pdf
+
+curl -u "admin":"589cd24213661600257fe51e6bfdc1c6f0db33dc26bc9a70" -X PROPFIND -H "Depth: 1" "https://cloud.gennex.band/remote.php/webdav/Gennex%20Songs/" 
+
+
+--- Register:
+curl -u "admin":"589cd24213661600257fe51e6bfdc1c6f0db33dc26bc9a70"   -H "OCS-APIRequest: true"   -H "Content-Type: application/json"   -X POST   https://cloud.gennex.band/ocs/v2.php/apps/webhook_listeners/api/v1/webhooks   -d '{
+    "uri": "https://webhook.site/cc9f7bf0-e08a-457f-a322-2ddd39f30702",
+    "httpMethod": "POST",
+    "event": "OCP\\Files\\Events\\Node\\NodeWrittenEvent",
+    "eventFilter":{"node.path":"/Shared/Webpage"}
+  }' -v
+
+--- Delete
+curl -u "admin":"589cd24213661600257fe51e6bfdc1c6f0db33dc26bc9a70"   -H "OCS-APIRequest: true"   -H "Content-Type: application/json"   -X DELETE   https://cloud.gennex.band/ocs/v2.php/apps/webhook_listeners/api/v1/webhooks/{id} -v
+
+--- List
+curl -u "automation":"ZiaMt5uVT5lR*VoGw4Xodh3TKdc2Zl" \
+  -H "OCS-APIRequest: true" \
+  https://cloud.gennex.band/ocs/v2.php/apps/webhook_listeners/api/v1/webhooks

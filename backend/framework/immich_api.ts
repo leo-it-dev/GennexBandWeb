@@ -141,7 +141,8 @@ export async function syncWithImmich(album: SyncableAlbum): Promise<SyncGalleryR
                 if (correspondingAsset) {
                     let fileExtension = correspondingAsset.originalFileName.substring(correspondingAsset.originalFileName.lastIndexOf(".") + 1)
                     const imageOutFile = path.resolve(album.outputPath, assetId + "." + fileExtension);
-    
+                    let dateModified = new Date(correspondingAsset.fileModifiedAt);
+
                     const writeStream = fs.createWriteStream(imageOutFile, { flags: 'w' })
                     await pipeline(Readable.fromWeb(content.body as any), writeStream);
 
@@ -150,11 +151,11 @@ export async function syncWithImmich(album: SyncableAlbum): Promise<SyncGalleryR
                         readArgs: ['-b']
                     });
                     dat.Description = assetId in assetInfos ? assetInfos[assetId] : "";
-                    exif.exiftool.write(imageOutFile, dat, {
+                    await exif.exiftool.write(imageOutFile, dat, {
                         writeArgs: ['-overwrite_original', '-Orientation=']
                     });
 
-                    let dateModified = new Date(correspondingAsset.fileModifiedAt);
+                    console.log(imageOutFile);
                     fs.utimesSync(imageOutFile, dateModified, dateModified)
                     logger.info("Writing image.", { albumName: album.albumID, path: album.outputPath, image: assetId });
                 } else {

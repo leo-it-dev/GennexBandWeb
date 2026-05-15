@@ -13,6 +13,7 @@ import { DeploymentType } from './deployment';
 import * as ssl from './framework/ssl';
 import * as jwt from './framework/jwt';
 import * as immich from './framework/immich_api'
+import * as webdav from './framework/webdav-sync';
 import { getLogger } from './logger';
 import { ApiModuleConfig } from './modules/config/api_config';
 import { ApiModuleContact } from './modules/contact/api_contact';
@@ -27,6 +28,7 @@ import { ApiModuleRenderedPDFs } from './modules/renderedpdf/api_renderedpdf';
 import { ApiModuleMailer } from './modules/mailer/api_mailer';
 import { staticSchema } from './schema/static_page_schema';
 import { ApiModuleMembers } from './modules/members/api_members';
+import { ApiModuleDocuments } from './modules/documents/api_documents';
 
 let mainLogger = getLogger("index");
 
@@ -73,6 +75,7 @@ ssl.initSSL();
 jwt.initJwtBackend();
 immich.initImmich();
 repeatedTaskScheduler.schedulerInit();
+webdav.init();
 
 // add compression middleware to speed up loading times.
 app.use(compression({ filter: shouldCompress }));
@@ -191,7 +194,8 @@ async function initializeModules() {
         ApiModuleSubscribe,
         ApiModuleAgentHandler,
         ApiModuleRenderedPDFs,
-        ApiModuleMembers
+        ApiModuleMembers,
+        ApiModuleDocuments
     ]
 
     let moduleLoaderLogger = getLogger('module-loader');
