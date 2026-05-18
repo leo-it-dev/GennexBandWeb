@@ -6,6 +6,8 @@ import * as path from 'path';
 import { pipeline } from 'stream/promises';
 import { Readable } from 'stream';
 import { getLogger } from '../logger';
+import { runAgentTrigger } from '..';
+import { AgentTriggerWebDavFileCreate, AgentTriggerWebDavFileDelete, AgentTriggerWebDavFileModify } from '../modules/agent/agent_trigger';
 
 let webdavClient!: webdav.WebDAVClient;
 const nextcloudPath = config.get('nextcloud.NEXTCLOUD_BASE_URL') as string;
@@ -193,22 +195,29 @@ export async function snychronizeWebDavFolder(synchro: WebDavSnychronization): P
         let remoteFiles: string[] = [];
     
         listWebdavFiles(synchro.inputPath).then(async files => {
+            let createLocalFiles: string[] = [];
+            let modifyLocalFiles: string[] = [];
+
             for (let file of files) {
                 if (file.type != 'file') {
                     continue;
                 }
-    
+
                 remoteFiles.push(file.basename);
-    
+
                 let localFile = path.join(synchro.outputDirectory, file.basename);
                 if (fs.existsSync(localFile)) {
                     let localStat = fs.statSync(localFile);
                     if (localStat.mtime.getTime() == file.lastmod.getTime() && localStat.size == file.size) {
                         logger.info("File has same size and mod date. Skipping redownload as it's propably the same.", { path: file.filename, size: file.size, mtime: file.lastmod.getTime() })
                         continue;
+                    } else {
+                        modifyLocalFiles.push(file.filename);
                     }
+                } else {
+                    createLocalFiles.push(file.filename);
                 }
-    
+
                 await (downloadWebDavFile(file.filename, localFile).then(() => {
                     fs.utimesSync(localFile, file.lastmod, file.lastmod);
                     logger.info("Successfully downloaded webdav document", { path: file.filename, size: file.size, mtime: file.lastmod.getTime() })
@@ -224,11 +233,28 @@ export async function snychronizeWebDavFolder(synchro: WebDavSnychronization): P
                 })
                 logger.info("Removed local copy of deleted remote webdav file!", { filename: deleteFile })
             }
+
+            if (deleteLocalFiles.length > 0) await runAgentTrigger(new AgentTriggerWebDavFileDelete(deleteLocalFiles));
+            if (createLocalFiles.length > 0) await runAgentTrigger(new AgentTriggerWebDavFileCreate(createLocalFiles));
+            if (modifyLocalFiles.length > 0) await runAgentTrigger(new AgentTriggerWebDavFileModify(modifyLocalFiles));
         }).catch(err => {
             logger.error("Unhandled error occured during webdav file download!", { error: err })
         }).finally(() => {
             logger.info("Finished synchronization of webdav folder!", {input: synchro.inputPath, output: synchro.outputDirectory});
             res();
+        });
+    });
+}
+
+export async function uploadWebDavFile(pathDestination: string, body: Buffer | string): Promise<void> {
+    return new Promise<void>((res, rej) => {
+        webdavClient.putFileContents(pathDestination, body, {
+            contentLength: body.length,
+            overwrite: true
+        }).then(_ => {
+            res();
+        }).catch(err => {
+            rej(err);
         });
     });
 }

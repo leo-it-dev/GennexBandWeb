@@ -35,3 +35,30 @@ export class AgentTriggerCalendarDelete extends AgentTrigger {
         this.calendarEntries = calendarEntries;
     }
 }
+
+export class AgentTriggerWebDavFileCreate extends AgentTrigger {
+    filePaths: string[];
+
+    constructor(filePaths: string[]) {
+        super();
+        this.filePaths = filePaths;
+    }
+}
+
+export class AgentTriggerWebDavFileDelete extends AgentTrigger {
+    filePaths: string[];
+
+    constructor(filePaths: string[]) {
+        super();
+        this.filePaths = filePaths;
+    }
+}
+
+export class AgentTriggerWebDavFileModify extends AgentTrigger {
+    filePaths: string[];
+
+    constructor(filePaths: string[]) {
+        super();
+        this.filePaths = filePaths;
+    }
+}

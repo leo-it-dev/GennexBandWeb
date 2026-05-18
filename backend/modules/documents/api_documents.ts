@@ -1,5 +1,5 @@
 import config from 'config';
-import { getBaseURL, getFilePathFrontend } from '../..';
+import { getBaseURL, getFilePathFrontend, getRepeatedScheduler } from '../..';
 import { ApiInterfaceEmptyIn, ApiInterfaceEmptyOut } from '../../../api_common/backend_call';
 import { ApiInterfaceDocumentsOut, DownloadableDocument, ForwardLink } from '../../../api_common/documents';
 import { ApiModule } from "../../api_module";
@@ -7,11 +7,15 @@ import * as webdav from '../../framework/webdav-sync';
 import * as fs from 'fs';
 import { Watchdog } from '../../utils/watchdog';
 import * as path from 'path';
+import * as spotify from '../../framework/spotify_scraper';
 
 export class ApiModuleDocuments extends ApiModule {
 
     private SYNC_PATH = config.get('nextcloud.SYNC_PATH') as string;
     private LINK_FILE = config.get('nextcloud.FORWARD_LINK_FILE') as string;
+    private SPOTIFY_SYNC_INTERVAL_SECS = config.get('SPOTIFY.SYNC_INTERVAL_SECONDS') as number;
+    private SPOTIFY_PLAYLIST_ID = config.get('SPOTIFY.PLAYLIST_ID') as string;
+    private SPOTIFY_UPLOAD_TEMP_FILE = config.get('SPOTIFY.NEXTCLOUD_UPLOAD_FILE_PATH') as string;
 
     private SYNC_DOCUMENTS_WEBHOOK_DELAY = 5;
     private preventRepeatedTriggerWatchdog = new Watchdog(() => this.processWebhookTrigger(), this.SYNC_DOCUMENTS_WEBHOOK_DELAY * 1000);
@@ -44,13 +48,26 @@ export class ApiModuleDocuments extends ApiModule {
                 await webdav.deleteWebhook(hook)
             }
 
-            this.listenToNodeEvents.forEach(event => {
-                webdav.registerNewWebhook({
+            for(let event of this.listenToNodeEvents) {
+                await webdav.registerNewWebhook({
                     event: 'OCP\\Files\\Events\\Node\\' + event,
                     httpMethod: 'GET',
                     uri: this.WEBHOOK_URL,
                 });
-            });
+            }
+
+            getRepeatedScheduler().scheduleRepeatedEvent(this, "scrape-spotify", this.SPOTIFY_SYNC_INTERVAL_SECS, (finished) => {
+                spotify.scrapeSongsFromPublicPlaylist(this.SPOTIFY_PLAYLIST_ID).then(songs => {
+                    this.logger().info("Successfully scraped our own spotify playlist. Uploading intermediate setlist as txt file to nextcloud", {songCount: songs.length});
+                    webdav.uploadWebDavFile(this.SPOTIFY_UPLOAD_TEMP_FILE, songs.join('\r\n'))
+                }).then(d => {
+                    this.logger().info("Successfully uploaded intermediate setlist as txt file to nextcloud!");
+                }).catch(err => {
+                    this.logger().error("Error uploading intermediate setlist as txt file to nextcloud!");
+                }).finally(() => {
+                    finished();
+                });
+            }, true);
         });
 
         await this.processWebhookTrigger();

@@ -1,5 +1,6 @@
 import { getRepeatedScheduler } from "../..";
 import { AgentProcessBatchMails } from "../../agents/agent-process-batch-mails";
+import { AgentProcessWebDavFileChange } from "../../agents/agent-process-webdav-file-change";
 import { AgentSendCalendarEntryNotification } from "../../agents/agent-send-event-notification";
 import { ApiModule } from "../../api_module";
 import { Agent } from "./agent";
@@ -25,7 +26,8 @@ export class ApiModuleAgentHandler extends ApiModule {
 
         let agentClasses: (new (...args: any[]) => Agent)[] = [
             AgentSendCalendarEntryNotification,
-            AgentProcessBatchMails
+            AgentProcessBatchMails,
+            AgentProcessWebDavFileChange
         ];
 
         for (let agent of agentClasses) {

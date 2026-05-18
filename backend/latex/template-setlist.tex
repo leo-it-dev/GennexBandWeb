@@ -1,0 +1,150 @@
+\documentclass[a4paper,11pt]{article}
+
+\usepackage[a4paper,margin=2cm]{geometry}
+\usepackage{graphicx}
+\usepackage[table]{xcolor}
+\usepackage{tikz}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{ragged2e}
+\usepackage{helvet}
+\usepackage{titlesec}
+\usepackage{eso-pic}
+\usepackage{transparent}
+\usepackage{balance}
+\usepackage{multicol}
+\usepackage{etoolbox}
+\usepackage{xcolor}
+
+\newcommand{\Hrule}[3][.]{%
+  \par\addvspace{#2}%
+  \begingroup\color{#1}%
+  \hrule
+  \endgroup
+  \addvspace{#3}%
+}
+
+\newcommand{\setitem}[1]{%
+  \par\noindent #1\par
+  \vspace{2pt}
+  \Hrule[gray!40]
+  \vspace{6pt}
+}
+
+\renewcommand{\familydefault}{\sfdefault}
+\pagestyle{empty}
+
+% -------------------------------------------------
+% External image paths
+% -------------------------------------------------
+\newcommand{\watermarkimage}{logo0014_outline.png}
+\newcommand{\logoimage}{logo0014_outline.png}
+
+% -------------------------------------------------
+% Watermark
+% -------------------------------------------------
+\AddToShipoutPictureBG*{
+    \AtPageCenter{
+        \makebox(0,0){
+            \rotatebox{12}{
+                \transparent{0.08}
+                \includegraphics[width=0.55\paperwidth]{\watermarkimage}
+            }
+        }
+    }
+}
+
+% -------------------------------------------------
+% Section styling
+% -------------------------------------------------
+\titleformat{\section}
+{\normalfont\Large\bfseries}
+{}{0em}{}
+
+\begin{document}
+
+% -------------------------------------------------
+% Top right logo
+% -------------------------------------------------
+\begin{flushright}
+    \includegraphics[width=2.8cm]{\logoimage}
+\end{flushright}
+
+\vspace{-2.5cm}
+
+% -------------------------------------------------
+% Header
+% -------------------------------------------------
+\begin{center}
+    {\fontsize{28}{32}\selectfont\textbf{GENNEX}}\\[0.5cm]
+    {\Large Setlist | gennex.band}
+\end{center}
+
+\vspace{0.8cm}
+\noindent\rule{\textwidth}{1.2pt}
+
+\vspace{1.2cm}
+
+% -------------------------------------------------
+% Two-column layout
+% -------------------------------------------------
+\begin{multicols}{2}
+\raggedcolumns
+
+\noindent{\linewidth}
+
+\setlength{\parindent}{0pt}
+
+\setitem{Somebody told me}
+\setitem{All the small things}
+\setitem{Holiday}
+\setitem{Für immer jung}
+\setitem{Wannsee}
+\setitem{Skater Boi}
+\setitem{Can't Stop}
+\setitem{American Idiot}
+\setitem{Ist das noch Punkrock}
+\setitem{It's my life}
+\setitem{Shut up and dance}
+\setitem{Life is a Highway}
+\setitem{I love rock'n Roll}
+\setitem{We will rock you}
+\setitem{Satellite}
+\setitem{Altes Fieber}
+\setitem{The Kids aren't allright}
+\setitem{Song 2}
+\setitem{Basket case}
+\setitem{Schrei nach Liebe}
+\setitem{Linkin Park Mashup}
+\setitem{The emptiness machine}
+\setitem{Boulevard of broken dreams}
+\setitem{Sweet Caroline}
+\setitem{Summer of 69}
+\setitem{Last Resort}
+\setitem{Smells like teen spirit}
+\setitem{Paranoid}
+\setitem{Enter Sandman}
+\setitem{TNT / Thunderstruck}
+\setitem{Highway to hell}
+\setitem{Back in black}
+\setitem{Country roads}
+\setitem{Narcotic}
+\setitem{Skandal im Sperrbezirk}
+\setitem{Sex on fire}
+\setitem{Tage wie diese}
+\setitem{Ein Kompliment}
+\setitem{What's up}
+
+\end{multicols}
+% -------------------------------------------------
+% Footer
+% -------------------------------------------------
+
+\vfill
+
+\begin{center}
+    \color{gray}
+    gennex.band | Änderungen nach Absprache möglich
+\end{center}
+
+\end{document}

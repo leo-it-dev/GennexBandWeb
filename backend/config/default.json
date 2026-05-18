@@ -51,5 +51,10 @@
         "PASSWORD": "enter_your_password_here",
         "SYNC_PATH": "/Shared/Webpage/Download",
         "FORWARD_LINK_FILE": "EMBED_LINKS.txt"
+    },
+    "SPOTIFY": {
+        "SYNC_INTERVAL_SECONDS": 86400,
+        "PLAYLIST_ID": "enter_your_spotify_playlist_id_here",
+        "NEXTCLOUD_UPLOAD_FILE_PATH": "/Shared/your/path/to/tempfile.txt"
     }
 }

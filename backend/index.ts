@@ -14,6 +14,7 @@ import * as ssl from './framework/ssl';
 import * as jwt from './framework/jwt';
 import * as immich from './framework/immich_api'
 import * as webdav from './framework/webdav-sync';
+import * as spotify from './framework/spotify_scraper';
 import { getLogger } from './logger';
 import { ApiModuleConfig } from './modules/config/api_config';
 import { ApiModuleContact } from './modules/contact/api_contact';
@@ -76,6 +77,7 @@ jwt.initJwtBackend();
 immich.initImmich();
 repeatedTaskScheduler.schedulerInit();
 webdav.init();
+spotify.initialize();
 
 // add compression middleware to speed up loading times.
 app.use(compression({ filter: shouldCompress }));
