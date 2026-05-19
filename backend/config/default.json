@@ -50,11 +50,13 @@
         "USERNAME": "enter_your_username_here",
         "PASSWORD": "enter_your_password_here",
         "SYNC_PATH": "/Shared/Webpage/Download",
-        "FORWARD_LINK_FILE": "EMBED_LINKS.txt"
+        "FORWARD_LINK_FILE": "EMBED_LINKS.txt",
+        "EMBED_DOWNLOAD_FILE": "EMBED_DOWNLOADS.txt"
     },
     "SPOTIFY": {
         "SYNC_INTERVAL_SECONDS": 86400,
         "PLAYLIST_ID": "enter_your_spotify_playlist_id_here",
-        "NEXTCLOUD_UPLOAD_FILE_PATH": "/Shared/your/path/to/tempfile.txt"
+        "NEXTCLOUD_UPLOAD_FILE_PATH": "/Shared/your/path/to/tempfile.txt",
+        "NEXTCLOUD_UPLOAD_TEX_PATH": "/Shared/your/path/to/template.tex"
     }
 }

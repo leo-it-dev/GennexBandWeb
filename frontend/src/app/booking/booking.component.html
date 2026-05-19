@@ -27,8 +27,8 @@
                     <div class="download">
                         <app-colored-svg col="var(--colHov)" svgSrc="/images/svg/download.svg"></app-colored-svg>
                         <div>
-                            <h2>{{formatFileName(document.name)}}</h2>
-                            <h3>{{formatFileType(document.name)}} • {{formatSize(document.size)}}</h3>
+                            <h2>{{document.name}}</h2>
+                            <h3>{{formatFileType(document.url)}} • {{formatSize(document.size)}}</h3>
                         </div>
                         <app-colored-svg col="var(--colHov)" svgSrc="/images/svg/arrow2.svg"></app-colored-svg>
                     </div>

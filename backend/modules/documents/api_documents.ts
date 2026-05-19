@@ -13,6 +13,7 @@ export class ApiModuleDocuments extends ApiModule {
 
     private SYNC_PATH = config.get('nextcloud.SYNC_PATH') as string;
     private LINK_FILE = config.get('nextcloud.FORWARD_LINK_FILE') as string;
+    private DOWNLOAD_FILE = config.get('nextcloud.EMBED_DOWNLOAD_FILE') as string;
     private SPOTIFY_SYNC_INTERVAL_SECS = config.get('SPOTIFY.SYNC_INTERVAL_SECONDS') as number;
     private SPOTIFY_PLAYLIST_ID = config.get('SPOTIFY.PLAYLIST_ID') as string;
     private SPOTIFY_UPLOAD_TEMP_FILE = config.get('SPOTIFY.NEXTCLOUD_UPLOAD_FILE_PATH') as string;
@@ -36,6 +37,10 @@ export class ApiModuleDocuments extends ApiModule {
 
     public getWebhookListenEndpoint() {
         return "web-hook";
+    }
+
+    public getDocumentsDownloadFolder() {
+        return this.pathOutputDocuments;
     }
 
     modname(): string {
@@ -100,7 +105,7 @@ export class ApiModuleDocuments extends ApiModule {
             this.logger().info("Processing webdav sync of document folder...");
             webdav.snychronizeWebDavFolder({
                 inputPath: this.SYNC_PATH,
-                outputDirectory: this.pathOutputDocuments
+                outputDirectory: this.getDocumentsDownloadFolder()
             }).then(() => {
                 this.logger().info("Successfully finished sync of document folder!");
             }).catch(() => {
@@ -118,31 +123,43 @@ export class ApiModuleDocuments extends ApiModule {
         let documents: DownloadableDocument[] = [];
         let links: ForwardLink[] = [];
 
-        for(let doc of fs.readdirSync(this.pathOutputDocuments)) {
-            let fullPath = path.join(this.pathOutputDocuments, doc);
-            if (doc.toLowerCase() == this.LINK_FILE.toLowerCase()) {
-                let content = fs.readFileSync(fullPath, 'utf-8');
-                let lines = content.split("\n").map(l => l.trim());
-                for (let line of lines) {
-                    if (line.split("->").length == 2) {
-                        let linkName = line.split("->")[0].trim()
-                        let linkUrl = line.split("->")[1].trim();
-                        links.push({
-                            name: linkName,
-                            url: linkUrl
+        let linkFileFullPath = path.join(this.getDocumentsDownloadFolder(), this.LINK_FILE);
+        let downloadFileFullPath = path.join(this.getDocumentsDownloadFolder(), this.DOWNLOAD_FILE);
+
+        if (fs.existsSync(linkFileFullPath)) {
+            let content = fs.readFileSync(linkFileFullPath, 'utf-8');
+            let lines = content.split("\n").map(l => l.trim());
+            for (let line of lines) {
+                if (line.split("->").length == 2) {
+                    let linkName = line.split("->")[0].trim()
+                    let linkUrl = line.split("->")[1].trim();
+                    links.push({
+                        name: linkName,
+                        url: linkUrl
+                    });
+                }
+            }
+        }
+        if(fs.existsSync(downloadFileFullPath)) {
+            let content = fs.readFileSync(downloadFileFullPath, 'utf-8');
+            let lines = content.split("\n").map(l => l.trim());
+            for (let line of lines) {
+                if (line.split("->").length == 2) {
+                    let downloadName = line.split("->")[0].trim()
+                    let downloadFile = line.split("->")[1].trim();
+                    let downloadFileFullPath = path.join(this.getDocumentsDownloadFolder(), downloadFile);
+
+                    if (fs.existsSync(downloadFileFullPath)) {
+                        let stat = fs.statSync(downloadFileFullPath);
+                        documents.push({
+                            name: downloadName,
+                            size: stat.size,
+                            url: getBaseURL() + "documents/" + encodeURIComponent(downloadFile)
                         });
                     }
                 }
-            } else {
-                let stat = fs.statSync(fullPath);
-                documents.push({
-                    name: doc,
-                    size: stat.size,
-                    url: getBaseURL() + "documents/" + encodeURIComponent(doc)
-                });
             }
         }
-
         return {documents: documents, links: links};
     }
 }

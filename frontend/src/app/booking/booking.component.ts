@@ -28,10 +28,4 @@ export class BookingComponent {
 
 		return Math.round(size * 10) / 10 + labels[idx];
 	}
-
-	formatFileName(fileName: string) {
-		let stripped = fileName.replace("_", " ");
-		stripped = stripped.substring(0, stripped.lastIndexOf("."));
-		return stripped;
-	}
 }
