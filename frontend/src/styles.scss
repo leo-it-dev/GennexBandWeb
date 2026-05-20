@@ -63,7 +63,19 @@ button {
     width: max-content;
 }
 
-button:hover:not(.action):not(.open-submenu):not(.low-attention) {
+button.small {
+    padding: 10px 15px !important;
+    letter-spacing: 1px !important;
+    font-weight: 800 !important;
+    font-size: 9pt !important;
+}
+button.small-low-attention {
+    border: 1px solid var(--primaryLightAlpha55) !important;
+    background-color: transparent !important;
+    color: white !important;
+}
+
+button:hover:not(.action):not(.open-submenu):not(.low-attention):not(.small-low-attention) {
     filter: brightness(1.4);
     box-shadow: 0px 0px 40px var(--primaryLight);
 }
@@ -475,6 +487,31 @@ hr {
 ::-webkit-scrollbar-thumb {
     background: var(--layer2);
     border-radius: 10px;
+}
+
+#close {
+    border-radius: 100%;
+    width: 50px;
+    height: 50px;
+    min-width: 50px;
+    min-height: 50px;
+    box-sizing: border-box;
+    border: 1px solid var(--layer1);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: 0px 0px 8px var(--primaryLightAlpha55);
+    opacity: 1;
+    transition: opacity .15s ease-out;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-weight: 1000;
+    background-color: var(--alternateSectionColoring);
+    z-index: 20;
+    color: var(--foreground);
 }
 
 

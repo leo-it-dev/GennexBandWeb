@@ -13,6 +13,7 @@ export type VideoInfo = {
     videoName: string;
     videoURL: string;
     videoDescription: string;
+    thumbnailURL: string;
 }
 
 export type Playlist = {
