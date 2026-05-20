@@ -47,6 +47,11 @@
         --size: 35.5vw;
         padding-left: unset !important;
         padding-right: unset !important;
+
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
     }
 
     .diamond {
@@ -54,7 +59,7 @@
         margin-right: unset !important;
         margin-bottom: unset !important;
         border: unset !important;
-        left: 5vw !important;
+        left: 0vw !important;
     }
 
     .diamondWrapper {
