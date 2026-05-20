@@ -57,6 +57,12 @@ export class CalendarListComponent {
 	private formBuilder = inject(FormBuilder);
 	public subscribeFormGroup = formBuilderGroupFromInputVerifierTemplate(this.formBuilder, subscribeFormularRequestVerification);
 
+	public isUpcoming(event: CalendarEntry) {
+		let today = new Date();
+		today.setHours(0, 0, 0, 0);
+		return event.date >= today;
+	}
+
 	constructor(public calendar: CalendarBackendService,
 		private domSan: DomSanitizer,
 		private pageControl: PageControlService,
@@ -101,7 +107,14 @@ export class CalendarListComponent {
 		});
 	}
 
+	formatDay(date: Date) {
+		return new Intl.DateTimeFormat("de-DE", { day: 'numeric' }).format(date);
+	}
+
 	formatDate(date: Date) {
+		return new Intl.DateTimeFormat("de-DE", { month: 'long', year: 'numeric' }).format(date);
+	}
+	formatDateFull(date: Date) {
 		return new Intl.DateTimeFormat("de-DE", { day: 'numeric', month: 'long', year: 'numeric' }).format(date);
 	}
 	formatTime(date: Date) {

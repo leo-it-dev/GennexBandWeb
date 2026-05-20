@@ -4,12 +4,64 @@
     background-color: var(--alternateSectionColoring2);
 }
 
+#no-gigs-planned {
+    font-size: 15pt;
+    font-weight: 100;
+    margin-bottom: 20px;
+}
+
+#events-upcoming,
+#events-gone {
+    width: 100%;
+    position: relative;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--primaryLight);
+    font-size: 10pt;
+    line-height: 10pt;
+    margin: 0px 0px 20px 0px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 20px;
+}
+
+#events-gone {
+    color: var(--layer2);
+}
+
+#events-upcoming span,
+#events-gone span {
+    min-width: max-content;
+    width: max-content;
+    display: inline-block;
+}
+
+#events-upcoming:before,
+#events-upcoming:after,
+#events-gone:before,
+#events-gone:after {
+    content: '';
+    position: relative;
+    flex: 1;
+    transform: translateY(-50%);
+    background-color: var(--primaryLight);
+    height: 1px;
+}
+
+#events-gone:before,
+#events-gone:after {
+    background-color: var(--layer2);
+}
+
+
 .event {
     width: max(50vw, 500px);
     border-radius: 20px;
-    border: 1px solid var(--layer0);
-    padding: 30px;
-    background-color: var(--layer0);
+    border: 1px solid var(--primaryLight);
+    padding: 20px 30px;
+    background-color: var(--primaryLightAlpha11);
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -18,6 +70,12 @@
     gap: 10px;
     box-sizing: border-box;
     cursor: pointer;
+}
+
+.event-gone {
+    border-color: var(--alternateSectionColoring2);
+    background-color: var(--layer1);
+    filter: grayscale(1) brightness(0.3);
 }
 
 .event:hover {
@@ -29,36 +87,38 @@
 }
 
 .event-date {
-    width: 30%;
+    width: 25%;
     display: flex;
     flex-direction: column;
     flex-wrap: nowrap;
+    border-right: 1px solid var(--layer1);
+}
+
+.event-date h1 {
+    text-align: left;
+    color: var(--primaryLight);
+    margin: 0;
+    font-weight: 1000;
+    font-size: 24pt;
+    line-height: 26pt;
+    text-wrap: nowrap;
 }
 
 .event-date h2 {
     text-align: left;
     color: var(--primaryLight);
     margin: 0;
-    font-size: 16pt;
-    line-height: 18pt;
-    text-wrap: nowrap;
-}
-
-.event-date h3 {
-    text-align: left;
-    color: var(--layer3);
-    margin: 0;
-    text-wrap: nowrap;
-    font-weight: 100;
-    font-size: 11pt;
+    font-size: 14pt;
     line-height: 16pt;
+    text-wrap: nowrap;
 }
 
 .event-location {
-    width: 60%;
+    width: 65%;
     display: flex;
     flex-direction: column;
     flex-wrap: nowrap;
+    padding-left: 5px;
     gap: 5px;
 }
 

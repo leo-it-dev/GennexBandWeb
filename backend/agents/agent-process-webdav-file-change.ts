@@ -1,13 +1,11 @@
+import * as child_process from 'child_process';
 import config from 'config';
-import { getFilePathFrontend } from "..";
-import { Agent } from "../modules/agent/agent";
-import { AgentTriggerWebDavFileCreate, AgentTriggerWebDavFileModify } from "../modules/agent/agent_trigger";
 import * as fs from 'fs';
 import path from 'path';
-import * as child_process from 'child_process';
+import { getFilePathFrontend } from "..";
 import * as webdav from '../framework/webdav-sync';
-import { ApiModuleDocuments } from '../modules/documents/api_documents';
-import { ApiModuleLazy } from '../api_module';
+import { Agent } from "../modules/agent/agent";
+import { AgentTriggerWebDavFileCreate, AgentTriggerWebDavFileModify } from "../modules/agent/agent_trigger";
 
 export class AgentProcessWebDavFileChange extends Agent {
 
@@ -23,7 +21,7 @@ export class AgentProcessWebDavFileChange extends Agent {
     LOCAL_TEX_WORK_DIR_TEX_FILE = "";
     LOCAL_PDF_OUT_PATH = "";
 
-    documentApi = new ApiModuleLazy(ApiModuleDocuments);
+    PATH_DOCUMENTS_LOCAL_DOWNLOAD = getFilePathFrontend() + "/documents";
 
     constructor() {
         super([
@@ -92,7 +90,8 @@ export class AgentProcessWebDavFileChange extends Agent {
         this.deleteLocalTempTexDir();
         fs.mkdirSync(this.LOCAL_TEX_WORK_DIR);
 
-        fs.cpSync(this.documentApi.get().getDocumentsDownloadFolder(), this.LOCAL_TEX_WORK_DIR, {
+        // TODO: This crashes sometimes because of lazy load
+        fs.cpSync(this.PATH_DOCUMENTS_LOCAL_DOWNLOAD, this.LOCAL_TEX_WORK_DIR, {
             force: true,
             recursive: true,
             errorOnExist: false

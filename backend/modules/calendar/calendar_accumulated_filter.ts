@@ -51,9 +51,18 @@ export class AccumulatedCalendarFilter {
         this.syncToken = newCalendarChunk.syncToken;
     }
 
-    getCurrentCalendarState() {
+    getCurrentCalendarState(): Calendar {
         return this.calendar;
     }
+
+    getCurrentCalendarStateSinceWeeksPast(weeksPast: number): Calendar {
+        let oneWeekAgo = new Date();
+        oneWeekAgo.setDate(oneWeekAgo.getDate() - 7*weeksPast);
+        return {
+            entries: this.calendar.entries.filter(entry => entry.date > oneWeekAgo)
+        }
+    }
+
     getCurrentSyncToken() {
         return this.syncToken;
     }

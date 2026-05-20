@@ -31,6 +31,8 @@ export type CalendarEntryChangeToken = {
 
 export class ApiModuleCalendar extends ApiModule {
 
+    SHOW_EVENTS_PAST_WEEKS = config.get('calendar.OLDEST_EVENTS_TO_SHOW_WEEKS') as number;
+
     helper?: CalendarAPIHelper;
     calendarWatcher?: GoogleCalendarWatchHandler;
     calendarID: string = "";
@@ -152,7 +154,7 @@ export class ApiModuleCalendar extends ApiModule {
                 error: undefined,
                 statusCode: 200,
                 responseObject: {
-                    calendar: this.calendarFilter.getCurrentCalendarState()
+                    calendar: this.calendarFilter.getCurrentCalendarStateSinceWeeksPast(this.SHOW_EVENTS_PAST_WEEKS)
                 }
             };
         });
