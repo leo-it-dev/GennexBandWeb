@@ -3,50 +3,14 @@
 	Ein kleiner Vorgeschmack auf unsere Shows
 </span>
 
-<div class="playlist-nav" id="playlist-nav-desktop">
-	<h4>Gigs & Playlisten</h4>
-	<div>
-		@for(info of this.videoService.getVideoList()(); track info.playlist.playlistID) {
-			<button class="small" (click)="this.currentPlaylist = info" [class.small-low-attention]="info !== this.currentPlaylist">{{info.playlist.playlistName}}</button>
-		}
-	</div>
-	<hr />
-</div>
+<app-video-list-playlist-selector></app-video-list-playlist-selector>
 
 <div id="video-container">
 	<div id="video-player">
 		<div class="iframe-wrapper">
-			<youtube-player [videoId]="this.currentVideo?.videoID ?? ''" width="100%" #ytPlayer></youtube-player>
+			<youtube-player [videoId]="this.videoService.currentVideo()?.videoID ?? ''" width="100%" #ytPlayer></youtube-player>
 		</div>
 	</div>
-	<div id="video-selector" [class.mobileOpened]="mobileSelectionScreenOpened()">
-		<div id="close" (click)="mobileSelectionScreenOpened.set(false)">✕</div>
-
-		<div class="playlist-nav" id="playlist-nav-mobile">
-			<h4>Gigs & Playlisten</h4>
-			<div>
-				@for(info of this.videoService.getVideoList()(); track info.playlist.playlistID) {
-					<button class="small" (click)="this.currentPlaylist = info" [class.small-low-attention]="info !== this.currentPlaylist">{{info.playlist.playlistName}}</button>
-				}
-			</div>
-			<hr />
-		</div>
-
-		<div id="video-selector-header">
-			<h4>Playlist</h4>
-			<h4>{{this.currentPlaylist?.videos?.length ?? 0}} Video{{(this.currentPlaylist?.videos?.length ?? 0) != 1 ? 's' : ''}}</h4>
-		</div>
-		<div id="playlist-video-list-cont">
-			<ul id="playlist-video-list">
-				@for(video of this.currentPlaylist?.videos ?? []; track video.videoID; let idx = $index) {
-					<li (click)="mobileSelectionScreenOpened.set(false); this.currentVideo = video" [class.selected-item]="video.videoID == (this.currentVideo?.videoID ?? '')">
-						<h4 class="video-num">{{formatIdx(idx)}}</h4>
-						<img [src]="video.thumbnailURL" />
-						<h4 class="video-name">{{video.videoName}}</h4>
-					</li>
-				}
-			</ul>
-		</div>
-	</div>
+	<app-video-list-video-selector></app-video-list-video-selector>
 </div>
-<button id="open-video-selector-mobile" (click)="mobileSelectionScreenOpened.set(true)">Live videos</button>
+<button id="open-video-selector-mobile" (click)="videoService.mobileVideoListOpened.set(true)">Live videos</button>

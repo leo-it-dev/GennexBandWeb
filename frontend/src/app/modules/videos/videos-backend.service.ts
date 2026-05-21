@@ -1,5 +1,5 @@
 import { Injectable, Injector, Signal, signal, WritableSignal } from '@angular/core';
-import { ApiInterfaceVideosIn, ApiInterfaceVideosOut, VideoList } from '../../../../../api_common/videos';
+import { ApiInterfaceVideosIn, ApiInterfaceVideosOut, Playlist, VideoInfo, VideoList } from '../../../../../api_common/videos';
 import { BackendService } from '../../api/backend.service';
 
 @Injectable({
@@ -10,6 +10,11 @@ export class VideosBackendService extends BackendService {
 	public static API_URL_VIDEOS = "/module/videos/videos"
 
 	private videoList: WritableSignal<VideoList> = signal([]);
+
+	public currentPlaylist: WritableSignal<Playlist | undefined> = signal(undefined);
+	public currentVideo: WritableSignal<VideoInfo | undefined> = signal(undefined);
+	public mobileVideoListOpened: WritableSignal<boolean> = signal(false);
+
 
 	name(): string {
 		return "Videos";

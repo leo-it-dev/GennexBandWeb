@@ -1,39 +1,58 @@
-// Source - https://stackoverflow.com/a/68484378
-// Posted by GuCier
-// Retrieved 2026-04-11, License - CC BY-SA 4.0
-
-import { AfterViewInit, Directive, TemplateRef, ViewContainerRef } from '@angular/core'
+import {
+    AfterViewInit,
+    Directive,
+    ElementRef,
+    Input,
+    OnDestroy,
+    Renderer2,
+} from '@angular/core'
 
 @Directive({
     selector: '[isVisible]',
+    standalone: true,
 })
+export class IsVisibleDirective implements AfterViewInit, OnDestroy {
 
-/**
- * IS VISIBLE DIRECTIVE
- * --------------------
- * Mounts a component whenever it is visible to the user
- * Usage: <div *isVisible>I'm on screen!</div>
- */
-export class IsVisible implements AfterViewInit {
+    @Input() visibleClass = 'is-visible'
 
-    constructor(private vcRef: ViewContainerRef, private tplRef: TemplateRef<any>) {
+    @Input() threshold: number | number[] = 0.2
+
+    @Input() rootMargin = '0px'
+
+    private observer?: IntersectionObserver
+
+    constructor(
+        private el: ElementRef,
+        private renderer: Renderer2,
+    ) { }
+
+    ngAfterViewInit(): void {
+
+        this.observer = new IntersectionObserver(
+            ([entry]) => {
+
+                if (entry.isIntersecting) {
+                    this.renderer.addClass(
+                        this.el.nativeElement,
+                        this.visibleClass,
+                    )
+                } else {
+                    this.renderer.removeClass(
+                        this.el.nativeElement,
+                        this.visibleClass,
+                    )
+                }
+            },
+            {
+                threshold: this.threshold,
+                rootMargin: this.rootMargin,
+            },
+        )
+
+        this.observer.observe(this.el.nativeElement)
     }
 
-    ngAfterViewInit() {
-        const observedElement = this.vcRef.element.nativeElement.parentElement
-
-        const observer = new IntersectionObserver(([entry]) => {
-            this.renderContents(entry.isIntersecting)
-        })
-        observer.observe(observedElement)
-    }
-
-    renderContents(isIntersecting: boolean) {
-
-        this.vcRef.clear()
-
-        if (isIntersecting) {
-            this.vcRef.createEmbeddedView(this.tplRef)
-        }
+    ngOnDestroy(): void {
+        this.observer?.disconnect()
     }
 }

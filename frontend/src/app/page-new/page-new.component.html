@@ -1,12 +1,22 @@
 <app-titlebar></app-titlebar>
 <app-logo-block></app-logo-block>
-<app-video-list id="live-action" class="section"></app-video-list>
-<app-about-us id="about-us" class="section"></app-about-us>
-<app-calendar-list id="next-events" class="section"></app-calendar-list>
-<app-setlist id="setlist" class="section-left"></app-setlist>
-<app-booking id="booking" class="section-left-wide"></app-booking>
-<app-gallery id="gallery" class="section"></app-gallery>
-<app-contact id="contact" class="section"></app-contact>
+
+<app-video-list	id="live-action" class="section"
+	isVisible [threshold]="0.25"	visibleClass="fadeIn"></app-video-list>
+<app-video-list-mobile-selector></app-video-list-mobile-selector>
+
+<app-about-us id="about-us" class="section"
+	isVisible [threshold]="0.25"	visibleClass="fadeIn"></app-about-us>
+<app-calendar-list id="next-events" class="section"
+	isVisible [threshold]="0.25"	visibleClass="fadeIn"></app-calendar-list>
+<app-setlist id="setlist" class="section-left"
+	isVisible [threshold]="0.25"	visibleClass="fadeIn"></app-setlist>
+<app-booking id="booking" class="section-left-wide"
+	isVisible [threshold]="0.25"	visibleClass="fadeIn"></app-booking>
+<app-gallery id="gallery" class="section"
+	isVisible [threshold]="0.25"	visibleClass="fadeIn"></app-gallery>
+<app-contact id="contact" class="section"
+	isVisible [threshold]="0.25"	visibleClass="fadeIn"></app-contact>
 <app-footer (onPrivacyPolicy)="this.doShowPrivacyPolicy.set(true)" (onImpressum)="this.doShowImpressum.set(true)"></app-footer>
 
 @if (this.loadingOverlay.loadingOverlayVisible()) {

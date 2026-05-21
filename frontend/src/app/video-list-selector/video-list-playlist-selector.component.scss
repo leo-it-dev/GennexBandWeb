@@ -1,0 +1,44 @@
+@use '../../variables.scss' as *;
+
+:host {
+    width: 100%;
+    min-width: 100px;
+    display: flex;
+    flex-direction: column;
+}
+
+#playlist-nav {
+    width: 80%;
+    margin: 0 auto;
+}
+
+#playlist-nav div {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+#playlist-nav h4 {
+    text-transform: uppercase;
+    color: var(--layer2);
+    font-size: 10pt;
+}
+
+#close {
+    display: none;
+}
+
+@media screen and (max-width: $switchToMobileWidthPx) {
+    #close {
+        display: flex;
+    }
+
+    #playlist-nav {
+        margin: 0;
+    }
+
+    #playlist-nav div {
+        gap: 5px;
+    }
+}

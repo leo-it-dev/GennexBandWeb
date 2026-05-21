@@ -264,8 +264,9 @@ app-hcaptcha.ng-invalid {
     animation-fill-mode: both;
 }
 .fadeInInner {
-    animation: fade .4s ease-in-out;
-    animation-fill-mode: both;
+    animation: fade .4s ease-in-out !important;
+    animation-fill-mode: both !important;
+    animation-direction: normal !important;
 }
 .fadeOutPN {
     animation: fadeHeight 1s ease-in-out;
@@ -489,6 +490,10 @@ hr {
     border-radius: 10px;
 }
 
+::-webkit-scrollbar-corner {
+    background: transparent;
+}
+
 #close {
     border-radius: 100%;
     width: 50px;
@@ -546,8 +551,8 @@ hr {
 
     .section-header,
     .section-text-subtitle {
-        padding-left: 0 !important;
-        padding-right: 0 !important;
+        padding-left: 10px !important;
+        padding-right: 10px !important;
     }
     
     .left-align {

@@ -1,0 +1,13 @@
+.section,
+.section-left,
+.section-left-wide {
+    opacity: 0;
+    transform: translateY(10px);
+
+    transition: opacity .4s ease-in-out, transform .4s ease-in-out;
+}
+
+.fadeIn {
+    opacity: 1;
+    transform: translateY(0px);
+}

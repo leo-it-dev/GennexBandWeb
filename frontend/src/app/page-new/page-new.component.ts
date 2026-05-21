@@ -15,10 +15,13 @@ import { PrivacypolicyComponent } from '../privacypolicy/privacypolicy.component
 import { BigOverlayComponent } from '../big-overlay/big-overlay.component';
 import { LoadingoverlayService } from '../services/loadingoverlay.service';
 import { LoadingoverlayComponent } from '../loadingoverlay/loadingoverlay.component';
+import { IsVisibleDirective } from '../directives/is-visible-directive';
+import { VideoListPlaylistSelectorComponent } from '../video-list-selector/video-list-playlist-selector.component';
+import { VideoListMobileSelectorComponent } from '../video-list-mobile-selector/video-list-mobile-selector.component';
 
 @Component({
 	selector: 'app-page-new',
-	imports: [TitlebarComponent, CalendarListComponent, LogoBlockComponent, AboutUsComponent, VideoListComponent, SetlistComponent, GalleryComponent, BookingComponent, ContactComponent, FooterComponent, ImpressumComponent, PrivacypolicyComponent, BigOverlayComponent, LoadingoverlayComponent],
+	imports: [TitlebarComponent, CalendarListComponent, LogoBlockComponent, AboutUsComponent, VideoListComponent, SetlistComponent, GalleryComponent, BookingComponent, ContactComponent, FooterComponent, ImpressumComponent, PrivacypolicyComponent, BigOverlayComponent, LoadingoverlayComponent, IsVisibleDirective, VideoListMobileSelectorComponent],
 	templateUrl: './page-new.component.html',
 	styleUrl: './page-new.component.scss',
 })

@@ -1,0 +1,10 @@
+<div id="close" (click)="this.back.mobileVideoListOpened.set(false)">✕</div>
+
+<div id="playlist-nav">
+    <h4>Gigs & Playlisten</h4>
+    <div>
+        @for(info of this.back.getVideoList()(); track info.playlist.playlistID) {
+            <button class="small" (click)="this.back.currentPlaylist.set(info)" [class.small-low-attention]="info !== this.back.currentPlaylist()">{{info.playlist.playlistName}}</button>
+        }
+    </div>
+</div>

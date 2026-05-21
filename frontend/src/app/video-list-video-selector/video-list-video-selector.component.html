@@ -1,0 +1,15 @@
+<div id="video-selector-header">
+    <h4>Playlist</h4>
+    <h4>{{this.back.currentPlaylist()?.videos?.length ?? 0}} Video{{(this.back.currentPlaylist()?.videos?.length ?? 0) != 1 ? 's' : ''}}</h4>
+</div>
+<div id="playlist-video-list-cont">
+    <ul id="playlist-video-list">
+        @for(video of this.back.currentPlaylist()?.videos ?? []; track video.videoID; let idx = $index) {
+            <li (click)="this.back.mobileVideoListOpened.set(false); this.back.currentVideo.set(video)" [class.selected-item]="video.videoID == (this.back.currentVideo()?.videoID ?? '')">
+                <h4 class="video-num">{{formatIdx(idx)}}</h4>
+                <img [src]="video.thumbnailURL" />
+                <h4 class="video-name">{{video.videoName}}</h4>
+            </li>
+        }
+    </ul>
+</div>
