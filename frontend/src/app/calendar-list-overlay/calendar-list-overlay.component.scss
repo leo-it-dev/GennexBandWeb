@@ -1,0 +1,98 @@
+#flyer {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    min-height: 0;
+    margin: 0px 40px;
+    box-sizing: border-box;
+}
+
+#flyer-title {
+    text-transform: uppercase;
+    font-size: 13pt;
+    line-height: 13pt;
+    padding-left: 20px;
+    color: var(--foreground);
+}
+
+#flyer-scroll {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    flex: 1;
+    min-height: 350px;
+    padding-bottom: 40px;
+}
+
+
+#flyer-scroll img {
+    display: block;
+    height: 100%;
+    width: auto;
+    border: 1px solid var(--layer2);
+    box-shadow: 0px 0px 15px var(--primaryLightAlpha55);
+    border-radius: 5px;
+    cursor: pointer;
+    box-sizing: border-box;
+}
+
+
+#flyer-scroll-left,
+#flyer-scroll-right {
+    border-radius: 100%;
+    width: 50px;
+    height: 50px;
+    min-width: 50px;
+    min-height: 50px;
+    box-sizing: border-box;
+    border: 1px solid var(--layer1);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: 0px 0px 8px var(--primaryLightAlpha55);
+    opacity: 1;
+    transition: opacity .15s ease-out;
+}
+
+#flyer-scroll-left {
+    transform: rotate(90deg);
+}
+#flyer-scroll-right {
+    transform: rotate(-90deg);
+}
+
+#flyer-scroll-left:not(.scrollActive),
+#flyer-scroll-right:not(.scrollActive) {
+    opacity: 0;
+    cursor: unset !important;
+}
+
+
+#flyer-scroll-items {
+    max-width: 100%;
+    overflow-x: scroll;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 30px;
+    height: 100%;
+    margin: 0px 20px;
+    mask: linear-gradient(90deg, transparent 0%, black 10%, black 90%, transparent 100%);
+    scrollbar-width: none;
+}
+
+#flyer-scroll-items::-webkit-scrollbar {
+    width: 0;  /* Remove scrollbar space */
+    background: transparent;  /* Optional: just make scrollbar invisible */
+}
+/* Optional: show position indicator in red */
+#flyer-scroll-items::-webkit-scrollbar-thumb {
+    background: transparent;
+}
+

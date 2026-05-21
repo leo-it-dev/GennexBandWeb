@@ -14,6 +14,35 @@ export class GalleryBackendService extends BackendService {
 	public imagesLoaded = false;
 	public bigImagePath: string = "";
 
+
+	public showBigGallery: WritableSignal<boolean> = signal(false);
+	public showBigImageHR: WritableSignal<string> = signal("");
+	public showBigImageLR: WritableSignal<string> = signal("");
+	public hrImageLoaded = false;
+	public teaserImages: Signal<string[]> = computed(() => this.selectGalleryImages(this.thumbnailImageURLs(), 5));
+
+	selectGalleryImages(thumbnails: string[], count: number): string[] {
+		let images: string[] = [];
+		let imagesRemaining = thumbnails;
+		for (let i = 0; i < count; i++) {
+			images.push(imagesRemaining.splice(Math.floor(Math.random() * imagesRemaining.length), 1)[0]);
+		}
+		return images;
+	}
+
+	openBigImageEvt(event: Event) {
+		console.log(event.target);
+		this.openBigImage(new URL((event.target as HTMLImageElement).src).pathname);
+	}
+
+	openBigImage(url: string) {
+		let thumbBaseName = new URL("https://" + location.host + url).pathname.split("/").pop();
+		let bigFileName = this.images()[thumbBaseName ?? ""];
+		this.hrImageLoaded = false;
+		this.showBigImageHR.set(this.bigImagePath + "/" + bigFileName);
+		this.showBigImageLR.set(url);
+	}
+
 	name(): string {
 		return "Gallery";
 	}

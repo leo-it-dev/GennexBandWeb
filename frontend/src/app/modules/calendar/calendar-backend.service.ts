@@ -1,7 +1,19 @@
 import { Injectable, Injector, Signal, signal, WritableSignal } from '@angular/core';
+import { SafeResourceUrl } from '@angular/platform-browser';
 import { ApiInterfaceCalendarIn, ApiInterfaceCalendarOut, Calendar, CalendarEntry } from '../../../../../api_common/calendar';
 import { BackendService } from '../../api/backend.service';
-import { removePathFromURL } from '../../utilities';
+
+export type AttachmentMapped = {
+	sourceURL: string,
+	renderedPng: string,
+}
+
+export type CalendarEntryWithUrl = {
+	entry: CalendarEntry,
+	url: SafeResourceUrl,
+	attachmentURLs: AttachmentMapped[]
+}
+
 
 @Injectable({
 	providedIn: 'root',
@@ -14,6 +26,10 @@ export class CalendarBackendService extends BackendService {
 	private calendarData: WritableSignal<Calendar> = signal({entries: []});
 
 	public bigImageEntry: WritableSignal<CalendarEntry | undefined> = signal(undefined);
+
+	public resolvedBigImage: WritableSignal<CalendarEntryWithUrl | undefined> = signal(undefined);
+	public scrollLeftActive = false;
+	public scrollRightActive = false;
 
 	name(): string {
 		return "Calendar";

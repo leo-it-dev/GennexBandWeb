@@ -9,12 +9,15 @@
 	isVisible [threshold]="0.25"	visibleClass="fadeIn"></app-about-us>
 <app-calendar-list id="next-events" class="section"
 	isVisible [threshold]="0.25"	visibleClass="fadeIn"></app-calendar-list>
+<app-calendar-list-overlay></app-calendar-list-overlay>
+
 <app-setlist id="setlist" class="section-left"
 	isVisible [threshold]="0.25"	visibleClass="fadeIn"></app-setlist>
 <app-booking id="booking" class="section-left-wide"
 	isVisible [threshold]="0.25"	visibleClass="fadeIn"></app-booking>
 <app-gallery id="gallery" class="section"
 	isVisible [threshold]="0.25"	visibleClass="fadeIn"></app-gallery>
+<app-gallery-overlay></app-gallery-overlay>
 <app-contact id="contact" class="section"
 	isVisible [threshold]="0.25"	visibleClass="fadeIn"></app-contact>
 <app-footer (onPrivacyPolicy)="this.doShowPrivacyPolicy.set(true)" (onImpressum)="this.doShowImpressum.set(true)"></app-footer>

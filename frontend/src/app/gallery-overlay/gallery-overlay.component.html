@@ -1,0 +1,20 @@
+@if(this.backend.showBigGallery()) {
+    <app-big-overlay (close)="this.backend.showBigGallery.set(false)">
+        <h1 class="section-header">Unsere Live <span class="section-header-highlight">Highlights!</span></h1>
+        <app-diamond-image-map [images]="this.backend.thumbnailImageURLs" [slideshow]="false" (imageClicked)="backend.openBigImage($event)" [parentContainer]="this.elRef" [heightCrop]="false"></app-diamond-image-map>
+    </app-big-overlay>
+}
+
+@if(this.backend.showBigImageHR() != "") {
+    <app-big-overlay (close)="closeBigImage()">
+        <img #bigImageViewerHR [src]="this.backend.showBigImageHR()" id="galleryBigImageViewerHR" (click)="closeBigImage()" [class.bigImageHRvisible]="this.backend.hrImageLoaded" (load)="this.backend.hrImageLoaded = true">
+        <img #bigImageViewerLR [src]="this.backend.showBigImageLR()" id="galleryBigImageViewerLR" (click)="closeBigImage()">
+
+        @if (!this.backend.hrImageLoaded) {
+        <div id="hrLoadingWrapper">
+            <ng-lottie [options]="this.animationOptions()"></ng-lottie>
+            <h3>Lade HD Variante...</h3>
+        </div>
+        }
+    </app-big-overlay>
+}

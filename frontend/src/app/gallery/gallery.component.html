@@ -2,37 +2,15 @@
 
 @defer (when this.backend.imagesLoaded) {
     <span class="section-text" id="gallery-images">
-        @for(image of this.teaserImages(); track image) {
-            <div><img [src]="image" (click)="openBigImageEvt($event)" /></div>
+        @for(image of this.backend.teaserImages(); track image) {
+            <div><img [src]="image" (click)="backend.openBigImageEvt($event)" /></div>
         }
     </span>
 } @placeholder(minimum 500ms) {
     <h3 id="load-images">Lade Bilddaten...</h3>
 }
 
-<button (click)="this.showBigGallery.set(true)" class="low-attention">
+<button (click)="this.backend.showBigGallery.set(true)" class="low-attention">
     Zeig mir mehr
     <app-colored-svg svgSrc="/images/svg/arrow.svg"></app-colored-svg>
 </button>
-
-@if(this.showBigGallery()) {
-    <app-big-overlay (close)="this.showBigGallery.set(false)">
-        <h1 class="section-header">Unsere Live <span class="section-header-highlight">Highlights!</span></h1>
-        <app-diamond-image-map [images]="this.backend.thumbnailImageURLs" [slideshow]="false" (imageClicked)="openBigImage($event)" [parentContainer]="this.elRef" [heightCrop]="false"></app-diamond-image-map>
-    </app-big-overlay>
-}
-
-
-@if(this.showBigImageHR() != "") {
-    <app-big-overlay (close)="closeBigImage()">
-        <img #bigImageViewerHR [src]="this.showBigImageHR()" id="galleryBigImageViewerHR" (click)="closeBigImage()" [class.bigImageHRvisible]="this.hrImageLoaded" (load)="hrImageDoneLoading()">
-        <img #bigImageViewerLR [src]="this.showBigImageLR()" id="galleryBigImageViewerLR" (click)="closeBigImage()">
-
-        @if (!this.hrImageLoaded) {
-        <div id="hrLoadingWrapper">
-            <ng-lottie [options]="this.animationOptions()"></ng-lottie>
-            <h3>Lade HD Variante...</h3>
-        </div>
-        }
-    </app-big-overlay>
-}
