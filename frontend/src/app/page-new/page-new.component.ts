@@ -19,10 +19,11 @@ import { SetlistComponent } from '../setlist/setlist.component';
 import { TitlebarComponent } from '../titlebar/titlebar.component';
 import { VideoListMobileSelectorComponent } from '../video-list-mobile-selector/video-list-mobile-selector.component';
 import { VideoListComponent } from '../video-list/video-list.component';
+import { AudioSampleComponent } from '../audio-sample/audio-sample.component';
 
 @Component({
 	selector: 'app-page-new',
-	imports: [TitlebarComponent, CalendarListComponent, LogoBlockComponent, AboutUsComponent, VideoListComponent, SetlistComponent, GalleryComponent, BookingComponent, ContactComponent, FooterComponent, ImpressumComponent, PrivacypolicyComponent, BigOverlayComponent, LoadingoverlayComponent, IsVisibleDirective, VideoListMobileSelectorComponent, CalendarListOverlayComponent, GalleryOverlayComponent],
+	imports: [TitlebarComponent, CalendarListComponent, LogoBlockComponent, AboutUsComponent, VideoListComponent, SetlistComponent, GalleryComponent, BookingComponent, ContactComponent, FooterComponent, ImpressumComponent, PrivacypolicyComponent, BigOverlayComponent, LoadingoverlayComponent, IsVisibleDirective, VideoListMobileSelectorComponent, CalendarListOverlayComponent, GalleryOverlayComponent, AudioSampleComponent],
 	templateUrl: './page-new.component.html',
 	styleUrl: './page-new.component.scss',
 })

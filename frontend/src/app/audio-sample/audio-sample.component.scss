@@ -1,0 +1,120 @@
+@use '../../variables.scss' as *;
+
+.text-hr {
+    width: max(300px, 30%);
+}
+
+.sample {
+    border: 1px solid var(--primaryLightAlpha55);
+    background: var(--primaryLightAlpha11);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    gap: 20px;
+    margin: 60px 0px 0px 0px;
+}
+
+.sample-play {
+    width: 20px;
+    height: 20px;
+    border-radius: 5px;
+    position: relative;
+    cursor: pointer;
+    transition: background-color .3s ease-out;
+    border: 1px solid var(--layer1);
+    background-color: var(--layer0);
+    padding: 10px;
+}
+
+.sample-play:hover {
+    background-color: var(--layer1);
+
+}
+
+.sample-num {
+    font-weight: 400;
+    color: var(--layer2);
+    font-size: 10pt;
+}
+
+.sample-text {
+    color: var(--foreground);
+    font-size: 15pt;
+    font-weight: 500;
+}
+
+.sample-bars {
+    width: 200px;
+    height: 60px;
+}
+
+
+.sample-player {
+    height: 3px;
+    border-radius: 10px;
+    background-color: var(--layer2);
+    position: relative;
+    width: 250px;
+}
+
+.sample-player-cont {
+    cursor: pointer;
+    padding: 20px 0px;
+}
+
+.sample-player-knob {
+    --progress: 0%;
+    height: 100%;
+    transition: left .2s ease-out;
+    border-radius: 10;
+    background-color: var(--primaryLight);
+    width: var(--progress);
+}
+
+.sample-player-knob:hover:after {
+    transform: translate(-50%, -50%) scale(1.3);
+}
+
+.sample-player-knob:after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: var(--progress);
+    width: 9px;
+    height: 9px;
+    transition: transform .15s ease-out;
+    scale: 1.0;
+    background-color: var(--primaryLight);
+    transform: translate(-50%, -50%) scale(1.0);
+    border-radius: 100%;
+}
+
+.sample-player:before,
+.sample-player:after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    font-size: 10pt;
+    color: var(--layer2);
+    margin-top: 8px;
+}
+
+.sample-player:before {
+    color: var(--primaryLight) !important;
+    content: attr(timestamp) !important;
+}
+
+.sample-player:after {
+    right: 0;
+    content: attr(duration) !important;
+}
+
+@media screen and (max-width: $switchToMobileWidthPx) {
+    .sample {
+        flex-direction: column;
+    }
+}

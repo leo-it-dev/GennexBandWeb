@@ -28,8 +28,6 @@ export class CalendarBackendService extends BackendService {
 	public bigImageEntry: WritableSignal<CalendarEntry | undefined> = signal(undefined);
 
 	public resolvedBigImage: WritableSignal<CalendarEntryWithUrl | undefined> = signal(undefined);
-	public scrollLeftActive = false;
-	public scrollRightActive = false;
 
 	name(): string {
 		return "Calendar";

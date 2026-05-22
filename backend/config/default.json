@@ -52,7 +52,8 @@
         "PASSWORD": "enter_your_password_here",
         "SYNC_PATH": "/Shared/Webpage/Download",
         "FORWARD_LINK_FILE": "EMBED_LINKS.txt",
-        "EMBED_DOWNLOAD_FILE": "EMBED_DOWNLOADS.txt"
+        "EMBED_DOWNLOAD_FILE": "EMBED_DOWNLOADS.txt",
+        "SAMPLES_FILE": "EMBED_SAMPLES.txt"
     },
     "SPOTIFY": {
         "SYNC_INTERVAL_SECONDS": 86400,

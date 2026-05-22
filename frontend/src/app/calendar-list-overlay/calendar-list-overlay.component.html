@@ -44,16 +44,17 @@
                 <hr />
                 <h3 id="flyer-title">Flyer</h3>
                     <div id="flyer-scroll">
-                        <div id="flyer-scroll-left" [class.scrollActive]="this.calendar.scrollLeftActive" (click)="scrollLeft()"><app-colored-svg svgSrc="/images/svg/arrow.svg" col="#fff"></app-colored-svg></div>
+                        <div id="flyer-scroll-left" class="scrollActive" (click)="scrollLeft()"><app-colored-svg svgSrc="/images/svg/arrow.svg" col="#fff"></app-colored-svg></div>
 
-                        <div id="flyer-scroll-items" #flyerScroll (scroll)="this.scroll()">
+                        <div id="flyer-scroll-items" #flyerScroll>
                             <div class="flyer-spacer"></div>
                             @for(attachment of this.calendar.resolvedBigImage()!.attachmentURLs; track attachment) {
                                 <img [src]="attachment.renderedPng" (click)="open(attachment.sourceURL)" />
                             }
+                            <div class="flyer-spacer"></div>
                         </div>
 
-                        <div id="flyer-scroll-right" [class.scrollActive]="this.calendar.scrollRightActive" (click)="scrollRight()"><app-colored-svg svgSrc="/images/svg/arrow.svg" col="#fff"></app-colored-svg></div>
+                        <div id="flyer-scroll-right" class="scrollActive" (click)="scrollRight()"><app-colored-svg svgSrc="/images/svg/arrow.svg" col="#fff"></app-colored-svg></div>
                     </div>
             </div>
         }

@@ -1,7 +1,7 @@
 import config from 'config';
 import { getBaseURL, getFilePathFrontend, getRepeatedScheduler } from '../..';
 import { ApiInterfaceEmptyIn, ApiInterfaceEmptyOut } from '../../../api_common/backend_call';
-import { ApiInterfaceDocumentsOut, DownloadableDocument, ForwardLink } from '../../../api_common/documents';
+import { ApiInterfaceDocumentsOut, DownloadableDocument, ForwardLink, Sample } from '../../../api_common/documents';
 import { ApiModule } from "../../api_module";
 import * as webdav from '../../framework/webdav-sync';
 import * as fs from 'fs';
@@ -14,6 +14,7 @@ export class ApiModuleDocuments extends ApiModule {
     private SYNC_PATH = config.get('nextcloud.SYNC_PATH') as string;
     private LINK_FILE = config.get('nextcloud.FORWARD_LINK_FILE') as string;
     private DOWNLOAD_FILE = config.get('nextcloud.EMBED_DOWNLOAD_FILE') as string;
+    private SAMPLES_FILE = config.get('nextcloud.SAMPLES_FILE') as string;
     private SPOTIFY_SYNC_INTERVAL_SECS = config.get('SPOTIFY.SYNC_INTERVAL_SECONDS') as number;
     private SPOTIFY_PLAYLIST_ID = config.get('SPOTIFY.PLAYLIST_ID') as string;
     private SPOTIFY_UPLOAD_TEMP_FILE = config.get('SPOTIFY.NEXTCLOUD_UPLOAD_FILE_PATH') as string;
@@ -34,6 +35,7 @@ export class ApiModuleDocuments extends ApiModule {
 
     private downloadableDocuments: DownloadableDocument[] = [];
     private links: ForwardLink[] = [];
+    private samples: Sample[] = [];
 
     public getWebhookListenEndpoint() {
         return "web-hook";
@@ -93,7 +95,8 @@ export class ApiModuleDocuments extends ApiModule {
                 error: undefined,
                 responseObject: {
                     documents: this.downloadableDocuments,
-                    links: this.links
+                    links: this.links,
+                    samples: this.samples
                 },
                 statusCode: 200
             }
@@ -114,17 +117,20 @@ export class ApiModuleDocuments extends ApiModule {
                 let downloadData = this.getLocalDownloadableDocuments()
                 this.downloadableDocuments = downloadData.documents;
                 this.links = downloadData.links;
+                this.samples = downloadData.samples;
                 res();
             });
        });
     }
 
-    getLocalDownloadableDocuments(): {documents: DownloadableDocument[], links: ForwardLink[]} {
+    getLocalDownloadableDocuments(): {documents: DownloadableDocument[], links: ForwardLink[], samples: Sample[]} {
         let documents: DownloadableDocument[] = [];
         let links: ForwardLink[] = [];
+        let samples: Sample[] = [];
 
         let linkFileFullPath = path.join(this.getDocumentsDownloadFolder(), this.LINK_FILE);
         let downloadFileFullPath = path.join(this.getDocumentsDownloadFolder(), this.DOWNLOAD_FILE);
+        let samplesFileFullPath = path.join(this.getDocumentsDownloadFolder(), this.SAMPLES_FILE);
 
         if (fs.existsSync(linkFileFullPath)) {
             let content = fs.readFileSync(linkFileFullPath, 'utf-8');
@@ -136,6 +142,21 @@ export class ApiModuleDocuments extends ApiModule {
                     links.push({
                         name: linkName,
                         url: linkUrl
+                    });
+                }
+            }
+        }
+        if (fs.existsSync(samplesFileFullPath)) {
+            let content = fs.readFileSync(samplesFileFullPath, 'utf-8');
+            let lines = content.split("\n").map(l => l.trim());
+            for (let line of lines) {
+                if (line.split("->").length == 2) {
+                    let sampleName = line.split("->")[0].trim()
+                    let sampleFile = line.split("->")[1].trim();
+                    let sampleFileFullPath = getBaseURL() + "documents/" + encodeURIComponent(sampleFile)
+                    samples.push({
+                        name: sampleName,
+                        url: sampleFileFullPath
                     });
                 }
             }
@@ -160,6 +181,6 @@ export class ApiModuleDocuments extends ApiModule {
                 }
             }
         }
-        return {documents: documents, links: links};
+        return {documents: documents, links: links, samples: samples};
     }
 }

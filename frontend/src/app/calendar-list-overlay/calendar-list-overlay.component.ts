@@ -1,5 +1,5 @@
 import * as maplibregl from 'maplibre-gl';
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { CalendarBackendService } from '../modules/calendar/calendar-backend.service';
 import { ColoredSvgComponent } from '../colored-svg/colored-svg.component';
 import { BigOverlayComponent } from '../big-overlay/big-overlay.component';
@@ -96,13 +96,6 @@ export class CalendarListOverlayComponent {
 		this.flyerScroll.nativeElement.scrollBy({
 			left: 300,
 			behavior: 'smooth'
-		});
-	}
-
-	scroll(): void {
-		this.flyerScroll.nativeElement.addEventListener("scroll", (ev) => {
-			this.calendar.scrollLeftActive = this.flyerScroll.nativeElement.scrollLeft > 0;
-			this.calendar.scrollRightActive = this.flyerScroll.nativeElement.scrollLeft < this.flyerScroll.nativeElement.scrollWidth - this.flyerScroll.nativeElement.getBoundingClientRect().width;
 		});
 	}
 

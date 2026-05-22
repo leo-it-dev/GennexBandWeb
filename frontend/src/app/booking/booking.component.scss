@@ -1,32 +1,10 @@
 :host {
     background-color: var(--alternateSectionColoring3);
+    align-items: center;
 }
 
-.inline-hints {
-    padding-top: 50px;
-}
-
-.inline-hint {
-    padding: 10px 20px;
-    width: min-content;
-    border-radius: 7px;
-    border: 1px solid var(--layer1);
-    background-color: var(--layer0);
-    color: var(--layer2);
-    font-size: 11pt;
-    line-height: 11pt;
-    text-wrap: nowrap;
-    font-weight: 500;
-    display: inline-block;
-    margin-right: 20px;
-}
-
-.inline-hint app-colored-svg {
-    height: 11pt;
-    width: 11pt;
-    padding-right: 3px;
-    position: relative;
-    top: 2px;
+.section-left-content1 {
+    margin-bottom: 100px;
 }
 
 #downloads {

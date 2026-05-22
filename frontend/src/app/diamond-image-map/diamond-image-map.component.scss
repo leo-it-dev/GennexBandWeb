@@ -19,7 +19,6 @@
     display: inline-block;
     width: var(--size);
     height: var(--size);
-    transform: rotate(-45deg);
     position: relative;
     overflow: hidden;
     margin-right: calc(var(--size) * 0.413); // cube is 0.207*2 larger in width when rotated 45deg
@@ -42,6 +41,30 @@
     margin-left: calc(var(--size)*0.707);
 }
 
+
+#wrapper {
+    --size: 10vw;
+    padding-left: unset !important;
+    padding-right: unset !important;
+
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.diamond {
+    transform: unset !important;
+    margin-right: unset !important;
+    margin-bottom: unset !important;
+    border: unset !important;
+    left: 0vw !important;
+}
+.diamondWrapper {
+    height: unset !important;
+    padding: 10px;
+}
+
 @media screen and (max-width: 700px) {
     #wrapper {
         --size: 35.5vw;
@@ -60,10 +83,5 @@
         margin-bottom: unset !important;
         border: unset !important;
         left: 0vw !important;
-    }
-
-    .diamondWrapper {
-        height: unset !important;
-        padding: 1vw;
     }
 }

@@ -446,7 +446,8 @@ youtube-player {
 }
 
 .big-circle-prim1,
-.big-circle-prim2 {
+.big-circle-prim2,
+.big-circle-prim3 {
     position: absolute;
     top: 0px;
     right: 0px;
@@ -462,6 +463,11 @@ youtube-player {
 }
 .big-circle-prim2 {
     background-color: var(--primary2_22);
+    right: unset !important;
+    left: 0;
+}
+.big-circle-prim3 {
+    background-color: var(--primary1_22);
     right: unset !important;
     left: 0;
 }
@@ -520,6 +526,57 @@ hr {
 }
 
 
+
+.text-hr,
+.text-hr-gone {
+    width: 100%;
+    position: relative;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--primaryLight);
+    font-size: 10pt;
+    line-height: 10pt;
+    margin: 0px 0px 20px 0px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 20px;
+}
+
+.text-hr-gone {
+    color: var(--layer2);
+}
+
+.text-hr span,
+.text-hr-gone span {
+    min-width: max-content;
+    width: max-content;
+    display: inline-block;
+}
+
+.text-hr:before,
+.text-hr:after,
+.text-hr-gone:before,
+.text-hr-gone:after {
+    content: '';
+    position: relative;
+    flex: 1;
+    transform: translateY(-50%);
+    background-color: var(--primaryLight);
+    height: 1px;
+}
+
+.text-hr-gone:before,
+.text-hr-gone:after {
+    background-color: var(--layer2);
+}
+
+
+
+
+
+
 @media screen and (max-width: 700px) {
     .section-text {
         max-width: 95% !important;
@@ -564,5 +621,8 @@ hr {
     }
     .big-circle-prim2 {
         background-color: var(--primary2_22) !important;
+    }
+    .big-circle-prim3 {
+        background-color: var(--primary1_22) !important;
     }
 }

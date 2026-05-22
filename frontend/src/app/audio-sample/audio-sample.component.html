@@ -1,0 +1,38 @@
+<div class="big-circle-prim3"></div>
+
+<h1 class="section-header">Hört <span class="section-header-highlight">Rein</span></h1>
+<span class="section-text-subtitle">
+    Direkt aus unserem Probenraum - rohe Energie, echte Leidenschaft
+</span>
+
+<div class="text-hr">
+    <span>Demo Tracks</span>
+</div>
+
+@for(sample of this.sampleData; track sample.sample.url; let idx = $index) {
+    <div #sample class="sample" [attr.url]="sample.sample.url">
+        <h1 class="sample-num">{{formatIdx(idx)}}</h1>
+        @if (sample.playing) {
+            <app-colored-svg class="sample-play" col="#fff" svgSrc="/images/svg/pause.svg" (click)="this.toggleAudio(sample)"></app-colored-svg>
+        } @else {
+            <app-colored-svg class="sample-play" col="#fff" svgSrc="/images/svg/triangle.svg" (click)="this.toggleAudio(sample)"></app-colored-svg>
+        }
+        <h1 class="sample-text">{{sample.sample.name}}</h1>
+        <canvas class="sample-bars"></canvas>
+        <div class="sample-player-cont" 
+            (click)="handleProgressBarClick($event)" 
+            (pointermove)="handleProgressBarDrag($event)"
+            (pointerdown)="handleProgressBarMouseDown($event)"
+            (pointerup)="handleProgressBarMouseUp($event)"
+            (pointercancel)="handleProgressBarMouseUp($event)">
+            <div class="sample-player" duration="-:--" timestamp="-:--">
+                <div class="sample-player-knob"></div>
+            </div>
+        </div>
+
+        <audio class="sample-audio" (loadedmetadata)="this.audioLoaded(sample)" (timeupdate)="this.timeUpdate(sample)" (playing)="sample.playing = true" (pause)="sample.playing = false" (ended)="sample.playing = false">
+            <source [src]="sample.sample.url" type="audio/mp3">
+            Your browser does not support the audio element.
+        </audio>
+    </div>
+}
