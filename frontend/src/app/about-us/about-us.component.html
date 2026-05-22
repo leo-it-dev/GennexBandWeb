@@ -14,7 +14,7 @@
         <div id="member-cont">
             @for(pair of this.backend.members(); track pair.thumbnailPath) {
                 <div class="adelay member" animate.enter="fadeInInner" animate.leave="fadeOutInner">
-                    <img [src]="pair.thumbnailPath" />
+                    <img loading="lazy" [src]="pair.thumbnailPath" />
                     <h3>{{pair.member.name}}</h3>
                     <h4>{{pair.member.role}}</h4>
                 </div>

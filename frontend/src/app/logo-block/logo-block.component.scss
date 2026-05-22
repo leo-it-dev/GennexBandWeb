@@ -1,3 +1,5 @@
+@use '../../variables.scss' as *;
+
 :host {
     height: max(100lvh, 600px);
     position: relative;
@@ -40,4 +42,12 @@
 
 .star {
     color: var(--primaryLight) !important;
+}
+
+
+
+@media screen and (max-width: $switchToMobileWidthPx) {
+    #logo-cont-text {
+        display: none;
+    }
 }

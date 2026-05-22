@@ -72,7 +72,7 @@ export class ApiModuleSubscribe extends ApiModule {
         return getBaseURL() + "unsubscribe?t=" + this.emailToToken(email);
     }
     getSubscribeUrl() {
-        return getBaseURL() + "#channels";
+        return getBaseURL() + "#events";
     }
 
     registerEndpoints(): void {

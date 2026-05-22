@@ -113,6 +113,7 @@ export class CalendarAPIHelper {
                                 let id = entry.id;
                                 let locationString = entry.location;
                                 let state = entry.status == "cancelled" ? CalendarEntryState.DELETED : CalendarEntryState.DEFAULT;
+                                let created = entry.created;
                                 let visibility = entry.visibility == "public" ? Visibility.PUBLIC : Visibility.PRIVATE
                                 let attachments: Attachment[] = (entry.attachments as any[] || []).map(attachment => {
                                     return { title: attachment.title, url: attachment.fileUrl, mimeType: attachment.mimeType }
@@ -153,7 +154,9 @@ export class CalendarAPIHelper {
                                     title: title,
                                     state: state,
                                     visibility: visibility,
-                                    attachments: attachments
+                                    attachments: attachments,
+                                    created: new Date(entry.created),
+                                    endDate: new Date(entry.end.dateTime || entry.end.date)
                                 };
 
                                 if (locationString != undefined) {

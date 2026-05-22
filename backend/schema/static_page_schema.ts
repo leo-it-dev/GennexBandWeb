@@ -149,37 +149,37 @@ export let staticSchema = {
                     "@type": "ListItem",
                     "position": 2,
                     "name": "Über uns",
-                    "item": "https://gennex.band/#sifAnchor-about-us"
+                    "item": "https://gennex.band#about-us"
                 },
                 {
                     "@type": "ListItem",
                     "position": 3,
-                    "name": "Videos",
-                    "item": "https://gennex.band/#live"
+                    "name": "Samples",
+                    "item": "https://gennex.band/#audio-sample"
                 },
                 {
                     "@type": "ListItem",
                     "position": 4,
-                    "name": "Gallerie",
-                    "item": "https://gennex.band/#gallery-link"
+                    "name": "Videos",
+                    "item": "https://gennex.band/#live-action"
                 },
                 {
                     "@type": "ListItem",
                     "position": 5,
-                    "name": "Nächste Events",
-                    "item": "https://gennex.band/#gigs-link"
+                    "name": "Gallerie",
+                    "item": "https://gennex.band/#gallery"
                 },
                 {
                     "@type": "ListItem",
                     "position": 6,
-                    "name": "Kontakt",
-                    "item": "https://gennex.band/#contact-link"
+                    "name": "Nächste Events",
+                    "item": "https://gennex.band/#events"
                 },
                 {
                     "@type": "ListItem",
                     "position": 7,
-                    "name": "Unsere Kanäle",
-                    "item": "https://gennex.band/#channels-link"
+                    "name": "Kontakt",
+                    "item": "https://gennex.band/#contact"
                 }
             ]
         }

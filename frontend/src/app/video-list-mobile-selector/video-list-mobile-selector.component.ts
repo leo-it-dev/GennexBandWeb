@@ -1,6 +1,6 @@
 import { Component, effect, ElementRef } from '@angular/core';
 import { VideoListVideoSelectorComponent } from '../video-list-video-selector/video-list-video-selector.component';
-import { VideoListPlaylistSelectorComponent } from '../video-list-selector/video-list-playlist-selector.component';
+import { VideoListPlaylistSelectorComponent } from '../video-list-playlist-selector/video-list-playlist-selector.component';
 import { VideosBackendService } from '../modules/videos/videos-backend.service';
 
 @Component({

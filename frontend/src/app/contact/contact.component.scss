@@ -4,7 +4,7 @@
 }
 
 #contact-mail {
-    font-size: 26pt;
+    font-size: min(26pt, 6vw);
     line-height: 30pt;
     display: flex;
     flex-direction: row;

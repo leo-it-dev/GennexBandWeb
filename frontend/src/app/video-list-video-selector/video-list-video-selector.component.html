@@ -7,7 +7,7 @@
         @for(video of this.back.currentPlaylist()?.videos ?? []; track video.videoID; let idx = $index) {
             <li (click)="this.back.mobileVideoListOpened.set(false); this.back.currentVideo.set(video)" [class.selected-item]="video.videoID == (this.back.currentVideo()?.videoID ?? '')">
                 <h4 class="video-num">{{formatIdx(idx)}}</h4>
-                <img [src]="video.thumbnailURL" />
+                <img loading="lazy" [src]="video.thumbnailURL" />
                 <h4 class="video-name">{{video.videoName}}</h4>
             </li>
         }

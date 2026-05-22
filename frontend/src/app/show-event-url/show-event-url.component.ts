@@ -1,5 +1,4 @@
 import { AfterViewInit, Component } from '@angular/core';
-import { MainpageComponent } from '../mainpage/mainpage.component';
 import { CalendarBackendService } from '../modules/calendar/calendar-backend.service';
 import { PageNewComponent } from '../page-new/page-new.component';
 

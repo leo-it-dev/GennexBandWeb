@@ -8,22 +8,50 @@
 <app-about-us id="about-us" class="section"
 	isVisible [threshold]="0.25"	visibleClass="fadeIn"></app-about-us>
 
-<app-audio-sample id="audio-sample" class="section"
-	isVisible [threshold]="0.25"	visibleClass="fadeIn"></app-audio-sample>
+<div id="audio-sample">
+	@defer {
+		<app-audio-sample class="section"
+			isVisible [threshold]="0.25"	visibleClass="fadeIn"></app-audio-sample>
+	}
+</div>
 
-<app-calendar-list id="next-events" class="section"
-	isVisible [threshold]="0.25"	visibleClass="fadeIn"></app-calendar-list>
-<app-calendar-list-overlay></app-calendar-list-overlay>
+<div id="next-events">
+	@defer {
+		<app-calendar-list class="section"
+			isVisible [threshold]="0.25"	visibleClass="fadeIn"></app-calendar-list>
+		<app-calendar-list-overlay></app-calendar-list-overlay>
+	}
+</div>
 
-<app-setlist id="setlist" class="section-left"
-	isVisible [threshold]="0.25"	visibleClass="fadeIn"></app-setlist>
-<app-booking id="booking" class="section-left-wide"
-	isVisible [threshold]="0.25"	visibleClass="fadeIn"></app-booking>
-<app-gallery id="gallery" class="section"
-	isVisible [threshold]="0.25"	visibleClass="fadeIn"></app-gallery>
-<app-gallery-overlay></app-gallery-overlay>
-<app-contact id="contact" class="section"
-	isVisible [threshold]="0.25"	visibleClass="fadeIn"></app-contact>
+<div id="setlist">
+	@defer {
+		<app-setlist class="section-left"
+			isVisible [threshold]="0.25"	visibleClass="fadeIn"></app-setlist>
+	}
+</div>
+
+<div id="booking">
+	@defer {
+		<app-booking class="section-left-wide"
+			isVisible [threshold]="0.25"	visibleClass="fadeIn"></app-booking>
+	}
+</div>
+
+<div id="gallery">
+	@defer {
+		<app-gallery class="section"
+			isVisible [threshold]="0.25"	visibleClass="fadeIn"></app-gallery>
+		<app-gallery-overlay></app-gallery-overlay>
+	}
+</div>
+
+<div id="contact">
+	@defer {
+		<app-contact class="section"
+			isVisible [threshold]="0.25"	visibleClass="fadeIn"></app-contact>
+	}
+</div>
+
 <app-footer (onPrivacyPolicy)="this.doShowPrivacyPolicy.set(true)" (onImpressum)="this.doShowImpressum.set(true)"></app-footer>
 
 @if (this.loadingOverlay.loadingOverlayVisible()) {

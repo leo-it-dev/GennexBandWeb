@@ -17,7 +17,7 @@ export class TitlebarComponent implements AfterViewInit {
 
 	mobileNavExpanded = false;
 
-	isMobile = false;
+	isMobile = true;
 
 	constructor(private el: ElementRef<HTMLElement>) {}
 
@@ -37,7 +37,9 @@ export class TitlebarComponent implements AfterViewInit {
 		const update = () => {
 			this.isMobile = mq.matches;
 		};
-		this.isMobile = mq.matches;
+		queueMicrotask(() => {
+			this.isMobile = mq.matches;
+		})
 		mq.addEventListener('change', update);
 	}
 

@@ -2,7 +2,7 @@ import { AfterViewInit, Component, effect } from '@angular/core';
 import { YouTubePlayer } from '@angular/youtube-player';
 import { VideosBackendService } from '../modules/videos/videos-backend.service';
 import { PageControlService } from '../services/page-control.service';
-import { VideoListPlaylistSelectorComponent } from '../video-list-selector/video-list-playlist-selector.component';
+import { VideoListPlaylistSelectorComponent } from '../video-list-playlist-selector/video-list-playlist-selector.component';
 import { VideoListVideoSelectorComponent } from '../video-list-video-selector/video-list-video-selector.component';
 
 @Component({

@@ -4,7 +4,6 @@ import { PublishFormularResponse, PublishFormularStatusCode } from '../../../../
 import { CalendarBackendService } from '../../modules/calendar/calendar-backend.service';
 import { LoadingoverlayService } from '../../services/loadingoverlay.service';
 import { removePathFromURL } from '../../utilities';
-import { MainpageComponent } from '../../mainpage/mainpage.component';
 import { PageNewComponent } from '../../page-new/page-new.component';
 
 enum EventPublishType {

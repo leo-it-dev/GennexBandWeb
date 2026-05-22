@@ -30,9 +30,11 @@ export type Attachment = {
 }
 
 export type CalendarEntry = {
+    created: Date,
     title: string,
     description: string,
     date: Date,
+    endDate: Date,
     geocoding?: GeoCoding
     locationString: string,
     id: string,

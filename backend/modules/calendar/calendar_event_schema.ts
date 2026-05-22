@@ -1,5 +1,5 @@
 import { getBaseURL } from "../..";
-import { Calendar, CalendarEntry } from "../../../api_common/calendar";
+import { Calendar, CalendarEntry, CalendarEntryState } from "../../../api_common/calendar";
 import { ApiModuleLazy } from "../../api_module";
 import { ApiModuleRenderedPDFs } from "../renderedpdf/api_renderedpdf";
 
@@ -24,6 +24,7 @@ function generateSchemeFromEvent(event: CalendarEntry) {
         name: event.title,
         description: event.description,
         startDate: event.date.toISOString(),
+        endDate: event.endDate.toISOString(),
         // endDate: "2026-07-16T01:00:00+02:00",
         eventStatus: "https://schema.org/EventScheduled",
         eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
@@ -65,7 +66,8 @@ function generateSchemeFromEvent(event: CalendarEntry) {
             price: "0",
             priceCurrency: "EUR",
             url: "https://gennex.band/#gigs-link",
-            availability: "https://schema.org/FreeEvent"
+            availability: "https://schema.org/FreeEvent",
+            validFrom: event.created.toISOString()
         }
     }
     return eventSeoMarkupSchema;

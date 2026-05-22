@@ -3,7 +3,7 @@
 @defer (when this.backend.imagesLoaded) {
     <span class="section-text" id="gallery-images">
         @for(image of this.backend.teaserImages(); track image) {
-            <div><img [src]="image" (click)="backend.openBigImageEvt($event)" /></div>
+            <div><img loading="lazy" [src]="image" (click)="backend.openBigImageEvt($event)" /></div>
         }
     </span>
 } @placeholder(minimum 500ms) {
