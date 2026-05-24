@@ -5,7 +5,7 @@ VOLUME /app/package/backend/config
 
 COPY . /app/package
 
-RUN apt-get update && apt-get install -y unzip graphicsmagick ghostscript texlive-latex-recommended texlive-latex-extra
+RUN apt-get update && apt-get install -y unzip graphicsmagick ghostscript texlive-latex-recommended texlive-latex-extra exiftool
 
 # Fix timezone
 RUN rm /etc/localtime && ln -s /usr/share/zoneinfo/Europe/Berlin /etc/localtime
