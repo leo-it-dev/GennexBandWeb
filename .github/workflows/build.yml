@@ -67,8 +67,6 @@ jobs:
       - name: Copy node_modules into build directory
         run: cp -r node_modules js/backend
         working-directory: backend
-      - name: Fix exiftool exec bit
-        run: chmod +x js/backend/node_modules/exiftool-vendored.pl/bin/exiftool
       - name: Upload Backend Artifact
         id: upload
         uses: actions/upload-artifact@v4
