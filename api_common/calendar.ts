@@ -53,7 +53,7 @@ export type Location = {
 }
 
 export interface ApiInterfaceCalendarIn extends ApiModuleInterfaceF2B { };
-export interface ApiInterfaceCalendarOut extends ApiModuleInterfaceB2F { calendar: Calendar, mapTileServerURL: string };
+export interface ApiInterfaceCalendarOut extends ApiModuleInterfaceB2F { calendar: Calendar, mapTileServerURL: string, goneEventsWeekCount: number };
 
 // publish event to all newsletter subscribers
 export interface ApiInterfaceCalendarPublishIn extends ApiModuleInterfaceF2B {

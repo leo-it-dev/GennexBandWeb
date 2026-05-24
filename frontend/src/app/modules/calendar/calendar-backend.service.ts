@@ -31,6 +31,8 @@ export class CalendarBackendService extends BackendService {
 
 	public tileServerURL: string = "";
 
+	public goneEventsWeekCount = 0;
+
 	name(): string {
 		return "Calendar";
 	}
@@ -45,6 +47,7 @@ export class CalendarBackendService extends BackendService {
 				e.date = new Date(e.date);
 			}
 
+			this.goneEventsWeekCount = dat.goneEventsWeekCount;
 			this.tileServerURL = dat.mapTileServerURL;
 			this.calendarData.set(dat.calendar);
 

@@ -155,7 +155,8 @@ export class ApiModuleCalendar extends ApiModule {
                 statusCode: 200,
                 responseObject: {
                     calendar: this.calendarFilter.getCurrentCalendarStateSinceWeeksPast(this.SHOW_EVENTS_PAST_WEEKS),
-                    mapTileServerURL: config.get('calendar.TILESERVER_BASE_URL') as string
+                    mapTileServerURL: config.get('calendar.TILESERVER_BASE_URL') as string,
+                    goneEventsWeekCount: this.SHOW_EVENTS_PAST_WEEKS
                 }
             };
         });
