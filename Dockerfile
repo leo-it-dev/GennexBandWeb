@@ -10,6 +10,9 @@ RUN apt-get update && apt-get install -y unzip graphicsmagick ghostscript texliv
 # Fix timezone
 RUN rm /etc/localtime && ln -s /usr/share/zoneinfo/Europe/Berlin /etc/localtime
 
+# Fix exiftool binary permissions
+RUN chmod +x /app/package/backend/js/backend/node_modules/exiftool-vendored.pl/bin/exiftool
+
 RUN echo "export NODE_ENV=deployment" >> ~/.bashrc # Set node configuration to use
 RUN echo "export NODE_CONFIG_DIR=/app/package/backend/config" >> ~/.bashrc # Set node configuration to use
 ENV NODE_ENV=deployment
