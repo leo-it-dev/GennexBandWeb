@@ -69,6 +69,7 @@ jobs:
         working-directory: backend
       - name: Fix exiftool exec bit
         run: chmod +x js/backend/node_modules/exiftool-vendored.pl/bin/exiftool
+        working-directory: backend
       - name: Upload Backend Artifact
         id: upload
         uses: actions/upload-artifact@v4
