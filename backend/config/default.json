@@ -32,7 +32,8 @@
         "CALENDAR_ID": "your_calender_id@group.calendar.google.com",
         "GEOCODING_DATA_API_KEY": "enter_your_geocode_api_key_here",
         "WEB_HOOK_PRIVATE_TOKEN": "enter_random_private_string_here",
-        "OLDEST_EVENTS_TO_SHOW_WEEKS": 3
+        "OLDEST_EVENTS_TO_SHOW_WEEKS": 3,
+        "TILESERVER_BASE_URL": "https://your-tiles-server:3000"
     },
     "google-service-account": {
         "PRIVATE_KEY": "-----BEGIN PRIVATE KEY-----\nENTER_YOUR_PRIVATE_KEY_HERE\n-----END PRIVATE KEY-----\n",

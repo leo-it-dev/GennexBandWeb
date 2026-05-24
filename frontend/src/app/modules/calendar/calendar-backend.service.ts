@@ -29,6 +29,8 @@ export class CalendarBackendService extends BackendService {
 
 	public resolvedBigImage: WritableSignal<CalendarEntryWithUrl | undefined> = signal(undefined);
 
+	public tileServerURL: string = "";
+
 	name(): string {
 		return "Calendar";
 	}
@@ -43,6 +45,7 @@ export class CalendarBackendService extends BackendService {
 				e.date = new Date(e.date);
 			}
 
+			this.tileServerURL = dat.mapTileServerURL;
 			this.calendarData.set(dat.calendar);
 
 			let eventID = location.search.split("?eid=")[1];

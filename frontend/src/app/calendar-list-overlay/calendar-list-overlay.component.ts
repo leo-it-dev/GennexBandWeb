@@ -28,14 +28,10 @@ export class CalendarListOverlayComponent {
 
 	}
 
-	tilesBaseURL() {
-		return location.origin.substring(0, location.origin.lastIndexOf(":")) + ":3000";
-	}
-
 	initMap(element: ElementRef<HTMLElement>) {
 		let promises = Promise.allSettled([
-			fetch(this.tilesBaseURL() + "/europe"),
-			fetch(this.tilesBaseURL() + "/mapstyles/style.json")
+			fetch(this.calendar.tileServerURL + "/europe"),
+			fetch(this.calendar.tileServerURL + "/mapstyles/style.json")
 		]);
 
 		promises.then(async promises => {

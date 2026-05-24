@@ -154,7 +154,8 @@ export class ApiModuleCalendar extends ApiModule {
                 error: undefined,
                 statusCode: 200,
                 responseObject: {
-                    calendar: this.calendarFilter.getCurrentCalendarStateSinceWeeksPast(this.SHOW_EVENTS_PAST_WEEKS)
+                    calendar: this.calendarFilter.getCurrentCalendarStateSinceWeeksPast(this.SHOW_EVENTS_PAST_WEEKS),
+                    mapTileServerURL: config.get('calendar.TILESERVER_BASE_URL') as string
                 }
             };
         });
