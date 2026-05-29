@@ -59,7 +59,7 @@ export class AccumulatedCalendarFilter {
         let oneWeekAgo = new Date();
         oneWeekAgo.setDate(oneWeekAgo.getDate() - 7*weeksPast);
         return {
-            entries: this.calendar.entries.filter(entry => entry.date > oneWeekAgo)
+            entries: this.calendar.entries.filter(entry => entry.date > oneWeekAgo).sort((ceA, ceB) => ceA.date.getTime() - ceB.date.getTime())
         }
     }
 

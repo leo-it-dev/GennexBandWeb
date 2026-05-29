@@ -586,6 +586,14 @@ hr {
         width: 95%;
     }
 
+    .section-left-content1 .section-text-subtitle {
+        text-align: center !important;
+    }
+
+    .section-text-subtitle {
+        max-width: 100% !important;
+    }
+
     .section-left,
     .section-left-wide {
         flex-direction: column;
